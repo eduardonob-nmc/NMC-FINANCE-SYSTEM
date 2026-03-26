@@ -3986,8 +3986,8 @@ function saveLanc() {
     if (!bancoDestino) { toast('Selecione a conta de destino.','err'); return; }
     if (bancoDestino === banco) { toast('Origem e destino não podem ser iguais.','err'); return; }
     const groupId = uid();
-    lancamentos.push({id:uid(), groupId, tipo:'Despesa',  data, banco,          cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc: `Transferência → ${bancoDestino}` + (desc?' | '+desc:'')});
-    lancamentos.push({id:uid(), groupId, tipo:'Receita',  data, banco:bancoDestino, cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc: `Transferência ← ${banco}` + (desc?' | '+desc:'')});
+    lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Despesa',  data, banco,          cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc: `Transferência → ${bancoDestino}` + (desc?' | '+desc:'')});
+    lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Receita',  data, banco:bancoDestino, cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc: `Transferência ← ${banco}` + (desc?' | '+desc:'')});
     toast('Transferência registrada! Dois lançamentos criados.');
   } else {
     const obj = {id:uid(),tipo,data,banco,cc,forma,cartaoId,parcelas,period,valor,desc};
@@ -4041,22 +4041,11 @@ function clearLancFilter() {
 // Helper: identifica se lançamento é parte de uma transferência entre contas
 function isTransferencia(l) {
   if (!l) return false;
-  // Detecta pela combinação groupId + desc (formato padrão)
-  if (l.groupId && l.desc &&
-     (l.desc.startsWith('Transferência →') || l.desc.startsWith('Transferência ←')))
+  // 1. Flag explícita (transferências novas)
+  if (l.transferencia === true) return true;
+  // 2. Fallback: detecta pelo desc (transferências antigas sem flag)
+  if (l.desc && (l.desc.startsWith('Transferência →') || l.desc.startsWith('Transferência ←')))
     return true;
-  // Detecta transferências antigas sem groupId pelo desc
-  if (l.desc &&
-     (l.desc.startsWith('Transferência →') || l.desc.startsWith('Transferência ←')))
-    return true;
-  // Detecta pelo groupId mesmo que desc seja diferente
-  if (l.groupId) {
-    const pair = lancamentos.find(x =>
-      x.id !== l.id && x.groupId === l.groupId &&
-      x.desc && (x.desc.startsWith('Transferência →') || x.desc.startsWith('Transferência ←'))
-    );
-    if (pair) return true;
-  }
   return false;
 }
 
