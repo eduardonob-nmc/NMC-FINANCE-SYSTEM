@@ -5427,8 +5427,8 @@ function renderDashboard() {
   document.getElementById('dReceit').textContent = fmtBRL(rec);
   document.getElementById('dDesp').textContent   = fmtBRL(desp);
   document.getElementById('dSaldo').textContent  = fmtBRL(saldoPeriodo);
-  document.getElementById('dReceitQ').textContent = data.filter(l=>l.tipo==='Receita').length + ' lançamentos';
-  document.getElementById('dDespQ').textContent   = data.filter(l=>l.tipo==='Despesa').length + ' lançamentos';
+  document.getElementById('dReceitQ').textContent = data.filter(l=>l.tipo==='Receita'&&!isTransferencia(l)).length + ' lançamentos';
+  document.getElementById('dDespQ').textContent   = data.filter(l=>l.tipo==='Despesa'&&!isTransferencia(l)).length + ' lançamentos';
   document.getElementById('dSaldoHint').textContent = (saldoPeriodo>=0?'▲ Positivo':'▼ Negativo')+' · até '+fmtDate(dataFimFiltro);
 
   // Saldo Total Hoje
@@ -6659,7 +6659,7 @@ function renderComparativoDash() {
   const mesAnterior = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 
   function calcMes(ym) {
-    const ls = lancamentos.filter(l => l.data.slice(0,7)===ym);
+    const ls = lancamentos.filter(l => l.data.slice(0,7)===ym && !isTransferencia(l));
     const r = ls.filter(l=>l.tipo==='Receita').reduce((s,l)=>s+parseMoney(l.valor),0);
     const e = ls.filter(l=>l.tipo==='Despesa').reduce((s,l)=>s+parseMoney(l.valor),0);
     return { r, e, s: r-e };
@@ -6736,7 +6736,7 @@ function renderAlertaLimiteCCDash() {
   if (!limiteMetas.length) { card.style.display='none'; return; }
   const ym = nowYM();
   const alertas = limiteMetas.map(m => {
-    const gasto = lancamentos.filter(l=>l.tipo==='Despesa' && l.cc===m.cc && l.data.slice(0,7)===ym).reduce((s,l)=>s+parseMoney(l.valor),0);
+    const gasto = lancamentos.filter(l=>l.tipo==='Despesa' && l.cc===m.cc && l.data.slice(0,7)===ym && !isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
     const pct   = Math.min(100, Math.round((gasto/m.alvo)*100));
     return { ...m, gasto, pct };
   }).filter(m=>m.pct>=70);
@@ -6810,7 +6810,7 @@ function verificarAlertas() {
 
   // Alerta de limite CC ≥ 90%
   metas.filter(m=>m.tipo==='LimiteGasto' && m.cc).forEach(m => {
-    const gasto = lancamentos.filter(l=>l.tipo==='Despesa' && l.cc===m.cc && l.data.slice(0,7)===ym).reduce((s,l)=>s+parseMoney(l.valor),0);
+    const gasto = lancamentos.filter(l=>l.tipo==='Despesa' && l.cc===m.cc && l.data.slice(0,7)===ym && !isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
     const pct = Math.round((gasto/m.alvo)*100);
     if (pct>=90) notificar(`Limite CC: ${m.cc}`, `${pct}% do limite atingido (${fmtBRL(gasto)} de ${fmtBRL(m.alvo)})`);
   });
@@ -7365,7 +7365,7 @@ function relTblWrap(cols,rows,foot=''){return`<div class="tbl-wrap"><table class
 
 function relFluxoCaixa(ym){
   const itens=lancamentos.filter(l=>l.data&&l.data.startsWith(ym));
-  const rec=itens.filter(l=>l.tipo==='Receita'), desp=itens.filter(l=>l.tipo==='Despesa');
+  const rec=itens.filter(l=>l.tipo==='Receita'&&!isTransferencia(l)), desp=itens.filter(l=>l.tipo==='Despesa'&&!isTransferencia(l));
   const totR=rec.reduce((s,l)=>s+parseMoney(l.valor),0), totD=desp.reduce((s,l)=>s+parseMoney(l.valor),0), saldo=totR-totD;
   const porDia={};
   itens.forEach(l=>{if(!porDia[l.data])porDia[l.data]={r:0,d:0};if(l.tipo==='Receita')porDia[l.data].r+=parseMoney(l.valor);else if(l.tipo==='Despesa')porDia[l.data].d+=parseMoney(l.valor);});
@@ -7379,7 +7379,7 @@ function relMovBanco(ym,bancofiltro){
   let html='';
   bf.forEach(b=>{
     const itens=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&(l.banco===b.nome||l.bancoDestino===b.nome));
-    const saldo=getSaldoBanco(b.nome), rec=itens.filter(l=>l.tipo==='Receita'&&l.banco===b.nome).reduce((s,l)=>s+parseMoney(l.valor),0), desp=itens.filter(l=>l.tipo==='Despesa'&&l.banco===b.nome).reduce((s,l)=>s+parseMoney(l.valor),0);
+    const saldo=getSaldoBanco(b.nome), rec=itens.filter(l=>l.tipo==='Receita'&&l.banco===b.nome&&!isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0), desp=itens.filter(l=>l.tipo==='Despesa'&&l.banco===b.nome&&!isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
     const rows=itens.map(l=>`<tr><td class="td-m">${relFmtDate(l.data)}</td><td>${l.desc||'—'}</td><td>${l.centro||l.cc||'—'}</td><td style="color:${l.tipo==='Receita'?'var(--teal)':'var(--red)'};font-family:var(--mono)">${l.tipo==='Receita'?'+':'-'}${relFmt(parseMoney(l.valor))}</td><td><span class="rel-badge ${l.pago?'ok':'warn'}">${l.pago?'Pago':'Pendente'}</span></td></tr>`).join('');
     html+=`<div class="rel-section" style="margin-bottom:16px"><div class="rel-section-hd"><span><i class="fa fa-university"></i>${b.nome}</span><div style="display:flex;gap:12px;font-family:var(--mono);font-size:12px"><span style="color:var(--teal)">+${relFmt(rec)}</span><span style="color:var(--red)">-${relFmt(desp)}</span><span style="color:var(--gold)">Saldo: ${relFmt(saldo)}</span></div></div>${relTblWrap(['Data','Descrição','Categoria','Valor','Status'],rows)}</div>`;
   });
@@ -7398,7 +7398,7 @@ function relMovCartao(ym,cartaoFiltro){
   return `<div class="rel-header"><div class="rel-title"><i class="fa fa-credit-card" style="color:var(--gold);margin-right:8px"></i>Movimentação de Cartões — ${relMesLabel(ym)}</div><div class="rel-kpis">${cf.map(c=>{const t=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&(l.cartaoId===c.id||l.cc===c.nome)).reduce((s,l)=>s+parseMoney(l.valor),0);return relKpiHtml(c.nome,relFmt(t),'neg');}).join('')}</div></div>${html}`;
 }
 function relCategoria(ym){
-  const desp=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&l.tipo==='Despesa');
+  const desp=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&l.tipo==='Despesa'&&!isTransferencia(l));
   const total=desp.reduce((s,l)=>s+parseMoney(l.valor),0);
   const por={};desp.forEach(l=>{const cat=l.cc||'Sem categoria';por[cat]=(por[cat]||0)+parseMoney(l.valor);});
   const sorted=Object.entries(por).sort((a,b)=>b[1]-a[1]);
