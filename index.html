@@ -6,14 +6,14 @@
 <title>NMC Personal Finance System v20</title>
 
 <!-- PWA -->
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#c9a84c">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#080b10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="NMC Finance">
-<link rel="apple-touch-icon" href="./icons/icon-192x192.png">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512x512.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
 
 <!-- SEO / OG -->
 <meta name="description" content="NMC Personal Finance System — controle financeiro pessoal com criptografia AES-256">
@@ -1316,6 +1316,8 @@ tbody tr:last-child td { border-bottom: none; }
               <option value="">Todos</option>
               <option value="Receita">Receita</option>
               <option value="Despesa">Despesa</option>
+              <option value="Financiamento">Financiamento</option>
+              <option value="Transferência">Transferência</option>
             </select>
           </div>
           <div class="filter-field">
@@ -4036,6 +4038,13 @@ function clearLancFilter() {
   renderLancamentos();
 }
 
+// Helper: identifica se lançamento é parte de uma transferência entre contas
+function isTransferencia(l) {
+  return !!(l.groupId && (
+    (l.desc && (l.desc.startsWith('Transferência →') || l.desc.startsWith('Transferência ←')))
+  ));
+}
+
 function renderLancamentos() {
   const tb = document.getElementById('tblLancBody'); if (!tb) return;
   const busca  = document.getElementById('fLancBusca').value.toLowerCase();
@@ -4048,7 +4057,13 @@ function renderLancamentos() {
   const hoje   = new Date().toISOString().slice(0,10);
 
   let data = lancamentos.filter(l => {
-    if (tipo  && l.tipo!==tipo)   return false;
+    // Filtro tipo: "Transferência" é identificado pelo groupId+desc, não pelo campo tipo
+    if (tipo === 'Transferência') {
+      if (!isTransferencia(l)) return false;
+    } else if (tipo) {
+      if (l.tipo !== tipo) return false;
+      if (isTransferencia(l)) return false; // exclui transferências de Receita/Despesa
+    }
     if (banco && l.banco!==banco) return false;
     if (cc    && l.cc!==cc)       return false;
     if (dtI   && l.data < dtI)    return false;
@@ -4057,7 +4072,7 @@ function renderLancamentos() {
     if (status === 'pendente' && (l.pago || l.data < hoje)) return false;
     if (status === 'vencido'  && (l.pago || l.data >= hoje)) return false;
     if (busca) {
-      const hay = `${l.tipo} ${l.banco} ${l.cc} ${l.forma} ${l.desc} ${fmtBRL(parseMoney(l.valor))}`.toLowerCase();
+      const hay = (l.tipo+' '+(l.banco||'')+' '+(l.cc||'')+' '+(l.forma||'')+' '+(l.desc||'')+' '+fmtBRL(parseMoney(l.valor))).toLowerCase();
       if (!hay.includes(busca)) return false;
     }
     return true;
@@ -5378,16 +5393,16 @@ function renderDashboard() {
   const data = getDashData();
   const banco = document.getElementById('dashBanco')?.value || '';
 
-  // ── Receitas e Despesas do período selecionado ──
-  const rec  = data.filter(l=>l.tipo==='Receita').reduce((s,l)=>s+parseMoney(l.valor),0);
-  const desp = data.filter(l=>l.tipo==='Despesa').reduce((s,l)=>s+parseMoney(l.valor),0);
+  // ── Receitas e Despesas do período — exclui transferências entre contas ──
+  const rec  = data.filter(l=>l.tipo==='Receita' && !isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
+  const desp = data.filter(l=>l.tipo==='Despesa' && !isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
   const saldo = rec - desp;
 
   // ── Saldo Total Hoje: saldoInicial + lançamentos PAGOS até hoje ──
   const hoje = new Date().toISOString().slice(0,10);
   const saldoHoje = bancos.length
     ? bancos.filter(b=>!banco||b.nome===banco).reduce((s,b)=>s+getSaldoBanco(b.nome),0)
-    : lancamentos.filter(l=>l.data<=hoje && l.pago!==false && l.tipo!=='Investimento')
+    : lancamentos.filter(l=>l.data<=hoje && l.pago!==false && l.tipo!=='Investimento' && !isTransferencia(l))
         .reduce((s,l)=>{
           const v=parseMoney(l.valor);
           return l.tipo==='Receita'?s+v:(l.tipo==='Despesa'||l.tipo==='Financiamento')?s-v:s;
@@ -5575,9 +5590,10 @@ function buildFluxoChart(data) {
   const keyFn  = l => wideMode ? l.data.slice(0,7) : l.data;
   const groups = {};
   data.forEach(l => {
+    if (isTransferencia(l)) return; // transferências não afetam fluxo de caixa
     const k = keyFn(l);
     if (!groups[k]) groups[k] = {r:0, d:0};
-    if (l.tipo==='Receita')       groups[k].r += parseMoney(l.valor);
+    if (l.tipo==='Receita')  groups[k].r += parseMoney(l.valor);
     else if (l.tipo==='Despesa' || l.tipo==='Financiamento') groups[k].d += parseMoney(l.valor);
   });
 
@@ -5613,10 +5629,11 @@ function buildFluxoChart(data) {
       ? (() => { const [y,mo]=k.split('-'); const d=new Date(+y,+mo,0); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })()
       : k;
 
-    // Base: receitas e despesas lançadas
+    // Base: receitas e despesas lançadas (excluindo transferências para não duplicar)
     let saldo = lancamentos
       .filter(l => {
         if (banco && l.banco !== banco) return false;
+        if (isTransferencia(l)) return false;
         return l.data <= limitDate;
       })
       .reduce((s, l) => s + (l.tipo === 'Receita' ? parseMoney(l.valor) : -parseMoney(l.valor)), 0);
@@ -7540,22 +7557,6 @@ if(typeof pdfjsLib!=='undefined'){pdfjsLib.GlobalWorkerOptions.workerSrc='https:
     </div>
   </div>
 </div>
-
-
-<!-- Service Worker Registration -->
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => {
-        console.log('[NMC PWA] Service Worker registrado:', reg.scope);
-        // Verifica atualizações a cada 60 min
-        setInterval(() => reg.update(), 60 * 60 * 1000);
-      })
-      .catch(err => console.warn('[NMC PWA] SW falhou:', err));
-  });
-}
-</script>
 
 </body>
 </html>
