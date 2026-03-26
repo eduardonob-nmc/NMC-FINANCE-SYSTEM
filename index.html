@@ -4040,9 +4040,24 @@ function clearLancFilter() {
 
 // Helper: identifica se lançamento é parte de uma transferência entre contas
 function isTransferencia(l) {
-  return !!(l.groupId && (
-    (l.desc && (l.desc.startsWith('Transferência →') || l.desc.startsWith('Transferência ←')))
-  ));
+  if (!l) return false;
+  // Detecta pela combinação groupId + desc (formato padrão)
+  if (l.groupId && l.desc &&
+     (l.desc.startsWith('Transferência →') || l.desc.startsWith('Transferência ←')))
+    return true;
+  // Detecta transferências antigas sem groupId pelo desc
+  if (l.desc &&
+     (l.desc.startsWith('Transferência →') || l.desc.startsWith('Transferência ←')))
+    return true;
+  // Detecta pelo groupId mesmo que desc seja diferente
+  if (l.groupId) {
+    const pair = lancamentos.find(x =>
+      x.id !== l.id && x.groupId === l.groupId &&
+      x.desc && (x.desc.startsWith('Transferência →') || x.desc.startsWith('Transferência ←'))
+    );
+    if (pair) return true;
+  }
+  return false;
 }
 
 function renderLancamentos() {
@@ -5373,6 +5388,7 @@ function getDashData() {
   const ym    = nowYM();
 
   return lancamentos.filter(l => {
+    if (isTransferencia(l)) return false; // transferências excluídas de rec/desp
     if (banco && l.banco !== banco) return false;
     if (mes === '__ano__') {
       return l.data.slice(0,4) === ym.slice(0,4);
