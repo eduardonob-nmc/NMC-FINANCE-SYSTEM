@@ -7056,111 +7056,174 @@ function concParseItau(texto) {
 }
 
 function concParseBradesco(texto) {
-  // Bradesco format: DATA | HISTÓRICO | DOCTO | CRÉDITO(R$) | DÉBITO(R$) | SALDO(R$)
-  // Columns: credit and debit are SEPARATE columns — last is always saldo
+  // Bradesco: DATA | HISTÓRICO | DOCTO | CRÉDITO(R$) | DÉBITO(R$) | SALDO(R$)
   const trans=[];
-  const IGNORE=['COD. LANC','TOTAL','EXTRATO INEXISTENTE','DATA','HISTÓRICO'];
+  const IGNORE=['COD. LANC','TOTAL','EXTRATO INEXISTENTE','DATA','HISTÓRICO','SALDO'];
   const lines=texto.split('\n');
   const dateRe=/^(\d{2}\/\d{2}\/\d{4})\s+(.+)$/;
+  let prevSaldo=null, pendente=null; // pendente: transação sem desc ainda
+
   lines.forEach(line=>{
     line=line.trim();
-    if(!line||IGNORE.some(ig=>line.toUpperCase().includes(ig))) return;
-    const dm=line.match(dateRe); if(!dm) return;
+    if(!line) return;
+    if(IGNORE.some(ig=>line.toUpperCase().startsWith(ig))) return;
+
+    const dm=line.match(dateRe);
+    if(!dm) {
+      // Linha de continuação: pode ser descrição da transação anterior
+      if(pendente && line.length>2 && !/^\d{5,}$/.test(line)) {
+        pendente.descricao = (pendente.descricao+' '+line).trim().slice(0,80);
+      }
+      return;
+    }
+    // Confirma transação pendente anterior
+    if(pendente) { trans.push(pendente); pendente=null; }
+
     const [,dateStr,rest]=dm;
-    // Extract all money values with their positions
     const moneyMatches=[...rest.matchAll(/\d{1,3}(?:\.\d{3})*,\d{2}/g)];
     if(moneyMatches.length<2) return;
-    // Last value = saldo (ignore). Remaining values = crédito then débito columns
-    // Bradesco PDF.js extraction puts them in order: [credito] [debito] [saldo]
-    // or just [value] [saldo] when only one column has a value
-    const vals=moneyMatches.map(m=>({val:concParseMoney(m[0]),raw:m[0],idx:m.index}));
-    // Remove saldo (last)
-    vals.pop();
-    // Extract description: text before first money value
-    const firstMoneyPos=moneyMatches[0].index;
-    let desc=rest.slice(0,firstMoneyPos).trim();
-    // Remove trailing doc number (5+ digits)
-    desc=desc.replace(/\s+\d{5,}\s*$/,'').trim();
-    if(!desc||desc.length<2) return;
+
+    // Último valor = saldo atual
+    const saldoAtual=concParseMoney(moneyMatches[moneyMatches.length-1][0]);
+    const vals=moneyMatches.slice(0,-1).map(m=>({val:concParseMoney(m[0]),idx:m.index}));
+
+    // Descrição: texto antes do primeiro valor monetário
+    let desc=rest.slice(0,moneyMatches[0].index).trim();
+    desc=desc.replace(/\s+\d{5,}\s*$/,'').trim(); // remove nº docto
     const [dd,mm,aaaa]=dateStr.split('/');
-    const data=`${aaaa}-${mm}-${dd}`;
-    if(vals.length===1) {
-      // Only one column has value — determine type by position in line
-      // In Bradesco PDF: credit column comes before debit column
-      // Heuristic: if value appears in first ~60% of the non-desc portion → credit, else → debit
-      const restAfterDesc=rest.slice(firstMoneyPos);
-      const totalLen=restAfterDesc.length;
-      const relPos=moneyMatches[0].index-firstMoneyPos;
-      const tipo=relPos<totalLen*0.4?'Credito':'Debito';
-      if(vals[0].val>0) trans.push({data,descricao:desc,valor:vals[0].val,tipo});
-    } else {
-      // 2+ values remaining: first=credito, second=debito
-      const cVal=vals[0].val, dVal=vals[1].val;
-      if(cVal>0) trans.push({data,descricao:desc,valor:cVal,tipo:'Credito'});
-      if(dVal>0) trans.push({data,descricao:desc,valor:dVal,tipo:'Debito'});
+    const data=aaaa+'-'+mm+'-'+dd;
+
+    if(vals.length>=2) {
+      // Duas colunas presentes: primeira=crédito, segunda=débito
+      if(vals[0].val>0) trans.push({data,descricao:desc||'Lançamento',valor:vals[0].val,tipo:'Credito'});
+      if(vals[1].val>0) trans.push({data,descricao:desc||'Lançamento',valor:vals[1].val,tipo:'Debito'});
+      prevSaldo=saldoAtual;
+    } else if(vals.length===1 && vals[0].val>0) {
+      // Uma coluna: usa variação do saldo para determinar Crédito/Débito
+      let tipo;
+      if(prevSaldo!==null) {
+        // Saldo aumentou → crédito na conta (entrada de dinheiro)
+        // Saldo diminuiu → débito na conta (saída de dinheiro)
+        tipo = saldoAtual >= prevSaldo ? 'Credito' : 'Debito';
+      } else {
+        // Sem saldo anterior: usa posição relativa como fallback
+        // Crédito aparece ANTES de Débito no extrato Bradesco
+        // Se o valor ocupa a primeira metade da área monetária → crédito
+        const areaLen=rest.length-moneyMatches[0].index;
+        tipo = areaLen > 20 ? 'Credito' : 'Debito';
+      }
+      if(desc && desc.length>=2) {
+        trans.push({data,descricao:desc,valor:vals[0].val,tipo});
+      } else {
+        // Desc pode vir na próxima linha (continuação)
+        pendente={data,descricao:'',valor:vals[0].val,tipo};
+      }
+      prevSaldo=saldoAtual;
     }
   });
+  if(pendente) trans.push(pendente);
   return trans;
 }
 
 function concParseCaixa(texto) {
-  const trans=[];
-  const IGNORE=['SALDO DIA','LANÇAMENTOS','NR. DOC','HISTÓRICO','FAVORECIDO','CPF/CNPJ'];
-  const dateRe=/(\d{2}\/\d{2}\/\d{4})(?:\s*[-–]\s*\d{2}:\d{2}:\d{2})?\s+\d*\s*(.+?)\s+([\d.]+,\d{2})\s*([DC])\b/i;
-  texto.split('\n').forEach(line=>{
-    line=line.trim();
-    if(!line||IGNORE.some(ig=>line.toUpperCase().includes(ig))) return;
-    const m=line.match(dateRe); if(!m) return;
-    const [,dateStr,rest,rawVal,tipoCh]=m;
-    const desc=rest.split(/\s{2,}/)[0].trim();
-    if(!desc||desc.toUpperCase().includes('SALDO DIA')) return;
-    const v=concParseMoney(rawVal); if(v===0) return;
-    const [dd,mm,aaaa]=dateStr.split('/');
-    const data=`${aaaa}-${mm}-${dd}`;
-    trans.push({data,descricao:desc,valor:v,tipo:tipoCh.toUpperCase()==='C'?'Credito':'Debito'});
+  // Parser robusto para extratos da Caixa Econômica Federal
+  // Lida com OCR imperfeito: datas com espaços, letras no lugar de zeros, valores mesclados
+
+  const IGNORE = ['SALDO DIA','NR. DOC','HISTÓRICO','FAVORECIDO','CPF/CNPJ',
+                  'LANÇAMENTOS','EXTRATO','CLIENTE','CONTA','MÊS','PERÍODO',
+                  'SALDO ANTERIOR','ALÔ CAIXA','SAC CAIXA','OUVIDORIA','PESSOAS COM',
+                  'ASSEGURAMOS','NÃO NOS','#PESSOAL'];
+
+  function normDate(s) {
+    // "D D /MM/YYYY" → "DD/MM/YYYY"
+    s = s.replace(/(\d)\s+(\d)\s*\/\s*(\d{1,2})\s*\/\s*(\d{4})/g,
+                  (_,a,b,m,y)=>a+b+'/'+m.padStart(2,'0')+'/'+y);
+    // "DD /MM /YYYY" → "DD/MM/YYYY"
+    s = s.replace(/(\d{1,2})\s*\/\s*(\d{1,2})\s*\/\s*(\d{4})/g,
+                  (_,d,m,y)=>d.padStart(2,'0')+'/'+m.padStart(2,'0')+'/'+y);
+    return s;
+  }
+
+  function fixOCR(s) {
+    // "1 oo,oo" → "100,00"  |  "oo,oo" → "00,00"  |  letter-o → 0 next to digits
+    s = s.replace(/(\d)\s+oo,oo/gi, (_,d)=>d+'00,00');
+    s = s.replace(/\boo,oo\b/gi, '00,00');
+    s = s.replace(/(\d)[oO](\d)/g, (_,a,b)=>a+'0'+b);
+    s = s.replace(/(\d)\s+([oO]{2}),(\d)/g, (_,d,__,c)=>d+'00,'+c);
+    // fix "123,1 6" → "123,16"
+    s = s.replace(/(\d,\d)\s+(\d)\b/g, (_,a,b)=>a+b);
+    return s;
+  }
+
+  function parseMon(s) {
+    s = fixOCR(s).replace(/\s+/g,'');
+    const m = s.match(/(\d{1,3}(?:\.\d{3})*,\d{2})$/);
+    if (m) return parseFloat(m[1].replace(/\./g,'').replace(',','.'));
+    const m2 = s.match(/(\d+,\d{2})$/);
+    if (m2) return parseFloat(m2[1].replace(',','.'));
+    return 0;
+  }
+
+  function buildDesc(raw) {
+    let d = raw;
+    d = normDate(d);
+    d = d.replace(/\d{2}\/\d{2}\/\d{4}/g,'');          // date
+    d = d.replace(/[-–]\s*\d{2}:\s*\d{2}[:\d\s]*/g,' '); // time
+    d = d.replace(/\b\d{6,}\b/g,' ');                   // nrdoc
+    d = d.replace(/\*+[\d.*-]+\**/g,' ');               // CPF masked
+    d = d.replace(/\d{2}\/\d{4}/g,' ');                 // partial date
+    // remove money + tipo patterns (including OCR variants)
+    d = fixOCR(d);
+    d = d.replace(/[\d][,.\d]*\d\s*[DdCc]\b/g,' ');
+    d = d.replace(/\b[\d][,.\d]*\b/g,' ');
+    d = d.replace(/[-–—\/]+/g,' ');
+    d = d.replace(/\s{2,}/g,' ').trim();
+    d = d.replace(/^[\s\W]+/,'').trim();
+    return d.slice(0,60) || 'Lançamento';
+  }
+
+  const trans = [];
+  let lastDate = null, lastMM = null;
+
+  texto.split('\n').forEach(raw => {
+    if (!raw.trim()) return;
+
+    const lineN = normDate(raw.replace(/[—–]/g,'-'));
+    const isIgnore = IGNORE.some(ig => lineN.toUpperCase().includes(ig));
+
+    // ── Extrair data (sempre, mesmo de linhas ignoradas) ──
+    const dm = lineN.match(/(\d{2}\/\d{2}\/\d{4})/);
+    if (dm) {
+      lastDate = dm[1];
+      lastMM   = lastDate.split('/')[1];
+    } else {
+      // Data parcial "DD/YYYY" sem mês → usa lastMM
+      const pm = lineN.match(/^[\s]*(\d{2})\/(\d{4})/);
+      if (pm && lastMM) lastDate = pm[1]+'/'+lastMM+'/'+pm[2];
+    }
+
+    if (isIgnore || !lastDate) return;
+
+    // ── Corrigir OCR e encontrar pares valor+tipo ──
+    const lineV = fixOCR(lineN);
+    const allVals = [...lineV.matchAll(/(\d[\d.,]*\d|\d),(\d{2})\s*([DdCc])\b/gi)];
+    if (!allVals.length) return;
+
+    // Último par = Saldo, penúltimo = Valor
+    const vPat = allVals.length >= 2 ? allVals[allVals.length-2] : allVals[0];
+    const val  = parseMon(vPat[1]+','+vPat[2]);
+    const tipo = vPat[3].toUpperCase();
+    if (val === 0) return;
+
+    const desc = buildDesc(raw);
+    const [dd,mm,aaaa] = lastDate.split('/');
+    trans.push({ data: aaaa+'-'+mm+'-'+dd, descricao: desc, valor: val,
+                 tipo: tipo==='C' ? 'Credito' : 'Debito' });
   });
   return trans;
 }
 
-function concParseNubank(texto) {
-  const trans=[];
-  const MONTHS={JAN:'01',FEV:'02',MAR:'03',ABR:'04',MAI:'05',JUN:'06',JUL:'07',AGO:'08',SET:'09',OUT:'10',NOV:'11',DEZ:'12'};
-  const IGNORE_RE=[/^total de (entradas|saídas)/i,/^saldo (inicial|final|líquido)/i,/^rendimento/i,/^movimentações/i,/^tem alguma dúvida/i,/^caso a solução/i,/^extrato gerado/i,/^nu (financeira|pagamentos)/i,/^cnpj:/i,/^asseguramos/i,/^não nos responsabilizamos/i,/^o saldo líquido/i,/^\d+ de \d+$/i,/^valores em r\$/i,/^\d{2} de [a-z]+ de \d{4}/i];
-  function nuDate(str){const m=str.match(/^(\d{2})\s+([A-Z]{3})\s+(\d{4})$/i);if(!m)return null;const mon=MONTHS[m[2].toUpperCase()];return mon?`${m[3]}-${mon}-${m[1]}`:null;}
-  let curDate=null,curTipo=null;
-  texto.split('\n').map(l=>l.trim()).filter(Boolean).forEach(line=>{
-    if(IGNORE_RE.some(re=>re.test(line))) return;
-    const dlm=line.match(/^(\d{2}\s+[A-Z]{3}\s+\d{4})\s+(Total de (entradas|saídas))/i);
-    if(dlm){curDate=nuDate(dlm[1]);curTipo=/entradas/i.test(dlm[2])?'Credito':'Debito';return;}
-    const ctm=line.match(/^Total de (entradas|saídas)\s+[+\-]?([\d.]+,\d{2})$/i);
-    if(ctm){curTipo=/entradas/i.test(ctm[1])?'Credito':'Debito';return;}
-    const sd=nuDate(line);if(sd){curDate=sd;return;}
-    if(!curDate||!curTipo) return;
-    const mm=line.match(/([\d.]+,\d{2})\s*$/);if(!mm) return;
-    const v=concParseMoney(mm[1]);if(v===0) return;
-    let desc=line.replace(/\s*[\d.]+,\d{2}\s*$/,'').trim();
-    desc=desc.split(/\s{3,}/)[0].trim();
-    if(desc.length>60) desc=desc.slice(0,60).trim();
-    if(!desc) return;
-    trans.push({data:curDate,descricao:desc,valor:v,tipo:curTipo});
-  });
-  return trans;
-}
 
-/* ── OCR Caixa via API Claude ── */
-async function concOcrCaixa(base64) {
-  const bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));
-  let binary=''; const chunk=8192;
-  for(let i=0;i<bytes.length;i+=chunk) binary+=String.fromCharCode(...bytes.subarray(i,i+chunk));
-  const b64=btoa(binary);
-  const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},{type:'text',text:'Extraia o texto deste extrato bancário da Caixa Econômica Federal.\nRetorne APENAS texto puro linha por linha, sem markdown.\nPara cada lançamento: data/hora, nr.doc, histórico, favorecido (se houver), valor seguido de D ou C.\nExemplo: 11/02/2026 - 14:14:10 111414 PIX ENVIADO Rerivaldo 1.710,00 D\nInclua: Cliente, Conta, Período dos lançamentos, SALDO ANTERIOR.'}]}]})});
-  if(!res.ok) throw new Error('OCR HTTP '+res.status);
-  const data=await res.json();
-  if(data.error) throw new Error(data.error.message);
-  return data.content.map(b=>b.text||'').join('\n');
-}
-
-/* ── Dispatcher do parser ── */
 function concDispatchParser(texto, banco) {
   switch(banco) {
     case 'itau':     return concParseItau(texto);
