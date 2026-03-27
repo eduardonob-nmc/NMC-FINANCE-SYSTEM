@@ -2034,7 +2034,7 @@ tbody tr:last-child td { border-bottom: none; }
         </div>
 
         <!-- Stats patrimônio -->
-        <div class="stats-grid" id="investStats" style="grid-template-columns:repeat(3,1fr)"></div>
+        <div class="stats-grid" id="investStats"></div>
 
         <!-- Filtro por investimento -->
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
@@ -2075,7 +2075,7 @@ tbody tr:last-child td { border-bottom: none; }
               <i class="fa fa-plus"></i> Registrar
             </button>
           </div>
-          <div class="tbl-wrap">
+          <div class="tbl-wrap tbl-mobile-hide">
             <table>
               <thead>
                 <tr>
@@ -2090,6 +2090,7 @@ tbody tr:last-child td { border-bottom: none; }
               <tbody id="tblMovInvestBody"></tbody>
             </table>
           </div>
+          <div id="movInvestMobileList" class="tbl-card-mobile"></div>
         </div>
       </section>
 
@@ -5092,11 +5093,43 @@ function renderInvestimentos() {
   }).join('');
 
   // Tabela movimentações
+  const mobileMovList = document.getElementById('movInvestMobileList');
   if (movBody) {
     const movsFiltradas = filtId
       ? movsInvest.filter(m=>m.investId===filtId)
       : movsInvest;
     const sorted = [...movsFiltradas].sort((a,b)=>b.data.localeCompare(a.data));
+
+    // Mobile cards
+    if (mobileMovList) {
+      if (!sorted.length) {
+        mobileMovList.innerHTML = '<div class="empty"><i class="fa fa-chart-line"></i>Nenhuma movimentação.</div>';
+      } else {
+        mobileMovList.innerHTML = sorted.map(m => {
+          const inv = investimentos.find(i=>i.id===m.investId);
+          const cor = m.tipo==='Aporte'?'var(--gold)':m.tipo==='Resgate'?'var(--red)':'var(--teal)';
+          const icon = m.tipo==='Aporte'?'fa-arrow-down':m.tipo==='Resgate'?'fa-arrow-up':'fa-chart-line';
+          return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">
+            <div style="width:32px;height:32px;border-radius:50%;background:${cor}22;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa ${icon}" style="color:${cor};font-size:13px"></i>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:500;font-size:13px;color:var(--text)">${inv?.nome||'—'}</div>
+              <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${m.tipo} · ${fmtDate(m.data)}</div>
+              ${m.obs?`<div style="font-size:11px;color:var(--text3);margin-top:2px">${m.obs}</div>`:''}
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-family:var(--mono);font-size:14px;font-weight:600;color:${cor}">${fmtBRL(m.valor)}</div>
+              <div style="display:flex;gap:4px;justify-content:flex-end;margin-top:4px">
+                <button class="btn btn-ghost btn-icon btn-edit" style="padding:3px 6px" onclick="openModalMovInvest('${m.id}')"><i class="fa fa-pencil-alt"></i></button>
+                <button class="btn btn-ghost btn-icon btn-danger" style="padding:3px 6px" onclick="delMovInvest('${m.id}')"><i class="fa fa-trash"></i></button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+    }
+
     movBody.innerHTML = sorted.map(m => {
       const inv = investimentos.find(i=>i.id===m.investId);
       const badge = m.tipo==='Aporte'     ? 'mov-aporte'
