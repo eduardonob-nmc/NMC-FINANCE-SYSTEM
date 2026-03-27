@@ -3238,31 +3238,38 @@ if (!usuarios.length) {
 
 function _migrateTransferencias() {
   let dirty = false;
+  const d_arr = lancamentos;
 
-  // 1. Coleta todos os groupIds que têm pares Receita+Despesa (= transferências)
+  // Detecta groupIds com par Receita+Despesa (transferências antigas)
   const groupTipos = {};
-  lancamentos.forEach(l => {
+  d_arr.forEach(l => {
     if (!l.groupId) return;
-    if (!groupTipos[l.groupId]) groupTipos[l.groupId] = new Set();
-    groupTipos[l.groupId].add(l.tipo);
+    if (!groupTipos[l.groupId]) groupTipos[l.groupId] = {};
+    groupTipos[l.groupId][l.tipo] = l;
   });
-  const transferGroupIds = new Set(
-    Object.entries(groupTipos)
-      .filter(([,tipos]) => tipos.has('Receita') && tipos.has('Despesa'))
-      .map(([id]) => id)
-  );
 
-  // 2. Marca como transferencia:true qualquer lançamento que:
-  //    a) tem groupId de par Receita+Despesa, OU
-  //    b) desc começa com 'Transferência →' ou 'Transferência ←'
-  lancamentos.forEach(l => {
-    if (l.transferencia === true) return;
+  d_arr.forEach(l => {
     const d = l.desc || '';
     const byDesc  = d.startsWith('Transferência →') || d.startsWith('Transferência ←');
-    const byGroup = l.groupId && transferGroupIds.has(l.groupId);
+    const byGroup = l.groupId && groupTipos[l.groupId] &&
+                    groupTipos[l.groupId]['Receita'] && groupTipos[l.groupId]['Despesa'];
+
     if (byDesc || byGroup) {
-      l.transferencia = true;
-      dirty = true;
+      // Converte para tipo:'Transferência' com transDir
+      if (l.tipo !== 'Transferência') {
+        // Determina direção pelo tipo antigo ou pelo desc
+        const isEntrada = l.tipo === 'Receita' || d.startsWith('Transferência ←');
+        l.transDir = isEntrada ? 'entrada' : 'saida';
+        l.tipo = 'Transferência';
+        l.transferencia = true;
+        dirty = true;
+      } else if (!l.transDir) {
+        // Já é Transferência mas sem transDir
+        const isEntrada = d.startsWith('Transferência ←');
+        l.transDir = isEntrada ? 'entrada' : 'saida';
+        l.transferencia = true;
+        dirty = true;
+      }
     }
   });
 
@@ -3597,8 +3604,8 @@ function getSaldoBanco(nomeBanco, atéData) {
       return l.data <= hoje && (l.pago !== false);
     }
   });
-  const entradas = movs.filter(l=>l.tipo==='Receita').reduce((s,l)=>s+parseMoney(l.valor),0);
-  const saidas   = movs.filter(l=>l.tipo==='Despesa'||l.tipo==='Financiamento').reduce((s,l)=>s+parseMoney(l.valor),0);
+  const entradas = movs.filter(l=>l.tipo==='Receita'||(l.tipo==='Transferência'&&l.transDir==='entrada')).reduce((s,l)=>s+parseMoney(l.valor),0);
+  const saidas   = movs.filter(l=>l.tipo==='Despesa'||l.tipo==='Financiamento'||(l.tipo==='Transferência'&&l.transDir==='saida')).reduce((s,l)=>s+parseMoney(l.valor),0);
   return saldoIni + entradas - saidas;
 }
 
@@ -4020,9 +4027,9 @@ function saveLanc() {
     if (!bancoDestino) { toast('Selecione a conta de destino.','err'); return; }
     if (bancoDestino === banco) { toast('Origem e destino não podem ser iguais.','err'); return; }
     const groupId = uid();
-    lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Despesa',  data, banco,          cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc: `Transferência → ${bancoDestino}` + (desc?' | '+desc:'')});
-    lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Receita',  data, banco:bancoDestino, cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc: `Transferência ← ${banco}` + (desc?' | '+desc:'')});
-    toast('Transferência registrada! Dois lançamentos criados.');
+    lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Transferência', transDir:'saida',   data, banco,          cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc:`Transferência → ${bancoDestino}`+(desc?' | '+desc:''), pago:true});
+    lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Transferência', transDir:'entrada', data, banco:bancoDestino, cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc:`Transferência ← ${banco}`+(desc?' | '+desc:''), pago:true});
+    toast('Transferência registrada!');
   } else {
     const obj = {id:uid(),tipo,data,banco,cc,forma,cartaoId,parcelas,period,valor,desc};
     lancamentos.push(obj);
@@ -4075,9 +4082,8 @@ function clearLancFilter() {
 // Helper: identifica se lançamento é parte de uma transferência entre contas
 function isTransferencia(l) {
   if (!l) return false;
-  // Flag setada no save e pela migração _migrateTransferencias
+  if (l.tipo === 'Transferência') return true;
   if (l.transferencia === true) return true;
-  // Fallback para dados não migrados ainda
   const d = l.desc || '';
   return d.startsWith('Transferência →') || d.startsWith('Transferência ←');
 }
@@ -4098,8 +4104,8 @@ function renderLancamentos() {
     if (tipo === 'Transferência') {
       if (!isTransferencia(l)) return false;
     } else if (tipo) {
+      if (isTransferencia(l)) return false;
       if (l.tipo !== tipo) return false;
-      if (isTransferencia(l)) return false; // exclui transferências de Receita/Despesa
     }
     if (banco && l.banco!==banco) return false;
     if (cc    && l.cc!==cc)       return false;
@@ -4159,7 +4165,9 @@ function renderLancamentos() {
     const cartaoNome = l.cartaoId ? (cartoes.find(c=>c.id===l.cartaoId)?.nome||'') : '';
     const formaExib  = cartaoNome ? `${l.forma} (${cartaoNome})` : (l.forma||'—');
     const vencido = !l.pago && l.data<hoje && l.tipo==='Despesa';
-    const sBadge = l.pago
+    const sBadge = isTransferencia(l)
+      ? `<span class="badge-lanc" style="background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.3)"><i class="fa fa-exchange-alt"></i> Transferência</span>`
+      : l.pago
       ? `<span class="badge-lanc pago"><i class="fa fa-check-circle"></i> Pago</span>`
       : vencido ? `<span class="badge-lanc vencido"><i class="fa fa-exclamation-circle"></i> Vencido</span>`
       : l.tipo==='Despesa' ? `<span class="badge-lanc pendente"><i class="fa fa-clock"></i> Pendente</span>`
@@ -4168,7 +4176,7 @@ function renderLancamentos() {
       ? `<button class="btn btn-ghost btn-icon" style="color:var(--teal)" title="Dar baixa" onclick="baixaRapida('${l.id}')"><i class="fa fa-check"></i></button>`
       : l.pago ? `<button class="btn btn-ghost btn-icon" style="color:#f59e0b" title="Desfazer baixa" onclick="desfazerBaixa('${l.id}')"><i class="fa fa-undo"></i></button>` : '';
     return `<tr style="${vencido?'background:rgba(224,82,82,.03)':''}${l.pago?';opacity:.7':''}">
-      <td><span class="${isRec?'td-type-r':'td-type-d'}">${l.tipo}</span></td>
+      <td><span class="${isTransferencia(l)?'':''}${isRec?'td-type-r':isTransferencia(l)?'':'td-type-d'}" style="${isTransferencia(l)?'color:var(--text2);font-size:11px':''}">${isTransferencia(l)?(l.transDir==='entrada'?'↙ Transf.':'↗ Transf.'):l.tipo}</span></td>
       <td class="td-mono">${fmtDate(l.data)}</td>
       <td>${l.banco||'—'}</td>
       <td>${l.cc||'—'}</td>
