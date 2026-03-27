@@ -1188,10 +1188,11 @@ tbody tr:last-child td { border-bottom: none; }
             <div class="stat-val neu" id="dSaldo">R$ 0,00</div>
             <div class="stat-hint" id="dSaldoHint">—</div>
           </div>
-          <div class="stat-card" style="border-color:var(--gold-dim)">
-            <div class="stat-label">Saldo Total Hoje</div>
+          <div class="stat-card" style="border-color:var(--gold-dim);cursor:pointer" onclick="toggleSaldoBreakdown()">
+            <div class="stat-label">Saldo Total Hoje <i class="fa fa-info-circle" style="font-size:10px;opacity:.5"></i></div>
             <div class="stat-val" id="dSaldoTotal" style="color:var(--gold)">R$ 0,00</div>
             <div class="stat-hint" id="dSaldoTotalHint">todos os lançamentos</div>
+            <div id="dSaldoBreakdown" style="display:none;margin-top:8px;border-top:1px solid var(--border);padding-top:8px"></div>
           </div>
         </div>
 
@@ -5570,7 +5571,20 @@ function renderDashboard() {
   stEl.textContent = fmtBRL(saldoHoje);
   stEl.style.color = saldoHoje >= 0 ? 'var(--gold)' : 'var(--red)';
   document.getElementById('dSaldoTotalHint').textContent =
-    'lançamentos pagos até '+ fmtDate(hoje);
+    'lançamentos pagos até '+ fmtDate(hoje) + ' · clique para detalhes';
+  // Breakdown por banco (atualiza sempre, exibe só se aberto)
+  const breakEl = document.getElementById('dSaldoBreakdown');
+  if (breakEl) {
+    const bancosDetalhes = bancos.filter(b=>!banco||b.nome===banco);
+    breakEl.innerHTML = bancosDetalhes.map(b => {
+      const s = getSaldoBanco(b.nome);
+      const cor = s >= 0 ? 'var(--teal)' : 'var(--red)';
+      return `<div style="display:flex;justify-content:space-between;font-size:11px;font-family:var(--mono);padding:2px 0">
+        <span style="color:var(--text3)">${b.nome}</span>
+        <span style="color:${cor};font-weight:600">${fmtBRL(s)}</span>
+      </div>`;
+    }).join('') || '<div style="font-size:11px;color:var(--text3)">Nenhum banco</div>';
+  }
 
   // color saldo periodo
   const sdEl = document.getElementById('dSaldo');
@@ -5742,12 +5756,11 @@ function buildDashInvestChart() {
 }
 
 function buildFluxoChart(data) {
-  const mes    = document.getElementById('dashMes')?.value || nowYM();
-  const banco  = document.getElementById('dashBanco')?.value || '';
+  const mes      = document.getElementById('dashMes')?.value || nowYM();
+  const banco    = document.getElementById('dashBanco')?.value || '';
   const wideMode = (mes === '__ano__' || mes === '__6m__');
-  const hoje   = new Date().toISOString().slice(0,10);
+  const hoje     = new Date().toISOString().slice(0,10);
 
-  // Cores por banco
   const CORES = ['#c9a84c','#3eb89a','#4a8fff','#a78bfa','#f59e0b',
                  '#ec4899','#10b981','#6366f1','#ef4444','#06b6d4'];
 
@@ -5756,24 +5769,43 @@ function buildFluxoChart(data) {
     ? [bancos.find(b=>b.nome===banco)].filter(Boolean)
     : bancos;
 
-  // Datas únicas com movimento (eixo X)
+  if (!bancosAlvo.length) {
+    if (chartFluxo) chartFluxo.destroy();
+    return;
+  }
+
+  // Eixo X: datas únicas do período já filtrado (usa 'data' de getDashData)
+  // + datas de todos os lancamentos dos bancos alvo no mesmo período
   const datasSet = new Set();
-  lancamentos.forEach(l => {
-    if (!l.data) return;
-    if (banco && l.banco !== banco) return;
+
+  // Adiciona datas dos lancamentos já filtrados pelo período
+  data.forEach(l => {
     const k = wideMode ? l.data.slice(0,7) : l.data;
     datasSet.add(k);
   });
 
-  // Garante pelo menos o mês/período atual
-  if (mes !== '__ano__' && mes !== '__6m__') {
-    datasSet.add(wideMode ? mes.slice(0,7) : mes + '-01');
-  }
+  // Adiciona também datas de lancamentos dos bancos alvo não incluídos
+  // (ex: transferências que foram excluídas do getDashData mas afetam saldo)
+  const mesYM = nowYM();
+  lancamentos.forEach(l => {
+    if (!l.data) return;
+    if (bancosAlvo.every(b => b.nome !== l.banco)) return;
+    // Filtra pelo período selecionado
+    if (mes === '__ano__') {
+      if (l.data.slice(0,4) !== mesYM.slice(0,4)) return;
+    } else if (mes === '__6m__') {
+      const to = (() => { const d=new Date(); d.setMonth(d.getMonth()+6); return d.toISOString().slice(0,7); })();
+      if (l.data.slice(0,7) < mesYM || l.data.slice(0,7) > to) return;
+    } else {
+      if (l.data.slice(0,7) !== mes) return;
+    }
+    const k = wideMode ? l.data.slice(0,7) : l.data;
+    datasSet.add(k);
+  });
 
   const sorted = Array.from(datasSet).sort();
 
-  // Se não há datas, esconde
-  if (!sorted.length || !bancosAlvo.length) {
+  if (!sorted.length) {
     if (chartFluxo) chartFluxo.destroy();
     return;
   }
@@ -5786,10 +5818,12 @@ function buildFluxoChart(data) {
     return fmtDate(k);
   });
 
-  // Uma linha por banco: saldo acumulado até cada data
+  // Uma linha por banco: saldo acumulado real até cada data
   const datasets = bancosAlvo.map((b, idx) => {
     const cor = CORES[idx % CORES.length];
+
     const saldos = sorted.map(k => {
+      // Data limite: último dia do mês (wideMode) ou o próprio dia
       const limitDate = wideMode
         ? (() => {
             const [y,mo] = k.split('-');
@@ -5803,7 +5837,7 @@ function buildFluxoChart(data) {
         if (l.banco !== b.nome) return false;
         if (l.tipo === 'Investimento') return false;
         if (l.data > limitDate) return false;
-        // Passado: só pagos; Futuro: todos (previsão)
+        // Passado: apenas pagos (saldo real); Futuro: todos (previsão)
         if (l.data <= hoje && l.pago === false) return false;
         return true;
       });
@@ -5814,6 +5848,7 @@ function buildFluxoChart(data) {
         l.tipo==='Despesa' || l.tipo==='Financiamento' ||
         (l.tipo==='Transferência' && l.transDir==='saida')
       ).reduce((s,l) => s + parseMoney(l.valor), 0);
+
       return saldoIni + entradas - saidas;
     });
 
@@ -5825,10 +5860,10 @@ function buildFluxoChart(data) {
       backgroundColor: cor + '18',
       borderWidth: 2,
       tension: .35,
-      pointRadius: sorted.length <= 15 ? 4 : 2,
+      pointRadius: sorted.length <= 20 ? 3 : 1,
       pointBackgroundColor: saldos.map(v => v >= 0 ? cor : '#e05252'),
       pointBorderColor:     saldos.map(v => v >= 0 ? cor : '#e05252'),
-      fill: bancosAlvo.length === 1, // preenche só quando for um banco
+      fill: bancosAlvo.length === 1,
       order: idx + 1
     };
   });
@@ -5845,7 +5880,7 @@ function buildFluxoChart(data) {
           labels: {
             color: '#8a9bb8',
             font: { family: 'DM Mono', size: 11 },
-            boxWidth: 14, padding: 14,
+            boxWidth: 12, padding: 14,
             usePointStyle: true
           }
         },
@@ -5861,7 +5896,11 @@ function buildFluxoChart(data) {
           grid:  { color:'rgba(30,45,69,.6)' }
         },
         y: {
-          ticks: { color:'#526178', font:{ family:'DM Mono', size:10 }, callback: v => fmtBRL(v) },
+          ticks: {
+            color:'#526178',
+            font:{ family:'DM Mono', size:10 },
+            callback: v => fmtBRL(v)
+          },
           grid:  { color:'rgba(30,45,69,.6)' },
           grace: '5%'
         }
@@ -5981,6 +6020,11 @@ function importData() {
     } catch { toast('Arquivo inválido ou corrompido.','err'); }
   };
   reader.readAsText(file);
+}
+
+function toggleSaldoBreakdown() {
+  const el = document.getElementById('dSaldoBreakdown');
+  if (el) el.style.display = el.style.display === 'none' ? '' : 'none';
 }
 
 function openModalClearData() {
