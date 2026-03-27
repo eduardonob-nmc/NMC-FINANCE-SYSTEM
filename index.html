@@ -3236,6 +3236,20 @@ if (!usuarios.length) {
   _saveUsuarios(usuarios);
 }
 
+function _migrateTransferencias() {
+  // Marca como transferencia:true todos os lançamentos antigos que não têm a flag
+  let dirty = false;
+  lancamentos.forEach(l => {
+    if (l.transferencia === true) return; // já marcado
+    const d = l.desc || '';
+    if (d.startsWith('Transferência →') || d.startsWith('Transferência ←')) {
+      l.transferencia = true;
+      dirty = true;
+    }
+  });
+  if (dirty) LS.set('lancamentos', lancamentos); // persiste a migração
+}
+
 function _loadAllData() {
   bancos         = LS.get('bancos');
   centros        = LS.get('centroCustos');
@@ -3247,6 +3261,7 @@ function _loadAllData() {
   movsInvest     = LS.get('movsInvest');
   metas          = LS.get('metas');
   recorrentes    = LS.get('recorrentes');
+  _migrateTransferencias(); // migra dados antigos sem a flag
 
   // seeds de dados financeiros (só se vazios)
   if (!formas.length)  formas  = [{nome:'PIX'},{nome:'Boleto'},{nome:'Transferência'},{nome:'Cartão'},{nome:'Dinheiro'},{nome:'Débito Automático'}];
@@ -4041,12 +4056,11 @@ function clearLancFilter() {
 // Helper: identifica se lançamento é parte de uma transferência entre contas
 function isTransferencia(l) {
   if (!l) return false;
-  // 1. Flag explícita (transferências novas)
+  // Flag explícita (setada no save e na migração _loadAllData)
   if (l.transferencia === true) return true;
-  // 2. Fallback: detecta pelo desc (transferências antigas sem flag)
-  if (l.desc && (l.desc.startsWith('Transferência →') || l.desc.startsWith('Transferência ←')))
-    return true;
-  return false;
+  // Fallback desc (caso edge não capturado pela migração)
+  const d = l.desc || '';
+  return d.startsWith('Transferência →') || d.startsWith('Transferência ←');
 }
 
 function renderLancamentos() {
@@ -5836,6 +5850,7 @@ function importData() {
       if (obj.movsInvest)     movsInvest     = obj.movsInvest;
       if (obj.metas)          metas          = obj.metas;
       if (obj.recorrentes)    recorrentes    = obj.recorrentes;
+      _migrateTransferencias(); // migra transferências do backup
       saveAll(); renderAll(); renderDashboard();
       toast(`Dados importados! (backup de ${obj._ts ? new Date(obj._ts).toLocaleString('pt-BR') : 'data desconhecida'})`);
     } catch { toast('Arquivo inválido ou corrompido.','err'); }
