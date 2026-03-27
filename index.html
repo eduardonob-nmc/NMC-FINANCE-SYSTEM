@@ -2036,6 +2036,18 @@ tbody tr:last-child td { border-bottom: none; }
         <!-- Stats patrimônio -->
         <div class="stats-grid" id="investStats" style="grid-template-columns:repeat(3,1fr)"></div>
 
+        <!-- Filtro por investimento -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <div class="field" style="margin:0;flex:1;min-width:160px">
+            <select id="investFiltro" onchange="renderInvestimentos()" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;padding:8px 12px;outline:none">
+              <option value="">Todos os investimentos</option>
+            </select>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('investFiltro').value='';renderInvestimentos()">
+            <i class="fa fa-times"></i> Limpar
+          </button>
+        </div>
+
         <!-- Cards de investimentos -->
         <div id="investGrid" class="invest-grid"></div>
 
@@ -5006,7 +5018,17 @@ function renderInvestimentos() {
   const movBody  = document.getElementById('tblMovInvestBody');
   if (!grid) return;
 
-  // Totais
+  // Populate filter select
+  const filtSel = document.getElementById('investFiltro');
+  if (filtSel) {
+    const curFilt = filtSel.value;
+    filtSel.innerHTML = '<option value="">Todos os investimentos</option>' +
+      investimentos.map(i=>`<option value="${i.id}"${i.id===curFilt?' selected':''}>${i.nome}</option>`).join('');
+  }
+  const filtId = filtSel?.value || '';
+  const invFiltrados = filtId ? investimentos.filter(i=>i.id===filtId) : investimentos;
+
+  // Totais (sempre do conjunto completo)
   const totalAportado  = investimentos.reduce((s,i)=>s+i.aportado,0);
   const totalAtual     = investimentos.reduce((s,i)=>s+i.atual,0);
   const totalRentab    = totalAportado > 0 ? ((totalAtual - totalAportado)/totalAportado*100) : 0;
@@ -5033,13 +5055,15 @@ function renderInvestimentos() {
 
   if (!investimentos.length) {
     grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><i class="fa fa-chart-pie"></i>Nenhum investimento cadastrado.</div>';
+  } else if (!invFiltrados.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><i class="fa fa-chart-pie"></i>Nenhum investimento encontrado para este filtro.</div>';
     if (movBody) movBody.innerHTML = '';
     buildInvestCharts();
     return;
   }
 
-  // Cards
-  grid.innerHTML = investimentos.map(inv => {
+  // Cards — usa lista filtrada
+  grid.innerHTML = invFiltrados.map(inv => {
     const ganho   = inv.atual - inv.aportado;
     const rentPct = inv.aportado > 0 ? (ganho/inv.aportado*100) : 0;
     const isPos   = ganho >= 0;
@@ -5069,7 +5093,10 @@ function renderInvestimentos() {
 
   // Tabela movimentações
   if (movBody) {
-    const sorted = [...movsInvest].sort((a,b)=>b.data.localeCompare(a.data));
+    const movsFiltradas = filtId
+      ? movsInvest.filter(m=>m.investId===filtId)
+      : movsInvest;
+    const sorted = [...movsFiltradas].sort((a,b)=>b.data.localeCompare(a.data));
     movBody.innerHTML = sorted.map(m => {
       const inv = investimentos.find(i=>i.id===m.investId);
       const badge = m.tipo==='Aporte'     ? 'mov-aporte'
@@ -5134,7 +5161,7 @@ function buildInvestCharts() {
     });
   }
 
-  // Evolução mensal do patrimônio (últimos 12 meses via movimentações de lançamentos)
+  // Evolução mensal — duas linhas: Saldo Total e Capital Investido
   const ctxEv = document.getElementById('grafInvestEvolucao');
   if (ctxEv) {
     const hoje = new Date();
@@ -5143,19 +5170,26 @@ function buildInvestCharts() {
       const d = new Date(hoje.getFullYear(), hoje.getMonth()-i, 1);
       meses.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));
     }
-    // Patrimônio acumulado até fim de cada mês
-    const patrimonioMes = meses.map(ym => {
-      // Soma todos os lançamentos de investimento até esse mês
+
+    // Investimentos considerados (filtrados ou todos)
+    const invBase = invFiltrados;
+
+    const saldoTotalMes   = []; // Saldo Total = aportes - resgates + rendimentos
+    const capitalMes      = []; // Capital Investido = aportes - resgates (sem rendimentos)
+
+    meses.forEach(ym => {
       const toDate = ym + '-31';
-      let total = 0;
-      investimentos.forEach(inv => {
+      let saldoTotal = 0, capital = 0;
+      invBase.forEach(inv => {
         const movs = movsInvest.filter(m => m.investId===inv.id && m.data <= toDate);
         const aportes  = movs.filter(m=>m.tipo==='Aporte').reduce((s,m)=>s+m.valor,0);
         const resgates = movs.filter(m=>m.tipo==='Resgate').reduce((s,m)=>s+m.valor,0);
         const rends    = movs.filter(m=>m.tipo==='Rendimento').reduce((s,m)=>s+m.valor,0);
-        total += aportes - resgates + rends;
+        saldoTotal += aportes - resgates + rends;
+        capital    += aportes - resgates;
       });
-      return total;
+      saldoTotalMes.push(saldoTotal);
+      capitalMes.push(capital);
     });
 
     const labels = meses.map(m => {
@@ -5168,20 +5202,33 @@ function buildInvestCharts() {
       type:'line',
       data:{
         labels,
-        datasets:[{
-          label:'Patrimônio',
-          data: patrimonioMes,
-          borderColor:'#c9a84c',
-          backgroundColor:'rgba(201,168,76,.1)',
-          borderWidth:2, tension:.4, pointRadius:4,
-          pointBackgroundColor:'#c9a84c', fill:true
-        }]
+        datasets:[
+          {
+            label:'Saldo Total',
+            data: saldoTotalMes,
+            borderColor:'#c9a84c',
+            backgroundColor:'rgba(201,168,76,.08)',
+            borderWidth:2.5, tension:.4, pointRadius:4,
+            pointBackgroundColor:'#c9a84c', fill:true, order:1
+          },
+          {
+            label:'Capital Investido',
+            data: capitalMes,
+            borderColor:'#4a8fff',
+            backgroundColor:'rgba(74,143,255,.06)',
+            borderWidth:2, tension:.4, pointRadius:3,
+            pointBackgroundColor:'#4a8fff',
+            borderDash:[5,3], fill:false, order:2
+          }
+        ]
       },
       options:{
         responsive:true, maintainAspectRatio:true,
         interaction:{mode:'index',intersect:false},
-        plugins:{ legend:{labels:{color:'#8a9bb8',font:{family:'DM Mono',size:11}}},
-          tooltip:{callbacks:{label:ctx=>' '+fmtBRL(ctx.parsed.y)}}
+        plugins:{
+          legend:{labels:{color:'#8a9bb8',font:{family:'DM Mono',size:11},
+            boxWidth:12, usePointStyle:true}},
+          tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmtBRL(ctx.parsed.y)}}
         },
         scales:{
           x:{ticks:{color:'#526178',font:{family:'DM Mono',size:10}},grid:{color:'rgba(30,45,69,.6)'}},
@@ -5675,29 +5722,13 @@ function buildFluxoChart(data) {
       ? (() => { const [y,mo]=k.split('-'); const d=new Date(+y,+mo,0); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })()
       : k;
 
-    // Base: receitas e despesas lançadas (excluindo transferências para não duplicar)
-    let saldo = lancamentos
-      .filter(l => {
-        if (banco && l.banco !== banco) return false;
-        if (isTransferencia(l)) return false;
-        return l.data <= limitDate;
-      })
-      .reduce((s, l) => s + (l.tipo === 'Receita' ? parseMoney(l.valor) : -parseMoney(l.valor)), 0);
-
-    // Adiciona parcelas de financiamentos projetadas até essa data
-    if (inclFinanc) {
-      financiamentos.forEach(f => {
-        for (let p = 0; p < f.parcelas; p++) {
-          const d = new Date(f.dataInicio + 'T12:00:00');
-          d.setMonth(d.getMonth() + p);
-          const parcDate = d.toISOString().slice(0,10);
-          // Só subtrai parcelas projetadas (não já lançadas como Financiamento)
-          const jaLancada = lancamentos.some(l => l.financId === f.id && l.tipo === 'Financiamento' && l.data.slice(0,7) === parcDate.slice(0,7));
-          if (!jaLancada && parcDate <= limitDate) {
-            saldo -= f.parcelaMensal;
-          }
-        }
-      });
+    // Saldo acumulado = saldoInicial de todos os bancos + movimentações até a data
+    // Usa getSaldoBanco (já correto para transferências) somando todos os bancos
+    let saldo;
+    if (banco) {
+      saldo = getSaldoBanco(banco, limitDate);
+    } else {
+      saldo = bancos.reduce((s, b) => s + getSaldoBanco(b.nome, limitDate), 0);
     }
 
     return saldo;
