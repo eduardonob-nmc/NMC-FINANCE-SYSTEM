@@ -3237,17 +3237,36 @@ if (!usuarios.length) {
 }
 
 function _migrateTransferencias() {
-  // Marca como transferencia:true todos os lançamentos antigos que não têm a flag
   let dirty = false;
+
+  // 1. Coleta todos os groupIds que têm pares Receita+Despesa (= transferências)
+  const groupTipos = {};
   lancamentos.forEach(l => {
-    if (l.transferencia === true) return; // já marcado
+    if (!l.groupId) return;
+    if (!groupTipos[l.groupId]) groupTipos[l.groupId] = new Set();
+    groupTipos[l.groupId].add(l.tipo);
+  });
+  const transferGroupIds = new Set(
+    Object.entries(groupTipos)
+      .filter(([,tipos]) => tipos.has('Receita') && tipos.has('Despesa'))
+      .map(([id]) => id)
+  );
+
+  // 2. Marca como transferencia:true qualquer lançamento que:
+  //    a) tem groupId de par Receita+Despesa, OU
+  //    b) desc começa com 'Transferência →' ou 'Transferência ←'
+  lancamentos.forEach(l => {
+    if (l.transferencia === true) return;
     const d = l.desc || '';
-    if (d.startsWith('Transferência →') || d.startsWith('Transferência ←')) {
+    const byDesc  = d.startsWith('Transferência →') || d.startsWith('Transferência ←');
+    const byGroup = l.groupId && transferGroupIds.has(l.groupId);
+    if (byDesc || byGroup) {
       l.transferencia = true;
       dirty = true;
     }
   });
-  if (dirty) LS.set('lancamentos', lancamentos); // persiste a migração
+
+  if (dirty) LS.set('lancamentos', lancamentos);
 }
 
 function _loadAllData() {
@@ -4056,9 +4075,9 @@ function clearLancFilter() {
 // Helper: identifica se lançamento é parte de uma transferência entre contas
 function isTransferencia(l) {
   if (!l) return false;
-  // Flag explícita (setada no save e na migração _loadAllData)
+  // Flag setada no save e pela migração _migrateTransferencias
   if (l.transferencia === true) return true;
-  // Fallback desc (caso edge não capturado pela migração)
+  // Fallback para dados não migrados ainda
   const d = l.desc || '';
   return d.startsWith('Transferência →') || d.startsWith('Transferência ←');
 }
