@@ -1273,7 +1273,10 @@ initTema();
       <span class="topbar-brand">NMC Personal Finance</span>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
-      <button onclick="fazerLogout()" style="background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.35);color:#e05252;border-radius:var(--r);padding:6px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s" onmouseover="this.style.background='rgba(224,82,82,.25)'" onmouseout="this.style.background='rgba(224,82,82,.12)'">
+      <button id="btnInstalarPWA" onclick="instalarPWA()" style="display:none;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);color:var(--gold);border-radius:var(--r);padding:6px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;align-items:center;gap:6px;margin-right:6px">
+      <i class="fa fa-download"></i> Instalar
+    </button>
+    <button onclick="fazerLogout()" style="background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.35);color:#e05252;border-radius:var(--r);padding:6px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s" onmouseover="this.style.background='rgba(224,82,82,.25)'" onmouseout="this.style.background='rgba(224,82,82,.12)'">
         <i class="fa fa-sign-out-alt"></i> Sair
       </button>
       <button class="hamburger" id="ham" onclick="toggleSidebar()">
@@ -1385,8 +1388,8 @@ initTema();
             <div class="stat-val neg" id="dDesp">R$ 0,00</div>
             <div class="stat-hint" id="dDespQ">0 lançamentos</div>
           </div>
-          <div class="stat-card neu">
-            <div class="stat-label">Saldo do Período</div>
+          <div class="stat-card neu" onclick="abrirDetalhesDash('saldo')" style="cursor:pointer" title="Clique para ver detalhes">
+            <div class="stat-label">Saldo do Período <i class="fa fa-chevron-right" style="font-size:9px;opacity:.5;margin-left:4px"></i></div>
             <div class="stat-val neu" id="dSaldo">R$ 0,00</div>
             <div class="stat-hint" id="dSaldoHint">—</div>
           </div>
@@ -7557,6 +7560,15 @@ if ('serviceWorker' in navigator) {
       }
     }).catch(() => {}); // Sem sw.js externo — modo single-file, sem SW
   });
+
+  // Captura evento de instalação PWA
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    window._pwaInstallEvent = e;
+    // Mostra botão de instalação se existir
+    const btn = document.getElementById('btnInstalarPWA');
+    if (btn) btn.style.display = 'flex';
+  });
 }
 </script>
 
@@ -8993,6 +9005,14 @@ function abrirDetalhesDash(tipo) {
     itens  = data.filter(l => l.tipo==='Receita' && !isTransferencia(l) && !l.cartaoId);
     titulo = '↑ Total Receitas';
     cor    = 'var(--teal)';
+  } else if (tipo === 'saldo') {
+    // Saldo = todas as receitas e despesas do período (exceto transferências)
+    itens  = data.filter(l => !isTransferencia(l) && (
+      (l.tipo==='Receita' && !l.cartaoId) ||
+      (l.tipo==='Despesa' && l.banco!=='')
+    ));
+    titulo = '= Saldo do Período';
+    cor    = 'var(--gold)';
   } else {
     itens  = data.filter(l => l.tipo==='Despesa' && !isTransferencia(l) && l.banco!=='');
     titulo = '↓ Total Despesas';
@@ -9002,7 +9022,9 @@ function abrirDetalhesDash(tipo) {
   // Ordena por data desc
   itens = [...itens].sort((a,b) => (b.data||'').localeCompare(a.data||''));
 
-  const total = itens.reduce((s,l) => s + parseMoney(l.valor), 0);
+  const total = tipo === 'saldo'
+    ? itens.reduce((s,l) => s + (l.tipo==='Receita' ? parseMoney(l.valor) : -parseMoney(l.valor)), 0)
+    : itens.reduce((s,l) => s + parseMoney(l.valor), 0);
 
   // Período label
   const mesLabel = mes==='__ano__' ? 'Ano atual'
@@ -9045,6 +9067,21 @@ function toggleImpFat() {
 }
 
 
+
+
+function instalarPWA() {
+  const e = window._pwaInstallEvent;
+  if (!e) { toast('Use o menu do browser para instalar.', 'inf'); return; }
+  e.prompt();
+  e.userChoice.then(r => {
+    if (r.outcome === 'accepted') {
+      toast('✓ App instalado!', 'ok');
+      const btn = document.getElementById('btnInstalarPWA');
+      if (btn) btn.style.display = 'none';
+    }
+    window._pwaInstallEvent = null;
+  });
+}
 
 </script>
 
