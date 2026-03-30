@@ -3,24 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NMC Personal Finance System v20</title>
+<title>NMC Personal Finance System v20.16.20260329</title>
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
+<!-- PWA — manifest inline para funcionamento single-file -->
 <meta name="theme-color" content="#080b10">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="NMC Finance">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<meta name="application-name" content="NMC Finance">
+<meta name="msapplication-TileColor" content="#080b10">
+<script>
+(function(){
+  const manifest = {
+    "name": "NMC Personal Finance System",
+    "short_name": "NMC Finance",
+    "description": "Controle financeiro pessoal completo com criptografia AES-256",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#080b10",
+    "theme_color": "#080b10",
+    "orientation": "portrait-primary",
+    "lang": "pt-BR",
+    "categories": ["finance", "productivity"],
+    "icons": [
+      { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+      { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    ],
+    "screenshots": [
+      { "src": "icons/screenshot1.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow" }
+    ],
+    "shortcuts": [
+      { "name": "Novo Lançamento", "short_name": "Lançar", "url": "./#lancamentos", "description": "Registrar receita ou despesa" },
+      { "name": "Dashboard", "short_name": "Dashboard", "url": "./#dashboard", "description": "Ver resumo financeiro" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel   = 'manifest';
+  link.href  = url;
+  document.head.appendChild(link);
+})();
+</script>
 
-<!-- SEO / OG -->
+<!-- SEO / OG / Play Store -->
+<meta name="google-play-app" content="app-id=br.com.nobregamall.nmcfinance">
+<link rel="canonical" href="https://nmcfinance.nobregamall.com.br/">
 <meta name="description" content="NMC Personal Finance System — controle financeiro pessoal com criptografia AES-256">
 <meta name="robots" content="noindex,nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════
    DESIGN SYSTEM — LUXURY DARK FINANCE
@@ -52,6 +88,139 @@
   --sh:        0 8px 32px rgba(0,0,0,.5);
   --sh2:       0 2px 12px rgba(0,0,0,.3);
 }
+
+/* ── TEMA CLARO ── */
+body.tema-claro {
+  --bg:        #f4f6fb;
+  --surface:   #ffffff;
+  --card:      #ffffff;
+  --card2:     #f0f3f9;
+  --border:    #d0d7e6;
+  --border2:   #bcc6d8;
+  --gold:      #8a6520;
+  --gold-dim:  #6b4f18;
+  --gold-pale: rgba(138,101,32,.12);
+  --teal:      #0f7a60;
+  --teal-pale: rgba(15,122,96,.12);
+  --red:       #b52a2a;
+  --red-pale:  rgba(181,42,42,.10);
+  --blue:      #1d52cc;
+  --text:      #0f1623;
+  --text2:     #3a4a62;
+  --text3:     #5e738a;
+  --sh:        0 2px 16px rgba(0,0,0,.08);
+  --sh2:       0 1px 6px rgba(0,0,0,.06);
+}
+
+/* Base */
+body.tema-claro { background:#f4f6fb !important; color:#0f1623 !important; }
+body.tema-claro::before { display:none; }
+
+/* Sidebar — mantém escuro para contraste */
+body.tema-claro .sidebar            { background:#1a2236; border-right:1px solid #2a3550; }
+body.tema-claro .nav-item           { color:#8a9bb8; }
+body.tema-claro .nav-item:hover     { background:rgba(201,168,76,.15); color:#c9a84c; }
+body.tema-claro .nav-item.active    { background:rgba(201,168,76,.18); color:#c9a84c; }
+body.tema-claro .sidebar-foot       { color:#6a7d9a; border-top-color:#2a3550; }
+body.tema-claro .nav-logo           { border-bottom-color:#2a3550; }
+
+/* Topbar mobile */
+body.tema-claro .topbar             { background:#1a2236; border-bottom-color:#2a3550; }
+body.tema-claro .topbar-brand       { color:#c9a84c; }
+
+/* Main content area */
+body.tema-claro .main               { background:#f4f6fb; }
+
+/* Cards */
+body.tema-claro .card               { background:#ffffff; border-color:#d0d7e6; box-shadow:0 1px 8px rgba(0,0,0,.06); }
+body.tema-claro .card-title         { color:#0f1623; border-bottom-color:#d0d7e6; }
+
+/* Table */
+body.tema-claro table               { background:#ffffff; }
+body.tema-claro th                  { background:#f0f3f9; color:#3a4a62; border-bottom-color:#d0d7e6; }
+body.tema-claro td                  { border-bottom-color:#e8edf5; color:#0f1623; }
+body.tema-claro tr:hover td         { background:#f7f9fd; }
+body.tema-claro .tbl-wrap           { border-color:#d0d7e6; }
+
+/* Inputs & selects */
+body.tema-claro input,
+body.tema-claro select,
+body.tema-claro textarea            { background:#ffffff !important; color:#0f1623 !important; border-color:#c8d2e0 !important; }
+body.tema-claro input::placeholder  { color:#8a9bb8; }
+body.tema-claro .field label        { color:#3a4a62; }
+
+/* Buttons */
+body.tema-claro .btn-outline        { border-color:#c0c9d8; color:#3a4a62; background:#ffffff; }
+body.tema-claro .btn-outline:hover  { background:#f0f3f9; }
+body.tema-claro .btn-ghost          { color:#5e738a; }
+body.tema-claro .btn-ghost:hover    { background:#f0f3f9; }
+
+/* Stat cards */
+body.tema-claro .stat-card          { background:#ffffff; border-color:#d0d7e6; }
+body.tema-claro .stat-label         { color:#5e738a; }
+
+/* Modal */
+body.tema-claro .modal-bg           { background:rgba(15,22,35,.4); }
+body.tema-claro .modal              { background:#ffffff; border-color:#d0d7e6; }
+body.tema-claro .modal-title        { color:#0f1623; border-bottom-color:#d0d7e6; }
+body.tema-claro .modal-footer       { border-top-color:#d0d7e6; }
+body.tema-claro .modal-close        { color:#5e738a; }
+
+/* Badges */
+body.tema-claro .badge              { border-color:#d0d7e6; }
+
+/* Progress bar */
+body.tema-claro .prog-bar           { background:#e8edf5; }
+
+/* Page header */
+body.tema-claro .page-title         { color:#0f1623; }
+body.tema-claro .page-sub           { color:#5e738a; }
+body.tema-claro .page-hd            { border-bottom-color:#d0d7e6; }
+
+/* Filter bar */
+body.tema-claro .filter-bar         { background:#ffffff; border-color:#d0d7e6; }
+body.tema-claro .filter-field label { color:#5e738a; }
+
+/* Login screen */
+body.tema-claro #loginScreen        { background:#f4f6fb; }
+body.tema-claro .login-card         { background:#ffffff; border-color:#d0d7e6; }
+
+/* Dashboard cards */
+body.tema-claro .comparativo-card   { background:#ffffff; border-color:#d0d7e6; }
+body.tema-claro .comp-label         { color:#5e738a; }
+
+/* Alerts */
+body.tema-claro .alert-faturas      { background:#fff8e6; border-color:#e8c84a; }
+
+/* Fatura mes */
+body.tema-claro .fatura-mes         { background:#ffffff; border-color:#d0d7e6; }
+body.tema-claro .fatura-mes-hd      { background:#f0f3f9; }
+body.tema-claro .fatura-mes-hd:hover{ background:#e8edf5; }
+
+/* Empty states */
+body.tema-claro .empty              { color:#8a9bb8; }
+
+/* Chart areas */
+body.tema-claro canvas              { filter:none; }
+
+/* Scrollbar */
+body.tema-claro ::-webkit-scrollbar-track { background:#f0f3f9; }
+body.tema-claro ::-webkit-scrollbar-thumb { background:#bcc6d8; }
+
+/* HR divider */
+body.tema-claro .hr                 { background:#e0e6f0; }
+
+/* Manual sections */
+body.tema-claro .manual-section h3  { color:#0f1623; }
+body.tema-claro .manual-section p,
+body.tema-claro .manual-section li  { color:#3a4a62; }
+body.tema-claro .manual-section code{ background:#f0f3f9; color:#0f1623; }
+
+/* Nav cartoes grid */
+body.tema-claro .cartoes-grid .card { background:#ffffff; }
+
+/* Mobile card list */
+body.tema-claro .tbl-card-item      { background:#ffffff; border-color:#d0d7e6; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 15px; scroll-behavior: smooth; }
@@ -632,7 +801,16 @@ tbody tr:last-child td { border-bottom: none; }
 
 /* ── CHART ── */
 .chart-box { position: relative; }
-.chart-box canvas { max-height: 300px; }
+.chart-zoom-btn {
+  position: absolute; top: 6px; right: 6px; z-index: 10;
+  background: rgba(20,32,52,.9); border: 1px solid var(--border);
+  color: var(--text2); border-radius: 6px; padding: 3px 8px;
+  font-size: 10px; font-family: var(--mono); cursor: pointer;
+  display: none;
+  transition: background .15s;
+}
+.chart-zoom-btn:hover { background: var(--surface); color: var(--gold); }
+.chart-box canvas { max-height: 420px; }
 
 /* ── GRID LAYOUTS ── */
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -804,7 +982,7 @@ tbody tr:last-child td { border-bottom: none; }
 
   #cartoesGrid { grid-template-columns: 1fr !important; }
 
-  .chart-box canvas { max-height: 220px; }
+  .chart-box canvas { max-height: 340px; }
 
   .page-title { font-size: 22px; }
 
@@ -1034,6 +1212,26 @@ tbody tr:last-child td { border-bottom: none; }
   font-size: 11px;
 }
 </style>
+<link rel="manifest" href="/manifest.json">
+<script>
+/* NMC Theme */
+function setTema(t){
+  if(!document.body) return;
+  document.body.classList.toggle('tema-claro',t==='claro');
+  var c=document.getElementById('btnTemaClaro');
+  var e=document.getElementById('btnTemaEscuro');
+  if(c)c.className=t==='claro'?'btn btn-gold':'btn btn-outline';
+  if(e)e.className=t==='escuro'?'btn btn-gold':'btn btn-outline';
+  try{localStorage.setItem('nmcTema',t);}catch(ex){}
+}
+function initTema(){
+  var t='escuro';
+  try{t=localStorage.getItem('nmcTema')||'escuro';}catch(ex){}
+  if(document.body) setTema(t);
+  else document.addEventListener('DOMContentLoaded',function(){setTema(t);});
+}
+initTema();
+</script>
 </head>
 <body>
 
@@ -1073,12 +1271,19 @@ tbody tr:last-child td { border-bottom: none; }
   <!-- MOBILE TOPBAR -->
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:10px">
-      
       <span class="topbar-brand">NMC Personal Finance</span>
     </div>
-    <button class="hamburger" id="ham" onclick="toggleSidebar()">
-      <span></span><span></span><span></span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button id="btnInstalarPWA" onclick="instalarPWA()" style="display:none;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);color:var(--gold);border-radius:var(--r);padding:6px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;align-items:center;gap:6px;margin-right:6px">
+      <i class="fa fa-download"></i> Instalar
     </button>
+    <button onclick="fazerLogout()" style="background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.35);color:#e05252;border-radius:var(--r);padding:6px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s" onmouseover="this.style.background='rgba(224,82,82,.25)'" onmouseout="this.style.background='rgba(224,82,82,.12)'">
+        <i class="fa fa-sign-out-alt"></i> Sair
+      </button>
+      <button class="hamburger" id="ham" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
   <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
 
@@ -1113,6 +1318,7 @@ tbody tr:last-child td { border-bottom: none; }
           <button class="nav-item" data-tab="cartoes" onclick="switchTab('cartoes',this)">
             <i class="fa fa-credit-card ni"></i> Cartões
           </button>
+
           <button class="nav-item" data-tab="financiamentos" onclick="switchTab('financiamentos',this)">
             <i class="fa fa-university ni"></i> Financiamentos
           </button>
@@ -1173,18 +1379,18 @@ tbody tr:last-child td { border-bottom: none; }
         <div id="dashContasPagarCard" style="margin-bottom:18px"></div>
 
         <div class="stats-grid">
-          <div class="stat-card pos">
-            <div class="stat-label">Total Receitas</div>
+          <div class="stat-card pos" onclick="abrirDetalhesDash('receita')" style="cursor:pointer" title="Clique para ver detalhes">
+            <div class="stat-label">Total Receitas <i class="fa fa-chevron-right" style="font-size:9px;opacity:.5;margin-left:4px"></i></div>
             <div class="stat-val pos" id="dReceit">R$ 0,00</div>
             <div class="stat-hint" id="dReceitQ">0 lançamentos</div>
           </div>
-          <div class="stat-card neg">
-            <div class="stat-label">Total Despesas</div>
+          <div class="stat-card neg" onclick="abrirDetalhesDash('despesa')" style="cursor:pointer" title="Clique para ver detalhes">
+            <div class="stat-label">Total Despesas <i class="fa fa-chevron-right" style="font-size:9px;opacity:.5;margin-left:4px"></i></div>
             <div class="stat-val neg" id="dDesp">R$ 0,00</div>
             <div class="stat-hint" id="dDespQ">0 lançamentos</div>
           </div>
-          <div class="stat-card neu">
-            <div class="stat-label">Saldo do Período</div>
+          <div class="stat-card neu" onclick="abrirDetalhesDash('saldo')" style="cursor:pointer" title="Clique para ver detalhes">
+            <div class="stat-label">Saldo do Período <i class="fa fa-chevron-right" style="font-size:9px;opacity:.5;margin-left:4px"></i></div>
             <div class="stat-val neu" id="dSaldo">R$ 0,00</div>
             <div class="stat-hint" id="dSaldoHint">—</div>
           </div>
@@ -1206,6 +1412,7 @@ tbody tr:last-child td { border-bottom: none; }
             </label>
           </div>
           <div class="chart-box">
+            <button class="chart-zoom-btn" id="zoomResetFluxo" onclick="resetZoom('grafFluxo',this)">↺ Reset zoom</button>
             <canvas id="grafFluxo"></canvas>
           </div>
         </div>
@@ -1214,13 +1421,15 @@ tbody tr:last-child td { border-bottom: none; }
           <div class="card">
             <div class="card-title">Receitas por Centro <span class="badge badge-teal">Top</span></div>
             <div class="chart-box">
-              <canvas id="grafRecCC" style="max-height:220px"></canvas>
+              <button class="chart-zoom-btn" id="zoomResetRecCC" onclick="resetZoom('grafRecCC',this)">↺ Reset zoom</button>
+              <canvas id="grafRecCC" style="max-height:340px"></canvas>
             </div>
           </div>
           <div class="card">
             <div class="card-title">Despesas por Centro <span class="badge badge-red">Top</span></div>
             <div class="chart-box">
-              <canvas id="grafDespCC" style="max-height:220px"></canvas>
+              <button class="chart-zoom-btn" id="zoomResetDespCC" onclick="resetZoom('grafDespCC',this)">↺ Reset zoom</button>
+              <canvas id="grafDespCC" style="max-height:340px"></canvas>
             </div>
           </div>
         </div>
@@ -1238,6 +1447,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
           </div>
           <div class="chart-box">
+            <button class="chart-zoom-btn" id="zoomResetDashInvest" onclick="resetZoom('grafDashInvest',this)">↺ Reset zoom</button>
             <canvas id="grafDashInvest"></canvas>
           </div>
         </div>
@@ -1328,9 +1538,23 @@ tbody tr:last-child td { border-bottom: none; }
             </select>
           </div>
           <div class="filter-field">
+            <label for="fLancCartao">Cartão</label>
+            <select id="fLancCartao" onchange="renderLancamentos()">
+              <option value="">Todos os cartões</option>
+            </select>
+          </div>
+          <div class="filter-field">
             <label for="fLancCC">Centro de Custo</label>
             <select id="fLancCC" onchange="renderLancamentos()">
               <option value="">Todos os centros</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label>Tipo de data</label>
+            <select id="fLancTipoDt" onchange="renderLancamentos()">
+              <option value="data">Vencimento</option>
+              <option value="dataCriacao">Criação</option>
+              <option value="dataPagamento">Pagamento</option>
             </select>
           </div>
           <div class="filter-field">
@@ -1365,7 +1589,9 @@ tbody tr:last-child td { border-bottom: none; }
               <thead>
                 <tr>
                   <th onclick="sortLanc('tipo')">Tipo <i class="fa fa-sort sort-icon"></i></th>
-                  <th onclick="sortLanc('data')">Data <i class="fa fa-sort sort-icon"></i></th>
+                  <th onclick="sortLanc('data')">Vencimento <i class="fa fa-sort sort-icon"></i></th>
+                  <th onclick="sortLanc('dataCriacao')" title="Data do lançamento">Criação <i class="fa fa-sort sort-icon"></i></th>
+                  <th onclick="sortLanc('dataPagamento')" title="Data do pagamento">Pagamento <i class="fa fa-sort sort-icon"></i></th>
                   <th onclick="sortLanc('banco')">Conta Corrente <i class="fa fa-sort sort-icon"></i></th>
                   <th onclick="sortLanc('cc')">Centro de Custo <i class="fa fa-sort sort-icon"></i></th>
                   <th onclick="sortLanc('forma')">Forma Pgto <i class="fa fa-sort sort-icon"></i></th>
@@ -1439,6 +1665,13 @@ tbody tr:last-child td { border-bottom: none; }
                 <option value="Ambos">Ambos</option>
               </select>
             </div>
+            <div class="field" style="flex:1 1 180px">
+              <label>Excluir de Rec/Desp <span style="color:var(--text3);font-size:10px">(não conta nos totais)</span></label>
+              <select id="inCCExcluir" style="width:100%">
+                <option value="nao">Não</option>
+                <option value="sim">Sim — excluir</option>
+              </select>
+            </div>
             <div class="cad-btn-wrap">
               <button class="btn btn-gold btn-sm" onclick="addCC()"><i class="fa fa-plus"></i> Adicionar</button>
             </div>
@@ -1478,10 +1711,9 @@ tbody tr:last-child td { border-bottom: none; }
       <section class="section" id="tab-cartoes">
         <div class="page-hd">
           <div style="display:flex;align-items:center;gap:12px">
-            
             <div>
-              <div class="page-title">Cartões de Crédito</div>
-              <div class="page-sub">Controle de limites e utilização</div>
+              <div class="page-title">Cartões</div>
+              <div class="page-sub">Gestão, limites, faturas e importação</div>
             </div>
           </div>
           <button class="btn btn-gold btn-full-mobile" onclick="openModalCartao()">
@@ -1489,32 +1721,82 @@ tbody tr:last-child td { border-bottom: none; }
           </button>
         </div>
 
+        <!-- Cards dos cartões (limite, fatura, pagar) -->
         <div id="cartoesGrid" class="cartoes-grid"></div>
 
-        <!-- Desktop table -->
-        <div class="card tbl-mobile-hide" style="padding:0">
-          <div class="tbl-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Cartão</th>
-                  <th>Limite Total</th>
-                  <th>Limite Utilizado</th>
-                  <th>Limite Disponível</th>
-                  <th>Fechamento</th>
-                  <th>Vencimento</th>
-                  <th style="width:90px">Ações</th>
-                </tr>
-              </thead>
-              <tbody id="tblCartoesBody"></tbody>
-            </table>
+        <!-- Importação de Fatura — integrada -->
+        <div class="card" style="margin-top:4px">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer"
+               onclick="toggleImpFat()">
+            <div style="display:flex;align-items:center;gap:8px">
+              <i class="fa fa-file-invoice" style="color:var(--gold)"></i>
+              Importar Fatura de Cartão
+            </div>
+            <i class="fa fa-chevron-down" id="impFatChevron" style="color:var(--text3);font-size:12px;transition:.3s"></i>
+          </div>
+          <div id="impFatCollapse" style="display:none;margin-top:12px">
+            <!-- Seleção de cartão e arquivo -->
+            <div class="card" style="margin-bottom:16px">
+              <div class="card-title">1. Selecione o cartão e o arquivo da fatura</div>
+              <div class="input-row cols2" style="margin-top:12px">
+                <div class="field">
+                  <label>Cartão de Crédito *</label>
+                  <select id="impFatCartao" onchange="impFatCartaoChange()">
+                    <option value="">— selecione —</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Arquivo PDF da Fatura</label>
+                  <input type="file" id="impFatFile" accept=".pdf" onchange="impFatLerPDF()" style="padding:6px">
+                </div>
+              </div>
+              <div id="impFatStatus" style="margin-top:10px;font-size:13px;font-family:var(--mono);color:var(--text3)"></div>
+            </div>
+
+            <!-- Preview dos lançamentos -->
+            <div class="card" id="impFatPreviewCard" style="display:none;margin-bottom:16px">
+              <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+                <span>2. Lançamentos identificados</span>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <span id="impFatResumo" style="font-size:12px;font-family:var(--mono);color:var(--text3)"></span>
+                  <button class="btn btn-gold" onclick="impFatImportar()">
+                    <i class="fa fa-download"></i> Importar Tudo
+                  </button>
+                </div>
+              </div>
+              <div id="impFatResumoFin"></div>
+              <div style="overflow-x:auto;margin-top:12px">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Descrição</th>
+                      <th>Parcela</th>
+                      <th>Centro de Custo</th>
+                      <th style="text-align:right">Valor</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="impFatBody"></tbody>
+                </table>
+                <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <button class="btn btn-outline btn-sm" onclick="impFatAplicarCC()">
+                    <i class="fa fa-tags"></i> Aplicar CC a todos
+                  </button>
+                  <select id="impFatCCGlobal" style="flex:1;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;padding:6px 10px;outline:none">
+                    <option value="">— selecione CC global —</option>
+                  </select>
+                  <button class="btn btn-gold btn-sm" onclick="impFatPagarFatura()">
+                    <i class="fa fa-file-invoice-dollar"></i> Lançar pagamento da fatura
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <!-- Mobile card list for cartoes -->
-        <div id="cartoesMobileList" class="tbl-card-mobile"></div>
 
-        <!-- ──────────── FATURAS PROJETADAS ──────────── -->
-        <div class="card" style="margin-top:22px">
+        <!-- Projeção de Faturas Futuras -->
+        <div class="card" style="margin-top:16px">
           <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
             <div style="display:flex;align-items:center;gap:8px">
               <i class="fa fa-calendar-alt" style="color:var(--gold)"></i>
@@ -1532,8 +1814,7 @@ tbody tr:last-child td { border-bottom: none; }
 
       </section>
 
-      <!-- ──────────── USUÁRIOS ──────────── -->
-      <section class="section" id="tab-usuarios">
+<section class="section" id="tab-usuarios">
         <div class="page-hd">
           <div style="display:flex;align-items:center;gap:12px">
             
@@ -1577,6 +1858,7 @@ tbody tr:last-child td { border-bottom: none; }
         </div>
       </section>
 
+
       <!-- ──────────── CONFIGURAÇÃO ──────────── -->
       <section class="section" id="tab-config">
         <div class="page-hd">
@@ -1588,6 +1870,22 @@ tbody tr:last-child td { border-bottom: none; }
           </div>
         </div>
         <div class="grid2">
+
+          <!-- Tema Visual -->
+          <div class="card" style="grid-column:1/-1">
+            <div class="card-title"><i class="fa fa-adjust" style="color:var(--gold)"></i> Tema Visual</div>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7">
+              Escolha entre o modo escuro (padrão) ou o modo claro.
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <button id="btnTemaEscuro" class="btn btn-gold" onclick="setTema('escuro')" style="min-width:140px">
+                <i class="fa fa-moon"></i> Modo Escuro
+              </button>
+              <button id="btnTemaClaro" class="btn btn-outline" onclick="setTema('claro')" style="min-width:140px">
+                <i class="fa fa-sun"></i> Modo Claro
+              </button>
+            </div>
+          </div>
 
           <!-- Backup Manual -->
           <div class="card">
@@ -1687,7 +1985,7 @@ tbody tr:last-child td { border-bottom: none; }
               </div>
               <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
                 <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Versão</span>
-                <span style="font-size:12px;color:var(--gold);font-family:var(--mono);font-weight:600">v20.0</span>
+                <span style="font-size:12px;color:var(--gold);font-family:var(--mono);font-weight:600" id="fichaVersao">v20.16.20260329</span>
               </div>
               <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
                 <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Desenvolvedor</span>
@@ -1703,7 +2001,13 @@ tbody tr:last-child td { border-bottom: none; }
               </div>
               <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
                 <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Tecnologias</span>
-                <span style="font-size:12px;color:var(--text)">HTML5 · CSS3 · JavaScript · AES-256 · Chart.js · PDF.js</span>
+                <span style="font-size:12px;color:var(--text);text-align:right;line-height:1.8">
+                  HTML5 · CSS3 · ES6+ JavaScript<br>
+                  AES-256 (CryptoJS) · Chart.js 4.4<br>
+                  PDF.js · chartjs-plugin-zoom<br>
+                  Hammer.js · Font Awesome 6<br>
+                  PWA · Service Worker · LocalStorage
+                </span>
               </div>
               <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
                 <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Armazenamento</span>
@@ -1749,274 +2053,186 @@ tbody tr:last-child td { border-bottom: none; }
           <!-- INTRODUÇÃO -->
           <div class="manual-section">
             <h3>🏠 O que é o NMC Personal Finance System?</h3>
-            <p>O <strong>NMC Personal Finance System</strong> é um aplicativo completo de controle financeiro pessoal, desenvolvido pela <strong>Nobrega Mall Consultant</strong>. Funciona diretamente no navegador do seu celular ou tablet — sem precisar de internet para operar. Todos os dados ficam salvos no próprio dispositivo com criptografia AES‑256.</p>
-            <p style="margin-top:10px">Com ele você registra receitas e despesas, controla cartões de crédito, acompanha financiamentos, gerencia investimentos, define metas financeiras e concilia extratos bancários — tudo em um só lugar.</p>
+            <p>O <strong>NMC Personal Finance System</strong> é um aplicativo completo de controle financeiro pessoal desenvolvido pela <strong>Nobrega Mall Consultant</strong>. Funciona 100% no navegador — sem internet para operar. Todos os dados ficam salvos localmente com criptografia <strong>AES-256</strong>.</p>
+            <p style="margin-top:10px">Cobre todo o ciclo financeiro: lançamentos, cartões de crédito e débito, importação de faturas PDF, financiamentos, investimentos, metas, conciliação bancária, relatórios em PDF e dashboard com gráficos interativos.</p>
           </div>
           <div class="hr"></div>
 
-          <!-- PRIMEIRO ACESSO -->
+          <!-- LOGIN -->
           <div class="manual-section">
-            <h3>🔐 Primeiro Acesso — Login</h3>
-            <p>Na primeira vez que abrir o sistema, será solicitado um <strong>nome de usuário</strong> e uma <strong>senha</strong>. Guarde bem essas informações — elas criptografam todos os seus dados. Se esquecer a senha, os dados não poderão ser recuperados (exceto via backup exportado).</p>
+            <h3>🔐 Login e Segurança · <span style="color:var(--text3);font-size:13px;font-weight:400">Tela inicial</span></h3>
+            <p>Na primeira abertura defina usuário e senha. A senha criptografa todos os dados com AES-256 — sem ela os dados não podem ser recuperados.</p>
             <ul>
-              <li>O usuário padrão inicial é <code>admin</code> com senha definida por você</li>
-              <li>Você pode criar outros usuários em <strong>Usuários</strong> no menu</li>
-              <li>Cada usuário tem seus próprios dados criptografados</li>
+              <li>Usuário padrão: <code>admin</code> — senha definida por você no primeiro acesso</li>
+              <li>Botão <strong>Sair</strong> na barra superior encerra a sessão com confirmação</li>
+              <li>O botão Voltar do browser é interceptado para não sair acidentalmente</li>
             </ul>
           </div>
           <div class="hr"></div>
 
-          <!-- CONFIGURAÇÃO INICIAL -->
+          <!-- TEMA VISUAL -->
           <div class="manual-section">
-            <h3>⚙️ Configuração Inicial — Por onde começar?</h3>
-            <p>Antes de lançar qualquer movimentação, configure as bases do sistema na aba <strong>Cadastros</strong>:</p>
+            <h3>🌓 Tema Visual · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Configuração</span></h3>
+            <p>O sistema oferece dois temas visuais, selecionáveis em <strong>Configuração → Tema Visual</strong>:</p>
             <ul>
-              <li><strong>1. Bancos / Contas:</strong> Cadastre suas contas (ex: "Nubank CC", "Itaú Poupança"). Informe o <em>saldo atual</em> da conta no campo <strong>Saldo Inicial</strong> — esse valor é a base do cálculo de saldo. Se sua conta tiver cheque especial, informe o limite.</li>
-              <li><strong>2. Centros de Custo:</strong> Crie categorias para classificar seus lançamentos (ex: Alimentação, Moradia, Saúde, Salário). Defina o tipo: Receita, Despesa ou Ambos.</li>
-              <li><strong>3. Formas de Pagamento:</strong> Cadastre as formas que usa (PIX, Débito, Boleto, Dinheiro etc.).</li>
+              <li><strong>Modo Escuro</strong> — tema padrão, fundo preto/grafite com acentos dourados. Ideal para uso noturno e ambientes com pouca luz</li>
+              <li><strong>Modo Claro</strong> — fundo branco com tons neutros. Ideal para ambientes iluminados ou preferência pessoal</li>
+            </ul>
+            <p style="margin-top:8px">A preferência é salva automaticamente e mantida entre sessões.</p>
+          </div>
+          <div class="hr"></div>
+
+          <!-- CADASTROS -->
+          <div class="manual-section">
+            <h3>⚙️ Cadastros · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Cadastros</span></h3>
+            <p>Configure antes de lançar movimentações:</p>
+            <ul>
+              <li><strong>Bancos / Contas:</strong> Cada conta bancária com saldo inicial real. Suporta limite de cheque especial.</li>
+              <li><strong>Centros de Custo:</strong> Categorias para classificar lançamentos (Alimentação, Saúde, Salário...). Tipo: Receita, Despesa ou Ambos. Flag <strong>"Excluir de Rec/Desp"</strong> para CCs que não devem aparecer nos totais do dashboard (ex: transferências internas)</li>
+              <li><strong>Formas de Pagamento:</strong> PIX, Débito, Crédito, Boleto, Dinheiro etc.</li>
+            </ul>
+            <p style="margin-top:8px">💡 Todas as tabelas são ordenadas alfabeticamente automaticamente.</p>
+          </div>
+          <div class="hr"></div>
+
+          <!-- CARTÕES -->
+          <div class="manual-section">
+            <h3>💳 Cartões · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Cartões</span></h3>
+            <p>Gerencie cartões de crédito e débito. A aba Cartões concentra tudo em um lugar:</p>
+            <ul>
+              <li><strong>Cards visuais</strong> com limite, saldo disponível, barra de uso, fatura atual e próxima</li>
+              <li>Tipo <strong>Crédito</strong>: limite total, dia de fechamento e vencimento. Tipo <strong>Débito</strong>: saldo pré-carregado (ex: Alelo, VR)</li>
+              <li><strong>Fatura mês atual</strong> com badge ⚠ VENCIDA, ⏳ AGENDADO ou ✓ PAGO</li>
+              <li><strong>Fatura próximo mês</strong> com previsão e botão de agendamento</li>
+              <li>Botão <strong>"Agendar pagamento"</strong>: cria despesa na conta corrente na data de vencimento</li>
+              <li><strong>Carga de cartão débito</strong>: use Lançamentos → Tipo Transferência com destino = cartão débito</li>
+              <li><strong>Projeção de Faturas Futuras</strong>: grade com 12 meses de previsão por cartão</li>
+            </ul>
+          </div>
+          <div class="hr"></div>
+
+          <!-- IMPORTAÇÃO DE FATURA -->
+          <div class="manual-section">
+            <h3>📄 Importar Fatura · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Cartões → "Importar Fatura de Cartão"</span></h3>
+            <p>Lê PDFs de faturas de cartão usando PDF.js — sem custo, sem internet, sem enviar dados a servidores.</p>
+            <ul>
+              <li>Selecione o cartão e faça upload do PDF</li>
+              <li>Detecta automaticamente o banco: <strong>Itaú</strong> (Visa Azul, Visa Black — com tratamento de OCR) e <strong>Nubank</strong></li>
+              <li>Defina o <strong>Centro de Custo</strong> por linha ou use <strong>"Aplicar CC a todos"</strong> em lote</li>
+              <li>Compras parceladas: agenda automaticamente parcelas futuras com datas mensais corretas</li>
+              <li><strong>Deduplicação</strong>: nas próximas importações, itens já lançados aparecem como "JÁ IMPORTADO"</li>
+              <li>Resumo: Total PDF vs Total lido — indica ✅ se os valores conferem</li>
+              <li>Botão <strong>"Lançar pagamento da fatura"</strong>: cria despesa na conta corrente no vencimento</li>
+              <li>Botão <strong>"🔍 Ver texto bruto"</strong>: exibe o texto extraído do PDF para diagnóstico</li>
             </ul>
           </div>
           <div class="hr"></div>
 
           <!-- LANÇAMENTOS -->
           <div class="manual-section">
-            <h3>📝 Como Lançar Receitas e Despesas</h3>
-            <p>Acesse a aba <strong>Lançamentos</strong> e clique em <strong>+ Novo Lançamento</strong>. Preencha:</p>
+            <h3>📝 Lançamentos · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Lançamentos</span></h3>
+            <p>Registre receitas, despesas, transferências, investimentos e financiamentos.</p>
             <ul>
-              <li><strong>Tipo:</strong> Receita (dinheiro que entra) ou Despesa (dinheiro que sai)</li>
-              <li><strong>Data:</strong> Data da movimentação</li>
-              <li><strong>Banco / Conta:</strong> De qual conta saiu ou entrou o dinheiro</li>
-              <li><strong>Centro de Custo:</strong> Categoria do lançamento</li>
-              <li><strong>Forma de Pagamento:</strong> Como foi pago</li>
-              <li><strong>Valor:</strong> Digite o valor (ex: 1.500,00)</li>
-              <li><strong>Descrição:</strong> Texto livre para identificar o lançamento</li>
-              <li><strong>Pago / Pendente:</strong> Marque se já foi efetivado ou é um agendamento futuro</li>
+              <li><strong>Data de vencimento</strong>: data da movimentação ou parcela</li>
+              <li><strong>Data de criação</strong>: registrada automaticamente ao salvar</li>
+              <li><strong>Data de pagamento</strong>: preenchida ao dar baixa via modal (pré-preenchida com hoje, editável)</li>
+              <li><strong>Periodicidade</strong>: Único, Mensal, Semestral ou Anual. Semestral/Anual com múltiplas parcelas: ao dar baixa, a próxima é agendada automaticamente</li>
+              <li><strong>Cartão</strong>: despesa vai para a fatura do cartão sem debitar a conta corrente</li>
+              <li><strong>Transferência</strong>: gera saída e entrada automaticamente. Destino pode ser conta ou cartão débito</li>
             </ul>
-            <p style="margin-top:8px">💡 <strong>Compra parcelada no cartão:</strong> Selecione o cartão e informe o número de parcelas — o sistema gera todas as parcelas automaticamente nas datas corretas.</p>
-            <p style="margin-top:8px">💡 <strong>Transferência entre contas:</strong> Selecione o tipo "Transferência" e informe a conta destino — o sistema cria um lançamento de saída e outro de entrada automaticamente.</p>
-          </div>
-          <div class="hr"></div>
-
-          <!-- FILTROS E PESQUISA -->
-          <div class="manual-section">
-            <h3>🔍 Filtros e Pesquisa de Lançamentos</h3>
-            <p>Na aba Lançamentos, use a barra de filtros para localizar rapidamente qualquer movimentação:</p>
-            <ul>
-              <li><strong>Busca por texto:</strong> Digite descrição, valor ou categoria</li>
-              <li><strong>Tipo:</strong> Filtre por Receita, Despesa, Financiamento ou Transferência</li>
-              <li><strong>Banco:</strong> Visualize apenas uma conta</li>
-              <li><strong>Centro de Custo:</strong> Filtre por categoria</li>
-              <li><strong>Período:</strong> Defina data início e fim</li>
-              <li><strong>Status:</strong> Veja apenas pagos ou pendentes</li>
-            </ul>
-          </div>
-          <div class="hr"></div>
-
-          <!-- CARTÕES -->
-          <div class="manual-section">
-            <h3>💳 Cartões de Crédito</h3>
-            <p>Cadastre seus cartões em <strong>Cartões</strong> informando nome, banco vinculado, limite, dia de fechamento e dia de vencimento da fatura.</p>
-            <ul>
-              <li>Ao lançar uma despesa, selecione o cartão no campo correspondente</li>
-              <li>Compras parceladas: informe o número de parcelas — o sistema agenda todas</li>
-              <li>Em <strong>Faturas</strong> no dashboard você vê o total de cada fatura por mês</li>
-              <li>O saldo disponível do cartão é atualizado automaticamente</li>
-            </ul>
+            <p style="margin-top:8px"><strong>Filtros disponíveis:</strong> Texto livre · Tipo · Conta corrente · Cartão de crédito · Centro de custo · Tipo de data (Vencimento / Criação / Pagamento) · Data inicial/final · Status (Pendente / Pago / Vencido)</p>
+            <p style="margin-top:8px">Colunas clicáveis para ordenação. Tabela mostra as três datas: Vencimento · Criação · Pagamento.</p>
           </div>
           <div class="hr"></div>
 
           <!-- RECORRENTES -->
           <div class="manual-section">
-            <h3>🔄 Lançamentos Recorrentes</h3>
-            <p>Para despesas e receitas que se repetem mensalmente (aluguel, salário, planos, assinaturas), use a aba <strong>Recorrentes</strong>:</p>
-            <ul>
-              <li>Cadastre uma vez e o sistema lembra todo mês</li>
-              <li>Um alerta aparece no dashboard quando houver recorrentes pendentes no mês atual</li>
-              <li>Ao clicar em <strong>Lançar</strong>, um lançamento é criado automaticamente com os dados cadastrados</li>
-              <li>É possível pausar ou encerrar um recorrente a qualquer momento</li>
-            </ul>
+            <h3>🔄 Recorrentes · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Recorrentes</span></h3>
+            <p>Contas fixas mensais (aluguel, salário, assinaturas). Cadastre uma vez e lance com um clique todo mês. Alerta aparece no dashboard quando há pendentes no mês atual.</p>
           </div>
           <div class="hr"></div>
 
           <!-- FINANCIAMENTOS -->
           <div class="manual-section">
-            <h3>🏦 Financiamentos e Empréstimos</h3>
-            <p>Na aba <strong>Financiamentos</strong>, cadastre qualquer tipo de dívida parcelada (financiamento de carro, empréstimo pessoal, consórcio etc.):</p>
-            <ul>
-              <li><strong>Valor Total Financiado:</strong> Capital tomado emprestado (PV)</li>
-              <li><strong>Taxa de Juros:</strong> % ao mês (deixe 0 para parcelamento sem juros)</li>
-              <li><strong>Nº de Parcelas:</strong> Total de prestações</li>
-              <li><strong>Parcelas Já Pagas:</strong> Se o financiamento já existe, informe quantas já foram quitadas</li>
-              <li><strong>Data da 1ª Parcela:</strong> Data de vencimento da primeira prestação</li>
-            </ul>
-            <p style="margin-top:8px">O sistema usa a <strong>Tabela Price</strong> para calcular a parcela: <code>PMT = PV × [i×(1+i)^n] / [(1+i)^n − 1]</code>. O preview aparece em tempo real antes de salvar.</p>
-            <p style="margin-top:8px">Ao salvar, as <strong>parcelas restantes</strong> são lançadas automaticamente em Lançamentos com as datas corretas. Acesse o botão <strong>Parcelas</strong> no card do financiamento para:</p>
-            <ul>
-              <li>Ver todas as parcelas com status (Paga / Próxima / Futura)</li>
-              <li>Lançar a próxima individualmente ou todas de uma vez</li>
-              <li>Ajustar o valor das parcelas futuras (ex: reajuste por índice)</li>
-              <li>Simular a quitação antecipada com desconto de juros futuros</li>
-            </ul>
+            <h3>🏦 Financiamentos · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Financiamentos</span></h3>
+            <p>Dívidas parceladas com juros. Usa <strong>Tabela Price</strong>: <code>PMT = PV × [i×(1+i)^n] / [(1+i)^n − 1]</code>. Informe valor, taxa, parcelas e data da 1ª parcela. O botão <strong>Parcelas</strong> exibe status, permite lançar individualmente e simular quitação antecipada.</p>
           </div>
           <div class="hr"></div>
 
           <!-- INVESTIMENTOS -->
           <div class="manual-section">
-            <h3>📈 Investimentos e Patrimônio</h3>
-            <p>Na aba <strong>Investimentos</strong>, cadastre seus ativos financeiros (CDB, Tesouro Direto, ações, fundos, poupança etc.):</p>
-            <ul>
-              <li>Informe nome, tipo, banco, valor aportado, valor atual e rentabilidade</li>
-              <li>Ao cadastrar com banco e data, um lançamento de aporte é criado automaticamente</li>
-              <li>Use o botão <strong>+ Movimentação</strong> para registrar aportes, resgates e rendimentos</li>
-              <li>Cada movimentação gera um lançamento vinculado em Lançamentos</li>
-              <li>O dashboard exibe o total aportado, patrimônio atual e rentabilidade geral</li>
-            </ul>
+            <h3>📈 Investimentos · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Investimentos</span></h3>
+            <p>Cadastre ativos (CDB, Tesouro, ações, fundos). Use <strong>+ Movimentação</strong> para aportes, resgates e rendimentos. Dashboard mostra total aportado vs patrimônio atual.</p>
           </div>
           <div class="hr"></div>
 
           <!-- METAS -->
           <div class="manual-section">
-            <h3>🎯 Metas Financeiras</h3>
-            <p>Defina objetivos financeiros na aba <strong>Metas</strong>. Para cada meta informe:</p>
-            <ul>
-              <li>Descrição (ex: "Reserva de emergência", "Viagem para Europa")</li>
-              <li>Valor alvo e valor já acumulado</li>
-              <li>Data limite para atingir o objetivo</li>
-            </ul>
-            <p style="margin-top:8px">O sistema calcula o percentual de progresso e o valor mensal necessário para atingir a meta no prazo. Você também pode definir <strong>limites de gasto por Centro de Custo</strong> — um alerta aparece no dashboard quando o limite for ultrapassado.</p>
+            <h3>🎯 Metas · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Metas</span></h3>
+            <p>Objetivos financeiros com valor alvo, valor acumulado e prazo. O sistema calcula percentual de progresso e valor mensal necessário. Defina também <strong>limites de gasto por Centro de Custo</strong> — alerta no dashboard ao ultrapassar.</p>
           </div>
           <div class="hr"></div>
 
           <!-- DASHBOARD -->
           <div class="manual-section">
-            <h3>📊 Dashboard — Visão Geral das Finanças</h3>
-            <p>O <strong>Dashboard</strong> é a tela inicial com todos os indicadores importantes. Use o filtro no topo para selecionar o período (mês, ano ou próximos 6 meses) e a conta bancária:</p>
+            <h3>📊 Dashboard · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Dashboard</span></h3>
+            <p>Tela inicial com todos os indicadores. Filtre por período e conta:</p>
             <ul>
-              <li><strong>Saldo Total Hoje:</strong> Soma dos saldos de todas as contas considerando apenas lançamentos <em>pagos</em> até hoje. Representa seu dinheiro real disponível agora.</li>
-              <li><strong>Saldo do Período:</strong> Receitas menos Despesas do período selecionado. Inclui lançamentos futuros agendados até o final do filtro — mostra como suas finanças vão ficar.</li>
-              <li><strong>Total Receitas / Despesas:</strong> Totais do período selecionado</li>
-              <li><strong>Gráfico de Fluxo:</strong> Evolução diária de entradas e saídas</li>
-              <li><strong>Faturas dos Cartões:</strong> Alertas de faturas próximas do vencimento</li>
-              <li><strong>Comparativo mensal:</strong> Comparação com o mês anterior</li>
-            </ul>
-          </div>
-          <div class="hr"></div>
-
-          <!-- RELATÓRIOS -->
-          <div class="manual-section">
-            <h3>📋 Relatórios</h3>
-            <p>Na aba <strong>Relatórios</strong>, gere e exporte análises em PDF:</p>
-            <ul>
-              <li><strong>Fluxo de Caixa Mensal:</strong> Movimentações dia a dia com totais</li>
-              <li><strong>Movimentação Bancária por Conta:</strong> Extrato de cada banco</li>
-              <li><strong>Movimentação por Cartão:</strong> Gastos por cartão de crédito</li>
-              <li><strong>Despesas por Categoria:</strong> Ranking de gastos por centro de custo</li>
-              <li><strong>Receitas vs Despesas:</strong> Comparativo em período personalizado</li>
-              <li><strong>Contas a Vencer / Em Atraso:</strong> Inadimplências e próximos vencimentos</li>
-              <li><strong>Posição de Investimentos:</strong> Carteira consolidada</li>
+              <li><strong>Total Receitas / Despesas</strong>: clique para ver os lançamentos que compõem o total. Exclui transferências entre contas, investimentos, financiamentos e CCs marcados como "Excluir"</li>
+              <li><strong>Saldo Total Hoje</strong>: soma dos saldos reais de todas as contas (só lançamentos pagos)</li>
+              <li><strong>Comparativo Mês a Mês</strong>: mês atual vs anterior com variação percentual</li>
+              <li><strong>Previsão 3 Meses</strong>: Rec / Desp / Saldo dos próximos 3 meses</li>
+              <li><strong>Gráficos</strong> com zoom interativo (scroll ou pinch) e botão ↺ Reset zoom</li>
+              <li><strong>Faturas dos Cartões</strong> e <strong>Contas a Pagar</strong> nos próximos 7 dias</li>
             </ul>
           </div>
           <div class="hr"></div>
 
           <!-- CONCILIAÇÃO -->
           <div class="manual-section">
-            <h3>⚖️ Conciliação Bancária</h3>
-            <p>A conciliação compara o extrato do banco com seus lançamentos e identifica divergências. Acesse a aba <strong>Conciliação Bancária</strong>:</p>
-            <p style="margin-top:8px"><strong>OFX / QFX / CSV</strong> — Baixe o extrato no internet banking do seu banco (procure por "Exportar extrato") e importe aqui. O sistema compara automaticamente e apresenta as diferenças uma a uma para você confirmar ou pular.</p>
-            <p style="margin-top:8px"><strong>PDF / Texto</strong> — Selecione o banco (Itaú, Bradesco, Caixa ou Nubank), faça upload do PDF ou cole o texto copiado. O sistema extrai as transações com o parser específico de cada banco. PDFs escaneados da Caixa usam OCR via IA automaticamente.</p>
-            <p style="margin-top:8px">Após processar, uma tabela mostra todas as transações com status <strong>OK</strong> (já lançadas) ou <strong>Novo</strong> (não encontradas). Clique em <strong>Iniciar Conciliação</strong> para confirmar os novos lançamentos — o sistema usa tolerância de ±3 dias na comparação de datas.</p>
+            <h3>⚖️ Conciliação Bancária · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Conciliação</span></h3>
+            <p>Compare extratos bancários com seus lançamentos. Duas modalidades:</p>
+            <ul>
+              <li><strong>OFX / QFX / CSV</strong>: exporte o extrato no internet banking e importe. Cada item novo abre modal para confirmar descrição e CC</li>
+              <li><strong>PDF / Texto</strong> (Itaú, Bradesco, Caixa, Nubank): upload do PDF ou cole o texto. Por item novo: edite descrição, selecione CC e marque <strong>"Aplicar este CC a todos os próximos itens"</strong> para lançamento em lote</li>
+            </ul>
+            <p style="margin-top:8px">Tolerância de ±3 dias na comparação de datas. Lançamentos conciliados ficam no histórico da aba.</p>
+          </div>
+          <div class="hr"></div>
+
+          <!-- RELATÓRIOS -->
+          <div class="manual-section">
+            <h3>📋 Relatórios · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Relatórios</span></h3>
+            <p>Gere e exporte relatórios em PDF: Fluxo de Caixa · Movimentação por Conta · Movimentação por Cartão · Despesas por Categoria · Receitas vs Despesas · Contas a Vencer/Atraso · Posição de Investimentos.</p>
           </div>
           <div class="hr"></div>
 
           <!-- BACKUP -->
           <div class="manual-section">
-            <h3>💾 Backup e Segurança dos Dados</h3>
+            <h3>💾 Backup · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Configuração</span></h3>
             <ul>
-              <li>Em <strong>Configurações → Backup Manual</strong>, exporte um arquivo JSON com todos os dados</li>
-              <li>Ative o <strong>Backup Automático</strong> (diário, semanal ou mensal) para nunca perder dados</li>
-              <li>Para restaurar, clique em <strong>Importar Backup</strong> e selecione o arquivo JSON</li>
-              <li>Faça backup antes de limpar dados ou trocar de dispositivo</li>
-              <li>Se precisar apagar tudo, use <strong>Configurações → Limpar Todos os Dados</strong> — confirme no modal e a página recarregará limpa</li>
+              <li><strong>Backup Manual</strong>: exporte JSON com todos os dados a qualquer momento</li>
+              <li><strong>Backup Automático</strong>: intervalo diário, semanal ou mensal — arquivo baixado automaticamente</li>
+              <li><strong>Restaurar</strong>: importe o JSON exportado anteriormente</li>
+              <li><strong>Apagar tudo</strong>: backup automático gerado antes da limpeza</li>
             </ul>
           </div>
           <div class="hr"></div>
 
-          <!-- CRIPTOGRAFIA -->
+          <!-- TECNOLOGIAS -->
           <div class="manual-section">
-            <h3>🔒 Proteção e Criptografia</h3>
-            <p>Todos os dados são cifrados com <strong>AES‑256</strong> usando sua senha pessoal como chave. Sem a senha correta, os dados aparecem como texto embaralhado ilegível. A criptografia acontece localmente no dispositivo — nenhum dado é enviado para servidores externos.</p>
+            <h3>🛠️ Tecnologias</h3>
             <ul>
-              <li>Nunca compartilhe sua senha</li>
-              <li>Se trocar de dispositivo, exporte o backup e importe no novo — use a mesma senha</li>
-              <li>O sistema não possui mecanismo de recuperação de senha — guarde-a em local seguro</li>
-            </ul>
-          </div>
-          <div class="hr"></div>
-
-          <!-- DICAS -->
-          <div class="manual-section">
-            <h3>💡 Dicas de Uso</h3>
-            <ul>
-              <li>Use <strong>Ctrl+K</strong> (desktop) para abrir a busca global rápida</li>
-              <li>Lance despesas pendentes com antecedência para planejar o mês</li>
-              <li>Revise o dashboard toda semana para acompanhar as metas</li>
-              <li>Faça a conciliação bancária mensalmente para garantir que nada foi esquecido</li>
-              <li>Use centros de custo consistentes — isso torna os relatórios muito mais úteis</li>
-              <li>O botão <strong>Duplicar</strong> no lançamento facilita registrar despesas similares rapidamente</li>
-              <li>Lançamentos recorrentes poupam tempo com contas mensais fixas</li>
-              <li>Sempre exporte um backup antes de atualizar o aplicativo</li>
+              <li><strong>HTML5 · CSS3 · JavaScript ES6+</strong> — single-file, sem framework, sem dependências de servidor</li>
+              <li><strong>AES-256 (CryptoJS)</strong> — criptografia local de todos os dados do usuário</li>
+              <li><strong>Chart.js 4.4 + chartjs-plugin-zoom + Hammer.js</strong> — gráficos interativos com zoom e pan</li>
+              <li><strong>PDF.js</strong> — leitura de faturas PDF diretamente no browser, sem envio de dados</li>
+              <li><strong>Font Awesome 6</strong> — ícones</li>
+              <li><strong>LocalStorage</strong> — armazenamento local criptografado, sem servidor</li>
+              <li><strong>PWA + Service Worker</strong> — instalável no celular, funciona offline, publicável no Play Store via TWA</li>
             </ul>
           </div>
 
-        </div>
-      </section>
-
-
-      <!-- ──────────── FINANCIAMENTOS ──────────── -->
-      <section class="section" id="tab-financiamentos">
-        <div class="page-hd">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div>
-              <div class="page-title">Financiamentos</div>
-              <div class="page-sub">Controle de empréstimos e financiamentos</div>
-            </div>
-          </div>
-          <button class="btn btn-gold btn-full-mobile" onclick="openModalFinanc()">
-            <i class="fa fa-plus"></i> Novo Financiamento
-          </button>
-        </div>
-
-        <!-- Cards resumo -->
-        <div id="financGrid" class="financ-grid"></div>
-
-        <!-- Próximas parcelas -->
-        <div class="card">
-          <div class="card-title">
-            <i class="fa fa-calendar-check" style="color:var(--gold)"></i>
-            Próximas Parcelas <span class="badge badge-gold">3 meses</span>
-          </div>
-          <div id="financProxParcelas"></div>
-        </div>
-
-        <!-- Tabela completa -->
-        <div class="card tbl-mobile-hide" style="padding:0; margin-top:20px">
-          <div class="tbl-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Descrição</th>
-                  <th>Valor Total</th>
-                  <th>Parcela Mensal</th>
-                  <th>Parcelas Pagas</th>
-                  <th>Saldo Devedor</th>
-                  <th>Próx. Venc.</th>
-                  <th>Status</th>
-                  <th style="width:90px">Ações</th>
-                </tr>
-              </thead>
-              <tbody id="tblFinancBody"></tbody>
-            </table>
-          </div>
         </div>
       </section>
 
@@ -2056,16 +2272,16 @@ tbody tr:last-child td { border-bottom: none; }
         <div class="grid2" style="margin-bottom:20px">
           <div class="card">
             <div class="card-title">Distribuição por Tipo <span class="badge badge-teal">Pizza</span></div>
-            <div class="chart-box"><canvas id="grafInvestTipo" style="max-height:220px"></canvas></div>
+            <div class="chart-box"><button class="chart-zoom-btn" id="zoomResetInvestTipo" onclick="resetZoom('grafInvestTipo',this)">↺ Reset zoom</button><canvas id="grafInvestTipo" style="max-height:340px"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">Distribuição por Ativo <span class="badge badge-gold">Pizza</span></div>
-            <div class="chart-box"><canvas id="grafInvestAtivo" style="max-height:220px"></canvas></div>
+            <div class="chart-box"><button class="chart-zoom-btn" id="zoomResetInvestAtivo" onclick="resetZoom('grafInvestAtivo',this)">↺ Reset zoom</button><canvas id="grafInvestAtivo" style="max-height:340px"></canvas></div>
           </div>
         </div>
         <div class="card" style="margin-bottom:20px">
           <div class="card-title">Evolução Mensal do Patrimônio <span class="badge badge-gold">Gráfico</span></div>
-          <div class="chart-box"><canvas id="grafInvestEvolucao"></canvas></div>
+          <div class="chart-box"><button class="chart-zoom-btn" id="zoomResetInvestEvolucao" onclick="resetZoom('grafInvestEvolucao',this)">↺ Reset zoom</button><canvas id="grafInvestEvolucao"></canvas></div>
         </div>
 
         <!-- Histórico de movimentações -->
@@ -2478,8 +2694,8 @@ tbody tr:last-child td { border-bottom: none; }
     </div>
 
     <div class="input-row cols2">
-      <div class="field">
-        <label>Conta Corrente (Origem)</label>
+      <div class="field" id="fieldBanco">
+        <label>Banco / Conta</label>
         <select id="mLancBanco">
           <option value="">— selecione —</option>
         </select>
@@ -2534,6 +2750,7 @@ tbody tr:last-child td { border-bottom: none; }
           <option value="Diário">Diário</option>
           <option value="Semanal">Semanal</option>
           <option value="Mensal">Mensal</option>
+          <option value="Semestral">Semestral</option>
           <option value="Anual">Anual</option>
         </select>
       </div>
@@ -2567,6 +2784,13 @@ tbody tr:last-child td { border-bottom: none; }
     <div class="field">
       <label>Nome do Cartão *</label>
       <input id="mCartNome" placeholder="Ex: Nubank Platinum">
+    </div>
+    <div class="field">
+      <label>Tipo do Cartão</label>
+      <select id="mCartTipo">
+        <option value="credito">Crédito — paga depois</option>
+        <option value="debito">Débito — saldo pré-carregado</option>
+      </select>
     </div>
     <div class="input-row cols2">
       <div class="field">
@@ -2688,7 +2912,11 @@ tbody tr:last-child td { border-bottom: none; }
     <div class="modal-title" style="font-size:clamp(16px,4vw,22px)"><i class="fa fa-file-pdf" style="color:var(--red)"></i> Conciliação PDF</div>
     <div id="concPdfItemInfo"></div>
     <div class="field"><label>Descrição</label><input id="concPdfItemDesc" placeholder="Descrição do lançamento" style="width:100%"></div>
-    <div class="field"><label>Centro de Custo (opcional)</label><select id="concPdfItemCC" style="width:100%"><option value="">— selecione —</option></select></div>
+    <div class="field"><label>Centro de Custo (opcional)</label><select id="concPdfItemCC" style="width:100%" onchange="concPdfAplicarCCTodos(false)"><option value="">— selecione —</option></select></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <input type="checkbox" id="concPdfCCTodos" onchange="concPdfAplicarCCTodos(true)" style="cursor:pointer">
+      <label for="concPdfCCTodos" style="font-size:12px;color:var(--text3);cursor:pointer">Aplicar este CC a todos os próximos itens</label>
+    </div>
     <div class="modal-footer" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
       <button class="btn btn-ghost btn-sm" onclick="concPdfItemCancelar()"><i class="fa fa-times"></i> Cancelar</button>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -2712,6 +2940,13 @@ tbody tr:last-child td { border-bottom: none; }
         <option value="Receita">Receita</option>
         <option value="Despesa">Despesa</option>
         <option value="Ambos">Ambos</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Excluir de Rec/Desp</label>
+      <select id="editCCExcluir">
+        <option value="nao">Não — incluir nos totais</option>
+        <option value="sim">Sim — excluir dos totais</option>
       </select>
     </div>
     <div class="modal-footer">
@@ -3185,6 +3420,10 @@ function _decrypt(raw) {
   }
 }
 
+/* ══ VERSÃO DO APP ══════════════════════════ */
+const APP_VERSION = '20.16.20260329';
+const APP_BUILD   = '20260328';
+
 /* ══════════════════════════════════════════
    STATE & STORAGE
 ══════════════════════════════════════════ */
@@ -3335,6 +3574,16 @@ let uuidN = Date.now();
 const uid = () => (++uuidN).toString(36);
 
 // Format BRL
+function fmtK(v) {
+  // Rótulo de eixo em K/M para não poluir o gráfico
+  if (v === 0) return 'R$0';
+  const abs = Math.abs(v);
+  const sig = v < 0 ? '-' : '';
+  if (abs >= 1000000) return sig+'R$'+(abs/1000000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'M';
+  if (abs >= 1000)    return sig+'R$'+(abs/1000).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:1})+'k';
+  return sig+'R$'+abs.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+
 function fmtBRL(v) {
   const n = typeof v === 'string' ? parseMoney(v) : Number(v)||0;
   return n.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
@@ -3396,6 +3645,13 @@ function toast(msg, type='ok') {
 ══════════════════════════════════════════ */
 let currentUser = null;
 
+function fazerLogout() {
+  if (!confirm('Deseja realmente sair do sistema?')) return;
+  currentUser = null;
+  document.getElementById('loginScreen').style.display = '';
+  document.getElementById('app').style.display = 'none';
+}
+
 function doLogin() {
   const u = document.getElementById('lUser').value.trim();
   const p = document.getElementById('lPass').value;
@@ -3411,8 +3667,11 @@ function doLogin() {
 
   currentUser = ok;
   document.getElementById('loginScreen').style.display='none';
+  // Empurra estado no histórico para interceptar botão Voltar do browser
+  history.pushState({ nmc: true }, '', '');
   document.getElementById('app').style.display='block';
   document.getElementById('sidebarUser').textContent = `👤 ${ok.user} (${ok.perfil||'admin'})`;
+  initTema();
   document.getElementById('dashDate').textContent =
     new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
   populateDashFilters();
@@ -3441,6 +3700,7 @@ function switchTab(id, btn) {
   else document.querySelector(`[data-tab="${id}"]`)?.classList.add('active');
   if (id==='dashboard')  { renderDashboard(); renderContasPagarDash(); }
   if (id==='config')     renderSysInfo();
+  if (id==='cartoes') { renderCartoes(); renderFaturasProjetadas(); initImpFatTab(); }
   if (id==='metas')      { renderMetas(); renderLimitesCC(); }
   if (id==='recorrentes'){ renderRecorrentes(); verificarRecorrentesPendentes(); }
   if (id==='conciliacao'){ renderConciliadosBody(); concSwitchTab('arq'); }
@@ -3487,13 +3747,16 @@ function renderAll() {
    SELECT POPULATION
 ══════════════════════════════════════════ */
 function refreshSelects() {
+  const sortNome = (a,b) => a.nome.localeCompare(b.nome,'pt-BR');
+
   // Bancos selects
+  const bancosOrd = [...bancos].sort(sortNome);
   ['mLancBanco','mCartBanco','fLancBanco','dashBanco'].forEach(id => {
     const el = document.getElementById(id); if (!el) return;
     const cur = el.value;
     const first = id==='fLancBanco'||id==='dashBanco' ? '<option value="">Todos os bancos</option>' :
                   '<option value="">— selecione —</option>';
-    el.innerHTML = first + bancos.map(b=>`<option value="${b.nome}">${b.nome}</option>`).join('');
+    el.innerHTML = first + bancosOrd.map(b=>`<option value="${b.nome}">${b.nome}</option>`).join('');
     el.value = cur;
   });
 
@@ -3502,7 +3765,8 @@ function refreshSelects() {
     const el = document.getElementById(id); if (!el) return;
     const cur = el.value;
     const tipo = id==='mLancCC' ? (document.getElementById('mLancTipo')?.value||'') : '';
-    const filt = tipo ? centros.filter(c=>c.tipo===tipo||c.tipo==='Ambos') : centros;
+    const filt = (tipo ? centros.filter(c=>c.tipo===tipo||c.tipo==='Ambos') : centros)
+                   .sort(sortNome);
     el.innerHTML = (id==='fLancCC'?'<option value="">Todos os centros</option>':'<option value="">— selecione —</option>') +
       filt.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
     el.value = cur;
@@ -3512,7 +3776,7 @@ function refreshSelects() {
   const mf = document.getElementById('mLancForma'); if (mf) {
     const cur = mf.value;
     mf.innerHTML = '<option value="">— selecione —</option>' +
-      formas.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('');
+      [...formas].sort(sortNome).map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('');
     mf.value = cur;
   }
 
@@ -3520,8 +3784,16 @@ function refreshSelects() {
   const mc = document.getElementById('mLancCartao'); if (mc) {
     const cur = mc.value;
     mc.innerHTML = '<option value="">— selecione —</option>' +
-      cartoes.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+      [...cartoes].sort(sortNome).map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
     mc.value = cur;
+  }
+
+  // Filtro de cartão em Lançamentos
+  const fc = document.getElementById('fLancCartao'); if (fc) {
+    const cur = fc.value;
+    fc.innerHTML = '<option value="">Todos os cartões</option>' +
+      [...cartoes].sort(sortNome).map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+    fc.value = cur;
   }
 }
 
@@ -3537,7 +3809,15 @@ function onTipoChange() {
     fTransf.style.display = tipo==='Transferência' ? '' : 'none';
     if (tipo==='Transferência') {
       const sd = document.getElementById('mLancBancoDestino');
-      if (sd) sd.innerHTML = '<option value="">— selecione —</option>' + bancos.map(b=>`<option value="${b.nome}">${b.nome}</option>`).join('');
+      if (sd) {
+        const opsBancos = bancos.map(b=>`<option value="banco:${b.nome}">${b.nome}</option>`).join('');
+        const cartDebito = cartoes.filter(c=>(c.tipoCt||'credito')==='debito');
+        const opsCartoes = cartDebito.length
+          ? '<optgroup label="Cartões Débito">' +
+            cartDebito.map(c=>`<option value="cartao:${c.id}">💳 ${c.nome}</option>`).join('') +
+            '</optgroup>' : '';
+        sd.innerHTML = '<option value="">— selecione —</option><optgroup label="Contas">' + opsBancos + '</optgroup>' + opsCartoes;
+      }
     }
   }
   // Populate selects
@@ -3579,9 +3859,18 @@ function onFinancSelect() {
 }
 
 function onFormaChange() {
-  // Campo cartao sempre visivel quando ha cartoes cadastrados
+  const forma = (document.getElementById('mLancForma')?.value||'').toLowerCase();
+  const tipo  = (document.getElementById('mLancTipo')?.value||'');
   const fc = document.getElementById('fieldCartao');
-  fc.style.display = cartoes.length ? '' : 'none';
+  const fb = document.getElementById('fieldBanco');
+  // Forma que envolve cartão físico → mostra cartão, esconde banco
+  const isCartForm = forma.includes('cartão')||forma.includes('cartao')||
+                     forma.includes('crédito')||forma.includes('credito') ||
+                     forma.includes('débito') && cartoes.some(c=>c.tipoCt==='debito');
+  // Cartão: só mostra o select de cartão se há cartões cadastrados e forma é de cartão
+  if (fc) fc.style.display = (cartoes.length && isCartForm) ? '' : 'none';
+  // Banco: mostra quando não é cartão OU quando é transferência (precisa banco)
+  if (fb) fb.style.display = (isCartForm && tipo!=='Transferência') ? 'none' : '';
 }
 
 /* ══════════════════════════════════════════
@@ -3626,7 +3915,8 @@ function getSaldoBanco(nomeBanco, atéData) {
 function renderBancos() {
   const tb = document.getElementById('tblBancosBody'); if (!tb) return;
   if (!bancos.length) { tb.innerHTML=`<tr><td colspan="5"><div class="empty"><i class="fa fa-university"></i>Nenhum banco.</div></td></tr>`; return; }
-  tb.innerHTML = bancos.map((b,i) => {
+  const bancosOrd = [...bancos].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  tb.innerHTML = bancosOrd.map((b,i) => {
     const saldo = getSaldoBanco(b.nome);
     const cheque = b.chequeEspecial||0;
     const dispTotal = saldo + cheque;
@@ -3638,13 +3928,15 @@ function renderBancos() {
       <td class="td-mono" style="color:${usandoCheque?'var(--red)':'var(--text2)'}">${fmtBRL(dispTotal)} ${usandoCheque?'⚠':''}
       </td>
       <td>
-        <button class="btn btn-ghost btn-icon btn-edit" onclick="openEditBanco(${i})" title="Editar"><i class="fa fa-pencil-alt"></i></button>
-        <button class="btn btn-ghost btn-icon btn-danger" onclick="delBanco(${i})" title="Excluir"><i class="fa fa-trash"></i></button>
+        <button class="btn btn-ghost btn-icon btn-edit" onclick="openEditBancoByNome('${b.nome}')" title="Editar"><i class="fa fa-pencil-alt"></i></button>
+        <button class="btn btn-ghost btn-icon btn-danger" onclick="delBancoByNome('${b.nome}')" title="Excluir"><i class="fa fa-trash"></i></button>
       </td>
     </tr>`;
   }).join('');
 }
 
+function openEditBancoByNome(nome) { openEditBanco(bancos.findIndex(b=>b.nome===nome)); }
+function delBancoByNome(nome) { delBanco(bancos.findIndex(b=>b.nome===nome)); }
 function openEditBanco(i) {
   document.getElementById('editBancoIdx').value=i;
   document.getElementById('editBancoNome').value=bancos[i].nome;
@@ -3673,9 +3965,10 @@ function delBanco(i) {
 function addCC() {
   const n = document.getElementById('inCC').value.trim();
   const t = document.getElementById('inCCTipo').value;
+  const excluir = document.getElementById('inCCExcluir')?.value || 'nao';
   if (!n) { toast('Informe o nome.','err'); return; }
-  centros.push({nome:n,tipo:t}); saveAll(); renderCC(); refreshSelects();
-  document.getElementById('inCC').value='';
+  centros.push({nome:n,tipo:t,excluirRecDesp:excluir==='sim'}); saveAll(); renderCC(); refreshSelects();
+  document.getElementById('inCC').value=''; document.getElementById('inCCExcluir').value='nao';;
   toast('Centro cadastrado!');
 }
 
@@ -3683,12 +3976,13 @@ function renderCC() {
   const tb = document.getElementById('tblCCBody'); if (!tb) return;
   if (!centros.length) { tb.innerHTML=`<tr><td colspan="3"><div class="empty"><i class="fa fa-tags"></i>Nenhum centro.</div></td></tr>`; return; }
   const colorMap = {Receita:'badge-teal', Despesa:'badge-red', Ambos:'badge-gold'};
-  tb.innerHTML = centros.map((c,i)=>`<tr>
+  const centrosOrd = [...centros].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  tb.innerHTML = centrosOrd.map((c,i)=>`<tr>
     <td>${c.nome}</td>
-    <td><span class="badge ${colorMap[c.tipo]||'badge-gold'}">${c.tipo}</span></td>
+    <td><span class="badge ${colorMap[c.tipo]||'badge-gold'}">${c.tipo}</span>${c.excluirRecDesp?'<span class="badge" style="margin-left:4px;background:rgba(99,102,241,.15);color:#818cf8;font-size:9px">✕ R/D</span>':''}</td>
     <td>
-      <button class="btn btn-ghost btn-icon btn-edit" onclick="openEditCC(${i})"><i class="fa fa-pencil-alt"></i></button>
-      <button class="btn btn-ghost btn-icon btn-danger" onclick="delCC(${i})"><i class="fa fa-trash"></i></button>
+      <button class="btn btn-ghost btn-icon btn-edit" onclick="openEditCC(centros.findIndex(x=>x.nome==='${c.nome}'))"><i class="fa fa-pencil-alt"></i></button>
+      <button class="btn btn-ghost btn-icon btn-danger" onclick="delCC(centros.findIndex(x=>x.nome==='${c.nome}'))"><i class="fa fa-trash"></i></button>
     </td>
   </tr>`).join('');
 }
@@ -3697,14 +3991,17 @@ function openEditCC(i) {
   document.getElementById('editCCIdx').value=i;
   document.getElementById('editCCNome').value=centros[i].nome;
   document.getElementById('editCCTipo').value=centros[i].tipo;
+  const excEl = document.getElementById('editCCExcluir');
+  if (excEl) excEl.value = centros[i].excluirRecDesp ? 'sim' : 'nao';
   openModal('modalEditCC');
 }
 function saveCC() {
   const i=+document.getElementById('editCCIdx').value;
   const n=document.getElementById('editCCNome').value.trim();
   const t=document.getElementById('editCCTipo').value;
+  const excluir = document.getElementById('editCCExcluir')?.value || 'nao';
   if (!n) { toast('Informe o nome.','err'); return; }
-  centros[i]={nome:n,tipo:t}; saveAll(); renderCC(); refreshSelects();
+  centros[i]={nome:n,tipo:t,excluirRecDesp:excluir==='sim'}; saveAll(); renderCC(); refreshSelects();
   closeModal('modalEditCC'); toast('Centro atualizado!');
 }
 function delCC(i) {
@@ -3727,11 +4024,12 @@ function addForma() {
 function renderFormas() {
   const tb = document.getElementById('tblFormaBody'); if (!tb) return;
   if (!formas.length) { tb.innerHTML=`<tr><td colspan="2"><div class="empty"><i class="fa fa-money-bill-wave"></i>Nenhuma forma.</div></td></tr>`; return; }
-  tb.innerHTML = formas.map((f,i)=>`<tr>
+  const formasOrd = [...formas].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  tb.innerHTML = formasOrd.map((f,i)=>`<tr>
     <td>${f.nome}</td>
     <td>
-      <button class="btn btn-ghost btn-icon btn-edit" onclick="openEditForma(${i})"><i class="fa fa-pencil-alt"></i></button>
-      <button class="btn btn-ghost btn-icon btn-danger" onclick="delForma(${i})"><i class="fa fa-trash"></i></button>
+      <button class="btn btn-ghost btn-icon btn-edit" onclick="openEditForma(formas.findIndex(x=>x.nome==='${f.nome}'))"><i class="fa fa-pencil-alt"></i></button>
+      <button class="btn btn-ghost btn-icon btn-danger" onclick="delForma(formas.findIndex(x=>x.nome==='${f.nome}'))"><i class="fa fa-trash"></i></button>
     </td>
   </tr>`).join('');
 }
@@ -3767,6 +4065,7 @@ function openModalCartao(id) {
       document.getElementById('mCartFech').value   = c.fech||'';
       document.getElementById('mCartVenc').value   = c.venc||'';
       document.getElementById('mCartBanco').value  = c.banco||'';
+    const mct=document.getElementById('mCartTipo'); if(mct) mct.value=c.tipoCt||'credito';
     }
   } else {
     document.getElementById('mCartNome').value   = '';
@@ -3787,6 +4086,7 @@ function saveCartao() {
   const fech   = document.getElementById('mCartFech').value;
   const venc   = document.getElementById('mCartVenc').value;
   const banco  = document.getElementById('mCartBanco').value;
+  const tipoCt = document.getElementById('mCartTipo')?.value || 'credito';
   const editId = document.getElementById('cartaoEditId').value;
 
   if (!nome)   { toast('Informe o nome do cartão.','err'); return; }
@@ -3794,73 +4094,111 @@ function saveCartao() {
 
   if (editId) {
     const c = cartoes.find(x=>x.id===editId);
-    if (c) Object.assign(c,{nome,limite,fech,venc,banco});
+    if (c) Object.assign(c,{nome,limite,fech,venc,banco,tipoCt});
   } else {
-    cartoes.push({id:uid(),nome,limite,fech,venc,banco});
+    cartoes.push({id:uid(),nome,limite,fech,venc,banco,tipoCt});
   }
   saveAll(); renderCartoes(); refreshSelects();
   closeModal('modalCartao'); toast(editId?'Cartão atualizado!':'Cartão cadastrado!');
 }
 
 function getLimiteUtilizado(cartaoId) {
+  // Soma apenas despesas vinculadas ao cartão (não conta cargas/receitas)
   return lancamentos
-    .filter(l => l.cartaoId===cartaoId)
+    .filter(l => l.cartaoId===cartaoId && l.tipo==='Despesa')
     .reduce((s,l) => s + parseMoney(l.valor), 0);
 }
 
 function renderCartoes() {
-  const tb = document.getElementById('tblCartoesBody'); if (!tb) return;
   const grid = document.getElementById('cartoesGrid');
 
   if (!cartoes.length) {
-    tb.innerHTML=`<tr><td colspan="7"><div class="empty"><i class="fa fa-credit-card"></i>Nenhum cartão cadastrado.</div></td></tr>`;
-    grid.innerHTML='';
+    if (grid) grid.innerHTML='<div class="empty" style="padding:40px"><i class="fa fa-credit-card"></i>Nenhum cartão cadastrado.</div>';
     return;
   }
 
   // Mini cards
-  grid.innerHTML = cartoes.map(c => {
-    const util = getLimiteUtilizado(c.id);
-    const disp = Math.max(0, c.limite - util);
-    const pct  = c.limite > 0 ? Math.min(100, Math.round(util/c.limite*100)) : 0;
+  const cartoesOrd = [...cartoes].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  grid.innerHTML = cartoesOrd.map(c => {
+    const isDebito = (c.tipoCt||'credito')==='debito';
+    const util = getLimiteUtilizado(c.id); // só despesas
+    const cargas = lancamentos.filter(l=>l.cartaoId===c.id&&l.tipo==='Receita').reduce((s,l)=>s+parseMoney(l.valor),0);
+    const saldoDeb = cargas - util; // cargas recebidas menos gastos
+    const disp = isDebito ? Math.max(0, saldoDeb) : Math.max(0, c.limite - util);
+    const pct  = isDebito
+      ? (cargas > 0 ? Math.min(100, Math.round(util/cargas*100)) : 0)
+      : (c.limite > 0 ? Math.min(100, Math.round(util/c.limite*100)) : 0);
     const barColor = pct>80?'var(--red)':pct>60?'#f59e0b':'var(--teal)';
     return `<div class="card" style="margin-bottom:0">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
         <div style="font-family:var(--serif);font-size:17px;font-weight:600;color:var(--text)">${c.nome}</div>
-        <span class="badge badge-gold">Crédito</span>
+        <span class="badge ${isDebito?'badge-teal':'badge-gold'}">${isDebito?'Débito':'Crédito'}</span>
       </div>
-      <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:4px">LIMITE TOTAL</div>
-      <div style="font-family:var(--mono);font-size:19px;color:var(--text);margin-bottom:14px">${fmtBRL(c.limite)}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:4px">${isDebito?'SALDO DISPONÍVEL':'LIMITE TOTAL'}</div>
+      <div style="font-family:var(--mono);font-size:19px;color:var(--text);margin-bottom:14px">${isDebito?fmtBRL(disp):fmtBRL(c.limite)}</div>
       <div class="prog-bar">
         <div class="prog-bar-fill" style="width:${pct}%;background:${barColor}"></div>
       </div>
       <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;font-family:var(--mono)">
-        <span style="color:var(--red)">Usado: ${fmtBRL(util)}</span>
-        <span style="color:var(--teal)">Livre: ${fmtBRL(disp)}</span>
+        <span style="color:var(--red)">${isDebito?'Gasto':'Usado'}: ${fmtBRL(util)}</span>
+        <span style="color:var(--teal)">${isDebito?'Saldo':'Livre'}: ${fmtBRL(disp)}</span>
       </div>
-      ${c.fech?`<div style="font-size:11px;color:var(--text3);margin-top:10px;font-family:var(--mono)">
+      ${c.fech&&!isDebito?`<div style="font-size:11px;color:var(--text3);margin-top:10px;font-family:var(--mono)">
         Fecha dia ${c.fech} · Vence dia ${c.venc||'—'}
+      </div>`:''}
+      ${!isDebito?`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">
+        ${(()=>{
+          const hoje = new Date();
+          const ymAtual = hoje.toISOString().slice(0,7);
+          const ymProx  = new Date(hoje.getFullYear(), hoje.getMonth()+1, 1).toISOString().slice(0,7);
+
+          // Calcula vencimento do cartão no mês atual
+          const vencDiaC = c.venc ? parseInt(c.venc) : 10;
+          const ultimoDiaC = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0).getDate();
+          const vencAtualStr = ymAtual + '-' + String(Math.min(vencDiaC, ultimoDiaC)).padStart(2,'0');
+
+          // Fatura atual = TODOS lançamentos não pagos com data <= vencimento atual
+          // (inclui meses anteriores que ainda não foram pagos)
+          const fatAtual = lancamentos.filter(l=>
+            l.cartaoId===c.id && l.tipo==='Despesa' && !l.pago &&
+            (l.data||'') <= vencAtualStr
+          ).reduce((s,l)=>s+parseMoney(l.valor),0);
+          const fatProx  = lancamentos.filter(l=>l.cartaoId===c.id&&l.tipo==='Despesa'&&(l.data||'').slice(0,7)===ymProx).reduce((s,l)=>s+parseMoney(l.valor),0);
+          const pagAtualPago   = lancamentos.some(l=> l.pago&&l.banco&&(l.desc||'').includes('Pagamento fatura '+c.nome)&&(l.data||'').slice(0,7)===ymAtual);
+          const pagAtualExiste = lancamentos.some(l=>!l.pago&&l.banco&&(l.desc||'').includes('Pagamento fatura '+c.nome)&&(l.data||'').slice(0,7)===ymAtual);
+          const pagProxExiste  = lancamentos.some(l=>!l.pago&&l.banco&&(l.desc||'').includes('Pagamento fatura '+c.nome)&&(l.data||'').slice(0,7)===ymProx);
+          const mkRow = (ym, fat, jaExiste, jaPago, vencida) => {
+            if (!fat) return '';
+            const label = ym.split('-').reverse().join('/');
+            const badge = jaPago   ? '<span style="font-size:9px;color:var(--teal);font-family:var(--mono)">✓ PAGO</span>'
+                        : jaExiste ? '<span style="font-size:9px;color:#f59e0b;font-family:var(--mono)">⏳ AGENDADO</span>' : '';
+            const valCor = vencida&&!jaPago ? 'var(--red)' : 'var(--text2)';
+            const btnStyle = jaPago||jaExiste
+              ? 'background:var(--surface);color:var(--text3);border:1px solid var(--border)'
+              : vencida
+              ? 'background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.5);color:var(--red)'
+              : 'background:rgba(201,168,76,.12);border:1px solid var(--gold);color:var(--gold)';
+            const btnIcon  = jaPago ? 'fa-check-circle' : jaExiste ? 'fa-check' : 'fa-file-invoice-dollar';
+            const btnLabel = jaPago ? 'Fatura paga' : jaExiste ? 'Pagamento agendado' : vencida ? '⚠ Agendar (VENCIDA)' : 'Agendar pagamento';
+            return '<div style="margin-bottom:10px">'
+              +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
+              +'<span style="font-size:10px;font-family:var(--mono);color:'+(vencida&&!jaPago?'var(--red)':'var(--text3)')+'">'+( vencida&&!jaPago?'⚠ ':'')+'FATURA '+label+'</span>'
+              +'<div style="display:flex;align-items:center;gap:6px">'+badge+'<span style="font-size:13px;font-family:var(--mono);font-weight:600;color:'+valCor+'">'+fmtBRL(fat)+'</span></div>'
+              +'</div>'
+              +'<button onclick="pagarFaturaCartao(\'' +c.id+ '\',\'' +c.nome+ '\',' +fat+ ',\'' +ym+ '\')" '
+              +'class="btn btn-sm" style="width:100%;font-size:11px;'+btnStyle+'" '+(jaPago||jaExiste?'disabled':'')+'>'
+              +'<i class="fa '+btnIcon+'"></i> '+btnLabel
+              +'</button></div>';
+          };
+          return (fatAtual||fatProx)
+            ? mkRow(ymAtual,fatAtual,pagAtualExiste,pagAtualPago,true)
+             +mkRow(ymProx, fatProx, pagProxExiste, false, false)
+            : '<div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-align:center">Sem lançamentos</div>';
+        })()}
       </div>`:''}
     </div>`;
   }).join('');
 
-  // Table
-  tb.innerHTML = cartoes.map(c => {
-    const util = getLimiteUtilizado(c.id);
-    const disp = Math.max(0, c.limite - util);
-    return `<tr>
-      <td style="font-weight:500;color:var(--text)">${c.nome}</td>
-      <td class="td-mono">${fmtBRL(c.limite)}</td>
-      <td class="td-mono td-type-d">${fmtBRL(util)}</td>
-      <td class="td-mono td-type-r">${fmtBRL(disp)}</td>
-      <td class="td-mono">${c.fech?'Dia '+c.fech:'—'}</td>
-      <td class="td-mono">${c.venc?'Dia '+c.venc:'—'}</td>
-      <td>
-        <button class="btn btn-ghost btn-icon btn-edit" onclick="openModalCartao('${c.id}')"><i class="fa fa-pencil-alt"></i></button>
-        <button class="btn btn-ghost btn-icon btn-danger" onclick="delCartao('${c.id}')"><i class="fa fa-trash"></i></button>
-      </td>
-    </tr>`;
-  }).join('');
 
   // Mobile card list for cartoes
   const ml = document.getElementById('cartoesMobileList');
@@ -3977,6 +4315,9 @@ function saveLanc() {
   const valor    = parseMoney(valorRaw);
   const desc     = document.getElementById('mLancDesc').value.trim();
   const editId   = document.getElementById('lancEditId').value;
+  // Lançamento no cartão não debita conta corrente diretamente
+  const bancoFinal = cartaoId ? '' : banco;
+
   const financId = document.getElementById('mLancFinancId')?.value||'';
   const investId = document.getElementById('mLancInvestId')?.value||'';
   const investOp = document.getElementById('mLancInvestOp')?.value||'Aporte';
@@ -3988,7 +4329,7 @@ function saveLanc() {
 
   if (editId) {
     // Edicao: atualiza só este lancamento
-    const obj = {id:editId,tipo,data,banco,cc,forma,cartaoId,parcelas,period,valor,desc};
+    const obj = {id:editId,tipo,data,banco:bancoFinal,cc,forma,cartaoId,parcelas,period,valor,desc,dataCriacao:(lancamentos.find(x=>x.id===editId)?.dataCriacao||new Date().toISOString().slice(0,10))};
     const idx = lancamentos.findIndex(x=>x.id===editId);
     if (idx>=0) lancamentos[idx]=obj;
   } else if (nParcelas > 1 && cartaoId) {
@@ -4020,13 +4361,13 @@ function saveLanc() {
       const fatData = fatY + '-' + fatM + '-' + dia;
 
       const descParcela = (desc ? desc + ' ' : '') + '(' + (p+1) + '/' + nParcelas + ')';
-      lancamentos.push({
-        id: uid(),
+      lancamentos.push({dataCriacao:new Date().toISOString().slice(0,10),     id: uid(),
         groupId,
         tipo, banco, cc, forma, cartaoId,
         parcelas: String(nParcelas),
         parcelaNum: p+1,
         period,
+        dataCriacao: new Date().toISOString().slice(0,10),
         valor: parcelVal,
         desc: descParcela,
         data: fatData
@@ -4036,16 +4377,41 @@ function saveLanc() {
       new Date(lancamentos[lancamentos.length-1].data + 'T12:00:00')
         .toLocaleDateString('pt-BR',{month:'long',year:'numeric'}) + '.', 'ok');
   } else if (tipo === 'Transferência') {
-    // Gera dois lançamentos: saída da origem e entrada no destino
-    const bancoDestino = document.getElementById('mLancBancoDestino')?.value || '';
-    if (!bancoDestino) { toast('Selecione a conta de destino.','err'); return; }
-    if (bancoDestino === banco) { toast('Origem e destino não podem ser iguais.','err'); return; }
+    // Destino pode ser banco ("banco:nome") ou cartão débito ("cartao:id")
+    const destinoRaw = document.getElementById('mLancBancoDestino')?.value || '';
+    if (!destinoRaw) { toast('Selecione a conta de destino.','err'); return; }
+
+    const isCartaoDestino = destinoRaw.startsWith('cartao:');
+    const destinoCartaoId = isCartaoDestino ? destinoRaw.replace('cartao:','') : '';
+    const destinoNome = isCartaoDestino
+      ? (cartoes.find(c=>c.id===destinoCartaoId)?.nome || destinoCartaoId)
+      : destinoRaw.replace('banco:','');
+
+    if (!isCartaoDestino && destinoNome === banco) { toast('Origem e destino não podem ser iguais.','err'); return; }
+
     const groupId = uid();
-    lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Transferência', transDir:'saida',   data, banco,          cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc:`Transferência → ${bancoDestino}`+(desc?' | '+desc:''), pago:true});
-    lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Transferência', transDir:'entrada', data, banco:bancoDestino, cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor, desc:`Transferência ← ${banco}`+(desc?' | '+desc:''), pago:true});
-    toast('Transferência registrada!');
+    // Lançamento de saída na conta bancária origem
+    lancamentos.push({id:uid(), groupId, transferencia:true, dataCriacao:new Date().toISOString().slice(0,10), tipo:'Transferência', transDir:'saida',
+      data, banco, cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor,
+      desc:`Transferência → ${destinoNome}`+(desc?' | '+desc:''), pago:true});
+
+    if (isCartaoDestino) {
+      // Carga no cartão débito: Receita vinculada ao cartão (aumenta saldo disponível)
+      lancamentos.push({id:uid(), groupId, transferencia:true, dataCriacao:new Date().toISOString().slice(0,10), tipo:'Receita', transDir:'entrada',
+        data, banco:'', cc, forma, cartaoId:destinoCartaoId, parcelas:'1', period:'Único', valor,
+        desc:`Carga ← ${banco}`+(desc?' | '+desc:''), pago:true});
+      toast(`Carga de ${fmtBRL(valor)} registrada em ${destinoNome}!`);
+    } else {
+      // Transferência normal entre bancos
+      lancamentos.push({id:uid(), groupId, transferencia:true, tipo:'Transferência', transDir:'entrada',
+        data, banco:destinoNome, cc, forma, cartaoId:'', parcelas:'1', period:'Único', valor,
+        desc:`Transferência ← ${banco}`+(desc?' | '+desc:''), pago:true});
+      toast('Transferência registrada!');
+    }
   } else {
-    const obj = {id:uid(),tipo,data,banco,cc,forma,cartaoId,parcelas,period,valor,desc};
+    const isPeriod = (period==='Semestral'||period==='Anual') && (parseInt(parcelas)||1)>1;
+    const obj = {id:uid(),tipo,data,banco:bancoFinal,cc,forma,cartaoId,parcelas,period,valor,desc,dataCriacao:new Date().toISOString().slice(0,10),
+      ...(isPeriod ? {parcelaNum:1, groupId:uid()} : {})};
     lancamentos.push(obj);
   }
 
@@ -4089,7 +4455,7 @@ function sortLanc(col) {
 
 function clearLancFilter() {
   ['fLancBusca','fLancDtI','fLancDtF'].forEach(id=>{document.getElementById(id).value='';});
-  ['fLancTipo','fLancBanco','fLancCC'].forEach(id=>{document.getElementById(id).value='';});
+  ['fLancTipo','fLancBanco','fLancCartao','fLancCC','fLancStatus','fLancTipoDt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   renderLancamentos();
 }
 
@@ -4098,8 +4464,13 @@ function isTransferencia(l) {
   if (!l) return false;
   if (l.tipo === 'Transferência') return true;
   if (l.transferencia === true) return true;
-  const d = l.desc || '';
-  return d.startsWith('Transferência →') || d.startsWith('Transferência ←');
+  const d = (l.desc || '').trim();
+  // Formatos gerados pelo sistema (entre contas)
+  if (d.startsWith('Transferência →') || d.startsWith('Transferência ←')) return true;
+  if (d.startsWith('Transferencia →') || d.startsWith('Transferencia ←')) return true;
+  // Carga em cartão débito → é movimentação interna (conta → cartão débito)
+  if (d.startsWith('Carga ←') && l.cartaoId) return true;
+  return false;
 }
 
 function renderLancamentos() {
@@ -4107,6 +4478,7 @@ function renderLancamentos() {
   const busca  = document.getElementById('fLancBusca').value.toLowerCase();
   const tipo   = document.getElementById('fLancTipo').value;
   const banco  = document.getElementById('fLancBanco').value;
+  const cartaoFilt = (document.getElementById('fLancCartao')||{}).value || '';
   const cc     = document.getElementById('fLancCC').value;
   const dtI    = document.getElementById('fLancDtI').value;
   const dtF    = document.getElementById('fLancDtF').value;
@@ -4122,9 +4494,12 @@ function renderLancamentos() {
       if (l.tipo !== tipo) return false;
     }
     if (banco && l.banco!==banco) return false;
+    if (cartaoFilt && l.cartaoId!==cartaoFilt) return false;
     if (cc    && l.cc!==cc)       return false;
-    if (dtI   && l.data < dtI)    return false;
-    if (dtF   && l.data > dtF)    return false;
+    const tipoDt = (document.getElementById('fLancTipoDt')||{}).value || 'data';
+    const dtCmp  = l[tipoDt] || '';
+    if (dtI && dtCmp < dtI) return false;
+    if (dtF && dtCmp > dtF) return false;
     if (status === 'pago'     && !l.pago) return false;
     if (status === 'pendente' && (l.pago || l.data < hoje)) return false;
     if (status === 'vencido'  && (l.pago || l.data >= hoje)) return false;
@@ -4192,6 +4567,8 @@ function renderLancamentos() {
     return `<tr style="${vencido?'background:rgba(224,82,82,.03)':''}${l.pago?';opacity:.7':''}">
       <td><span class="${isTransferencia(l)?'':''}${isRec?'td-type-r':isTransferencia(l)?'':'td-type-d'}" style="${isTransferencia(l)?'color:var(--text2);font-size:11px':''}">${isTransferencia(l)?(l.transDir==='entrada'?'↙ Transf.':'↗ Transf.'):l.tipo}</span></td>
       <td class="td-mono">${fmtDate(l.data)}</td>
+      <td class="td-mono" style="color:var(--text3);font-size:11px">${l.dataCriacao?fmtDate(l.dataCriacao):'—'}</td>
+      <td class="td-mono" style="color:${l.dataPagamento?'var(--teal)':'var(--text3)'};font-size:11px">${l.dataPagamento?fmtDate(l.dataPagamento):'—'}</td>
       <td>${l.banco||'—'}</td>
       <td>${l.cc||'—'}</td>
       <td>${formaExib}</td>
@@ -4284,7 +4661,8 @@ function addUser() {
 function renderUsers() {
   const tb = document.getElementById('tblUsersBody'); if (!tb) return;
   const map = {admin:'badge-gold', viewer:'badge-teal'};
-  tb.innerHTML = usuarios.map((u,i)=>`<tr>
+  const usuariosOrd = [...usuarios].sort((a,b)=>(a.user||'').localeCompare(b.user||'','pt-BR'));
+  tb.innerHTML = usuariosOrd.map((u,i)=>`<tr>
     <td style="font-family:var(--mono)">${u.user}</td>
     <td><span class="badge ${map[u.perfil]||'badge-gold'}">${u.perfil||'admin'}</span></td>
     <td>
@@ -4360,10 +4738,10 @@ function renderFaturasProjetadas() {
   }
   const filtroCartaoId = sel ? sel.value : '';
 
-  // Filter cartoes list based on selection
+  // Filter cartoes list based on selection — exclui débito (não tem fatura)
   const cartoesFiltrados = filtroCartaoId
-    ? cartoes.filter(c => c.id === filtroCartaoId)
-    : cartoes;
+    ? cartoes.filter(c => c.id === filtroCartaoId && (c.tipoCt||'credito')==='credito')
+    : cartoes.filter(c => (c.tipoCt||'credito')==='credito');
 
   const hoje = new Date();
   const meses = [];
@@ -4456,7 +4834,7 @@ function renderAlertFaturas(meses) {
     const labelFull = new Date(+y,+mo-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     const labelCap  = labelFull.charAt(0).toUpperCase() + labelFull.slice(1);
 
-    cartoes.forEach(c => {
+    cartoes.filter(c=>(c.tipoCt||'credito')==='credito').forEach(c => {
       // Soma lancamentos parcelados ja registrados para este cartao neste mes
       const totalLanc = getFaturasDoMes(c.id, ym).reduce((s,l) => {
         const v = typeof l.valor === 'number' ? l.valor : parseMoney(l.valor);
@@ -4473,13 +4851,27 @@ function renderAlertFaturas(meses) {
     });
   });
 
-  if (cardEl) cardEl.style.display = 'block';
+  // Saldo cartões débito
+  const debitoRows = cartoes.filter(c=>(c.tipoCt||'credito')==='debito').map(c => {
+    const entradas = lancamentos.filter(l=>l.cartaoId===c.id&&l.tipo==='Receita').reduce((s,l)=>s+parseMoney(l.valor),0);
+    const saidas   = lancamentos.filter(l=>l.cartaoId===c.id&&l.tipo==='Despesa').reduce((s,l)=>s+parseMoney(l.valor),0);
+    const saldo    = (c.limite||0) + entradas - saidas;
+    return `<div class="af-row">
+      <span class="af-cart">${c.nome} <span class="badge" style="background:rgba(74,143,255,.15);color:#4a8fff;font-size:9px">DÉBITO</span></span>
+      <span class="af-mes" style="color:var(--text3)">Saldo disponível</span>
+      <span class="af-mes"></span>
+      <span class="af-val" style="color:${saldo>=0?'var(--teal)':'var(--red)'}">${fmtBRL(saldo)}</span>
+    </div>`;
+  }).join('');
 
-  if (!rows) {
-    alertEl.innerHTML = '<div class="empty" style="padding:8px 0"><i class="fa fa-check-circle" style="color:var(--teal)"></i> Nenhuma fatura nos proximos 3 meses.</div>';
+  if (cardEl) cardEl.style.display = (rows || debitoRows) ? 'block' : 'none';
+
+  if (!rows && !debitoRows) {
+    alertEl.innerHTML = '<div class="empty" style="padding:8px 0"><i class="fa fa-check-circle" style="color:var(--teal)"></i> Nenhuma fatura nos próximos 3 meses.</div>';
     return;
   }
-  alertEl.innerHTML = rows;
+  alertEl.innerHTML = (rows ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono);padding:0 0 6px;text-transform:uppercase;letter-spacing:.5px">Crédito — Próximas faturas</div>${rows}` : '')
+    + (debitoRows ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono);padding:8px 0 6px;text-transform:uppercase;letter-spacing:.5px;${rows?'border-top:1px solid var(--border);margin-top:6px':''}">Débito — Saldo</div>${debitoRows}` : '');
 }
 
 
@@ -4597,8 +4989,7 @@ function saveFinanc() {
       const faltantes = parcelas - (pagas || 0);
       for (let p = (pagas || 0) + 1; p <= parcelas; p++) {
         const dataStr = addMonths(dataInicio, p - 1);
-        lancamentos.push({
-          id: uid(),
+        lancamentos.push({dataCriacao:new Date().toISOString().slice(0,10),       id: uid(),
           financId,
           tipo: 'Financiamento',
           data: dataStr,
@@ -4898,6 +5289,7 @@ function saveInvest() {
       lancamentos.push({
         id: uid(),
         investId: invId,
+        dataCriacao: new Date().toISOString().slice(0,10),
         tipo: 'Despesa',
         data,
         banco,
@@ -4977,6 +5369,7 @@ function saveMovInvest() {
         id: uid(),
         movInvestId: movId,
         investId,
+        dataCriacao: new Date().toISOString().slice(0,10),
         tipo: tipoLanc,
         data,
         banco: inv.banco,
@@ -5157,7 +5550,10 @@ let chartInvestEvolucao, chartInvestTipo, chartInvestAtivo;
 
 function buildInvestCharts(invFiltrados) {
   const scaleOpt = {
-    plugins:{ legend:{ position:'bottom', labels:{ color:'#8a9bb8', font:{family:'DM Mono',size:10}, boxWidth:12 } } },
+    plugins:{
+      legend:{ position:'bottom', labels:{ color:'#8a9bb8', font:{family:'DM Mono',size:9}, boxWidth:9, padding:4 } },
+      zoom: { zoom:{ wheel:{enabled:true}, pinch:{enabled:true}, mode:'xy' }, pan:{enabled:true,mode:'xy'} }
+    },
     responsive:true
   };
 
@@ -5268,13 +5664,15 @@ function buildInvestCharts(invFiltrados) {
         responsive:true, maintainAspectRatio:true,
         interaction:{mode:'index',intersect:false},
         plugins:{
-          legend:{labels:{color:'#8a9bb8',font:{family:'DM Mono',size:11},
-            boxWidth:12, usePointStyle:true}},
-          tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmtBRL(ctx.parsed.y)}}
+          legend:{labels:{color:'#8a9bb8',font:{family:'DM Mono',size:9},
+            boxWidth:10, usePointStyle:true, padding:6}},
+          tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmtBRL(ctx.parsed.y)}},
+        zoom: zoomPluginCfg('grafInvestEvolucao').zoom,
+        pan:  zoomPluginCfg('grafInvestEvolucao').pan
         },
         scales:{
           x:{ticks:{color:'#526178',font:{family:'DM Mono',size:10}},grid:{color:'rgba(30,45,69,.6)'}},
-          y:{ticks:{color:'#526178',font:{family:'DM Mono',size:10},callback:v=>fmtBRL(v)},grid:{color:'rgba(30,45,69,.6)'}}
+          y: Object.assign({}, yAxisOpts([{data:saldoTotalMes},{data:capitalMes}]))
         }
       }
     });
@@ -5371,7 +5769,7 @@ function parcTogglePago(financId, numParcela, marcarPago) {
   } else if (marcarPago) {
     const data = addMonthsFinanc(f.dataInicio, numParcela - 1);
     lancamentos.push({
-      id: uid(), financId, tipo: 'Financiamento', data,
+      id: uid(), financId, dataCriacao:new Date().toISOString().slice(0,10), tipo: 'Financiamento', data,
       banco: f.banco, cc: 'Financiamentos', forma: 'Debito Automatico',
       cartaoId: '', parcelas: String(f.parcelas), period: 'Mensal',
       valor: f.parcelaMensal, desc: f.desc+' ('+numParcela+'/'+f.parcelas+')',
@@ -5408,7 +5806,7 @@ function parcLancarTodas() {
     } else {
       const data = addMonthsFinanc(f.dataInicio, p - 1);
       lancamentos.push({
-        id: uid(), financId: f.id, tipo: 'Financiamento', data,
+        id: uid(), financId: f.id, dataCriacao:new Date().toISOString().slice(0,10), tipo: 'Financiamento', data,
         banco: f.banco, cc: 'Financiamentos', forma: 'Debito Automatico',
         cartaoId: '', parcelas: String(f.parcelas), period: 'Mensal',
         valor: f.parcelaMensal, desc: f.desc+' ('+p+'/'+f.parcelas+')',
@@ -5508,7 +5906,13 @@ function getDashData() {
 
   return lancamentos.filter(l => {
     if (isTransferencia(l)) return false; // transferências excluídas de rec/desp
-    if (banco && l.banco !== banco) return false;
+    // Investimentos e financiamentos são movimentações de patrimônio, não rec/desp correntes
+    if (l.tipo === 'Investimento' || l.tipo === 'Financiamento') return false;
+    // Centros de custo marcados para excluir de Receitas/Despesas
+    if (l.cc) { const centro = centros.find(c=>c.nome===l.cc); if (centro?.excluirRecDesp) return false; }
+    // Filtro de banco: lançamentos de cartão (banco='') sempre incluídos,
+    // pois representam despesas reais independente da conta
+    if (banco && l.banco !== banco && l.banco !== '') return false;
     if (mes === '__ano__') {
       return l.data.slice(0,4) === ym.slice(0,4);
     }
@@ -5529,8 +5933,12 @@ function renderDashboard() {
   const banco = document.getElementById('dashBanco')?.value || '';
 
   // ── Receitas e Despesas do período — exclui transferências entre contas ──
-  const rec  = data.filter(l=>l.tipo==='Receita' && !isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
-  const desp = data.filter(l=>l.tipo==='Despesa' && !isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
+  // Receitas externas: entradas vindas de terceiros (exclui transferências e cargas de cartão débito)
+  const rec  = data.filter(l=>l.tipo==='Receita' && !isTransferencia(l) && !l.cartaoId).reduce((s,l)=>s+parseMoney(l.valor),0);
+  // Despesas externas: saídas para terceiros
+  // Exclui lançamentos de cartão sem banco (banco='') pois esses são o detalhamento interno da fatura —
+  // o que conta como despesa real é o pagamento da fatura (que tem banco preenchido)
+  const desp = data.filter(l=>l.tipo==='Despesa' && !isTransferencia(l) && l.banco!=='').reduce((s,l)=>s+parseMoney(l.valor),0);
   const saldo = rec - desp;
 
   // ── Saldo Total Hoje: saldoInicial + lançamentos PAGOS até hoje ──
@@ -5562,8 +5970,8 @@ function renderDashboard() {
   document.getElementById('dReceit').textContent = fmtBRL(rec);
   document.getElementById('dDesp').textContent   = fmtBRL(desp);
   document.getElementById('dSaldo').textContent  = fmtBRL(saldoPeriodo);
-  document.getElementById('dReceitQ').textContent = data.filter(l=>l.tipo==='Receita'&&!isTransferencia(l)).length + ' lançamentos';
-  document.getElementById('dDespQ').textContent   = data.filter(l=>l.tipo==='Despesa'&&!isTransferencia(l)).length + ' lançamentos';
+  document.getElementById('dReceitQ').textContent = data.filter(l=>l.tipo==='Receita'&&!isTransferencia(l)&&!l.cartaoId).length + ' lançamentos';
+  document.getElementById('dDespQ').textContent   = data.filter(l=>l.tipo==='Despesa'&&!isTransferencia(l)&&l.banco!=='').length + ' lançamentos';
   document.getElementById('dSaldoHint').textContent = (saldoPeriodo>=0?'▲ Positivo':'▼ Negativo')+' · até '+fmtDate(dataFimFiltro);
 
   // Saldo Total Hoje
@@ -5725,13 +6133,15 @@ function buildDashInvestChart() {
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
-          labels: { color: '#8a9bb8', font: { family: 'DM Mono', size: 11 }, boxWidth: 14, padding: 16 }
+          labels: { color: '#8a9bb8', font: { family: 'DM Mono', size: 9 }, boxWidth: 10, padding: 6 }
         },
         tooltip: {
           callbacks: {
             label: ctx => ` ${ctx.dataset.label}: ${fmtBRL(ctx.parsed.y)}`
           }
-        }
+        },
+        zoom: zoomPluginCfg('grafDashInvest').zoom,
+        pan:  zoomPluginCfg('grafDashInvest').pan
       },
       scales: {
         x: {
@@ -5740,19 +6150,71 @@ function buildDashInvestChart() {
         },
         y: {
           position: 'left',
-          ticks: { color: '#c9a84c', font: { family: 'DM Mono', size: 10 }, callback: v => fmtBRL(v) },
+          ticks: { color: '#c9a84c', font: { family: 'DM Mono', size: 10 }, callback: v => fmtK(v) },
           grid:  { color: 'rgba(30,45,69,.6)' },
           title: { display: true, text: 'Patrimônio', color: '#c9a84c', font: { family: 'DM Mono', size: 10 } }
         },
         y2: {
           position: 'right',
-          ticks: { color: '#526178', font: { family: 'DM Mono', size: 10 }, callback: v => fmtBRL(v) },
+          ticks: { color: '#526178', font: { family: 'DM Mono', size: 10 }, callback: v => fmtK(v) },
           grid:  { drawOnChartArea: false },
           title: { display: true, text: 'Variação', color: '#8a9bb8', font: { family: 'DM Mono', size: 10 } }
         }
       }
     }
   });
+}
+
+// Helper: Y axis options with 10 ticks, max = data max
+// Zoom plugin config — added to every chart's options.plugins
+function zoomPluginCfg(canvasId) {
+  return {
+    zoom: {
+      wheel: { enabled: true },
+      pinch: { enabled: true },
+      mode: 'xy',
+      onZoom: ({ chart }) => {
+        const btn = document.getElementById('zoomReset' + canvasId.replace('graf',''));
+        if (btn) btn.style.display = 'block';
+      }
+    },
+    pan: {
+      enabled: true,
+      mode: 'xy',
+      onPan: ({ chart }) => {
+        const btn = document.getElementById('zoomReset' + canvasId.replace('graf',''));
+        if (btn) btn.style.display = 'block';
+      }
+    }
+  };
+}
+
+function resetZoom(canvasId, btn) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const chart = Chart.getChart(canvas);
+  if (chart) chart.resetZoom();
+  if (btn) btn.style.display = 'none';
+}
+
+function yAxisOpts(datasets, minZero) {
+  const allVals = datasets.flatMap(d => (d.data||[]).map(v => Math.abs(Number(v)||0)));
+  const maxVal  = Math.max(...allVals, 1);
+  // Calcula stepSize para garantir pelo menos 7 níveis visíveis
+  const rawStep = maxVal / 7;
+  const mag     = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const step    = Math.ceil(rawStep / mag) * mag || 1;
+  const yMax    = step * 8;
+  return {
+    min: minZero === false ? undefined : 0,
+    max: yMax,
+    ticks: {
+      color:'#526178', font:{family:'DM Mono',size:10},
+      callback: v => fmtK(v),
+      stepSize: step
+    },
+    grid: { color:'rgba(30,45,69,.6)' }
+  };
 }
 
 function buildFluxoChart(data) {
@@ -5879,8 +6341,8 @@ function buildFluxoChart(data) {
         legend: {
           labels: {
             color: '#8a9bb8',
-            font: { family: 'DM Mono', size: 11 },
-            boxWidth: 12, padding: 14,
+            font: { family: 'DM Mono', size: 9 },
+            boxWidth: 10, padding: 5,
             usePointStyle: true
           }
         },
@@ -5888,22 +6350,16 @@ function buildFluxoChart(data) {
           callbacks: {
             label: ctx => ` ${ctx.dataset.label}: ${fmtBRL(ctx.parsed.y)}`
           }
-        }
+        },
+        zoom: zoomPluginCfg('grafFluxo').zoom,
+        pan:  zoomPluginCfg('grafFluxo').pan
       },
       scales: {
         x: {
           ticks: { color:'#526178', font:{ family:'DM Mono', size:10 } },
           grid:  { color:'rgba(30,45,69,.6)' }
         },
-        y: {
-          ticks: {
-            color:'#526178',
-            font:{ family:'DM Mono', size:10 },
-            callback: v => fmtBRL(v)
-          },
-          grid:  { color:'rgba(30,45,69,.6)' },
-          grace: '5%'
-        }
+        y: Object.assign({ position:'left' }, yAxisOpts(datasets))
       }
     }
   };
@@ -5915,7 +6371,7 @@ function buildFluxoChart(data) {
 
 function buildCCCharts(data) {
   const scaleOpt = {
-    plugins:{ legend:{ position:'bottom', labels:{ color:'#8a9bb8', font:{family:'DM Mono',size:10}, boxWidth:12 } } },
+    plugins:{ legend:{ position:'bottom', labels:{ color:'#8a9bb8', font:{family:'DM Mono',size:9}, boxWidth:9, padding:4 } } },
     responsive:true
   };
 
@@ -5966,7 +6422,8 @@ function renderSysInfo() {
     Investimentos: ${investimentos.length}<br>
     Metas: ${metas.length}<br>
     Recorrentes: ${recorrentes.length}<br>
-    Versão: <span style="color:var(--gold)">v20.0</span><br>
+    Versão: <span style="color:var(--gold)">${APP_VERSION}</span><br>
+    Build: <span style="color:var(--text3)">${APP_BUILD}</span><br>
     Armazenamento: ${dataSize} KB<br>
     Último backup: <span style="color:${lastBk?'var(--teal)':'var(--red)'}">${lastBk ? new Date(lastBk).toLocaleString('pt-BR') : 'Nunca'}</span><br>
     Backup automático: <span style="color:${cfg.ativo?'var(--teal)':'var(--text3)'}">${cfg.ativo ? '✓ Ativo ('+cfg.intervalo+')' : 'Inativo'}</span>
@@ -5981,6 +6438,9 @@ function renderSysInfo() {
   const alertCfg = LS.getO('alertasConfig');
   const chkAlerta = document.getElementById('chkAlertaVenc');
   if (chkAlerta) chkAlerta.checked = alertCfg.vencimento !== false;
+  // Atualiza versão na ficha técnica
+  const fv = document.getElementById('fichaVersao');
+  if (fv) fv.textContent = 'v' + APP_VERSION;
 }
 
 function exportData() {
@@ -6233,7 +6693,9 @@ function lancarConciliacao() {
     period:    'Único',
     valor:     item.valor,
     desc:      desc,
-    conciliado:true
+    conciliado:true,
+    dataCriacao:   new Date().toISOString().slice(0,10),
+    dataPagamento: item.data
   });
   saveAll(); renderLancamentos(); renderDashboard(); renderConciliadosBody();
   document.getElementById('modalConciliacaoItem').classList.remove('on');
@@ -6621,7 +7083,7 @@ function gerarLancamentosCartaoRecorrente(r) {
     const [y, m] = ym.split('-').map(Number);
     const diaReal = Math.min(r.dia, new Date(y, m, 0).getDate());
     const data = `${y}-${String(m).padStart(2,'0')}-${String(diaReal).padStart(2,'0')}`;
-    lancamentos.push({
+    lancamentos.push({dataCriacao:new Date().toISOString().slice(0,10),
       id: uid(), tipo: r.tipo, data,
       banco: r.banco, cc: r.cc, forma: r.forma,
       cartaoId: r.cartaoId,
@@ -6711,7 +7173,7 @@ function lancarRecorrenteAgora(id) {
   if (jaLancado) { toast('Já lançado neste mês.','inf'); return; }
   const diaReal = Math.min(r.dia, new Date(hoje.getFullYear(), hoje.getMonth()+1, 0).getDate());
   const data  = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(diaReal).padStart(2,'0')}`;
-  lancamentos.push({
+  lancamentos.push({dataCriacao:new Date().toISOString().slice(0,10),
     id:uid(), tipo:r.tipo, data, banco:r.banco, cc:r.cc, forma:r.forma,
     cartaoId: r.cartaoId||'',
     valor:r.valor, desc:r.desc+' (recorrente)', parcelas:'1', period:'Mensal', recorrenteId:r.id
@@ -6767,7 +7229,7 @@ function gerarRecorrentesAutoAoLogin() {
     if (jaLancado) return;
     const diaReal = Math.min(r.dia, new Date(hoje.getFullYear(), hoje.getMonth()+1,0).getDate());
     const data = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(diaReal).padStart(2,'0')}`;
-    lancamentos.push({ id:uid(), tipo:r.tipo, data, banco:r.banco, cc:r.cc, forma:r.forma, cartaoId:r.cartaoId||'', valor:r.valor, desc:r.desc+' (recorrente)', parcelas:'1', period:'Mensal', recorrenteId:r.id });
+    lancamentos.push({dataCriacao:new Date().toISOString().slice(0,10), id:uid(), tipo:r.tipo, data, banco:r.banco, cc:r.cc, forma:r.forma, cartaoId:r.cartaoId||'', valor:r.valor, desc:r.desc+' (recorrente)', parcelas:'1', period:'Mensal', recorrenteId:r.id });
     gerados++;
   });
   if (gerados > 0) { saveAll(); toast(gerados===1?`1 lançamento recorrente gerado automaticamente!`:`${gerados} lançamentos recorrentes gerados automaticamente!`,'inf'); }
@@ -6848,9 +7310,15 @@ function renderComparativoDash() {
   const mesAnterior = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 
   function calcMes(ym) {
-    const ls = lancamentos.filter(l => l.data.slice(0,7)===ym && !isTransferencia(l));
-    const r = ls.filter(l=>l.tipo==='Receita').reduce((s,l)=>s+parseMoney(l.valor),0);
-    const e = ls.filter(l=>l.tipo==='Despesa').reduce((s,l)=>s+parseMoney(l.valor),0);
+    const ccExcl = new Set(centros.filter(c=>c.excluirRecDesp).map(c=>c.nome));
+    const ls = lancamentos.filter(l =>
+      l.data && l.data.slice(0,7)===ym &&
+      !isTransferencia(l) &&
+      l.tipo !== 'Investimento' && l.tipo !== 'Financiamento' &&
+      !(l.cc && ccExcl.has(l.cc))
+    );
+    const r = ls.filter(l=>l.tipo==='Receita' && !l.cartaoId).reduce((s,l)=>s+parseMoney(l.valor),0);
+    const e = ls.filter(l=>l.tipo==='Despesa' && l.banco!=='').reduce((s,l)=>s+parseMoney(l.valor),0);
     return { r, e, s: r-e };
   }
 
@@ -6889,29 +7357,48 @@ function renderComparativoDash() {
 function renderPrevisaoDash() {
   const el = document.getElementById('dashPrevisaoBody');
   if (!el) return;
-  const ativos = recorrentes.filter(r=>r.ativo==='sim');
-  if (!ativos.length) {
-    el.innerHTML = '<div class="empty"><i class="fa fa-sync-alt"></i>Cadastre lançamentos recorrentes para ver a previsão.</div>';
-    return;
-  }
   const hoje = new Date();
+  const hojeStr = hoje.toISOString().slice(0,10);
   let html = '<div class="comparativo-grid" style="grid-template-columns:repeat(3,1fr)">';
+  let temDados = false;
   for (let i=1; i<=3; i++) {
-    const d = new Date(hoje.getFullYear(), hoje.getMonth()+i, 1);
+    const d  = new Date(hoje.getFullYear(), hoje.getMonth()+i, 1);
+    const ym = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
     const label = d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     const labelCap = label.charAt(0).toUpperCase()+label.slice(1);
-    const rec  = ativos.filter(r=>r.tipo==='Receita').reduce((s,r)=>s+r.valor,0);
-    const desp = ativos.filter(r=>r.tipo==='Despesa').reduce((s,r)=>s+r.valor,0);
-    const saldo = rec - desp;
+
+    // Lançamentos futuros não pagos neste mês — mesma lógica do dashboard
+    const ccExclSet = new Set(centros.filter(c=>c.excluirRecDesp).map(c=>c.nome));
+    const lancMes = lancamentos.filter(l =>
+      l.data && l.data.slice(0,7)===ym && !l.pago && !isTransferencia(l) &&
+      l.tipo !== 'Investimento' && l.tipo !== 'Financiamento' &&
+      !(l.cc && ccExclSet.has(l.cc))
+    );
+    // Recorrentes ativos (projeção)
+    const recAtivos = recorrentes.filter(r=>r.ativo==='sim');
+
+    const recLanc  = lancMes.filter(l=>l.tipo==='Receita'&&!l.cartaoId).reduce((s,l)=>s+parseMoney(l.valor),0);
+    const despLanc = lancMes.filter(l=>l.tipo==='Despesa'&&l.banco!=='').reduce((s,l)=>s+parseMoney(l.valor),0);
+    const recRec   = recAtivos.filter(r=>r.tipo==='Receita').reduce((s,r)=>s+r.valor,0);
+    const despRec  = recAtivos.filter(r=>r.tipo==='Despesa').reduce((s,r)=>s+r.valor,0);
+
+    const totalRec  = recLanc  + recRec;
+    const totalDesp = despLanc + despRec;
+    const saldo = totalRec - totalDesp;
+    const nLanc = lancMes.length;
+    if (totalRec||totalDesp) temDados = true;
+
     html += `<div class="comp-card">
       <div class="comp-label">${labelCap}</div>
-      <div style="font-size:12px;font-family:var(--mono);color:var(--teal);margin-bottom:3px">+${fmtBRL(rec)} rec.</div>
-      <div style="font-size:12px;font-family:var(--mono);color:var(--red);margin-bottom:6px">-${fmtBRL(desp)} desp.</div>
-      <div class="comp-val ${saldo>=0?'pos':'neg'}" style="font-size:16px">${fmtBRL(saldo)}</div>
+      ${nLanc ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:4px">${nLanc} lançamento(s) agendado(s)</div>` : ''}
+      <div style="font-size:11px;font-family:var(--mono);color:var(--teal);margin-bottom:2px">↑ Rec: ${fmtBRL(totalRec)}</div>
+      <div style="font-size:11px;font-family:var(--mono);color:var(--red);margin-bottom:2px">↓ Desp: ${fmtBRL(totalDesp)}</div>
+      <div style="font-size:11px;font-family:var(--mono);color:${saldo>=0?'var(--teal)':'var(--red)'}">= ${fmtBRL(saldo)}</div>
     </div>`;
   }
   html += '</div>';
-  el.innerHTML = html;
+  el.innerHTML = temDados ? html :
+    '<div class="empty"><i class="fa fa-calendar-check"></i>Nenhum lançamento agendado nos próximos 3 meses.</div>';
 }
 
 /* ══════════════════════════════════════════
@@ -7045,13 +7532,46 @@ function renderAlertasInlineDash() {
     </div>`).join('');
 }
 
+// Intercepta botão Voltar do browser — evita sair do app acidentalmente
+window.addEventListener('popstate', function(e) {
+  if (currentUser) {
+    // Volta a empurrar estado para manter o app no histórico
+    history.pushState({ nmc: true }, '', '');
+  }
+});
+
 // Pre-fill login
 document.getElementById('lUser').value = 'admin';
 
 // Start auto-backup scheduler on page load
 agendarAutoBackup();
+initTema();
 </script>
-<!-- Service Worker desativado -->
+<!-- Service Worker — ativado para PWA/Play Store -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Tenta registrar SW externo (quando hospedado com sw.js)
+    // Se não existir ou falhar (single-file/blob), ignora silenciosamente
+    fetch('./sw.js', {method:'HEAD'}).then(r => {
+      if (r.ok) {
+        navigator.serviceWorker.register('./sw.js', {scope: './'})
+          .then(reg => console.log('SW registrado:', reg.scope))
+          .catch(() => {}); // Falha silenciosa
+      }
+    }).catch(() => {}); // Sem sw.js externo — modo single-file, sem SW
+  });
+
+  // Captura evento de instalação PWA
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    window._pwaInstallEvent = e;
+    // Mostra botão de instalação se existir
+    const btn = document.getElementById('btnInstalarPWA');
+    if (btn) btn.style.display = 'flex';
+  });
+}
+</script>
 
 <!-- CSS extras -->
 <style>
@@ -7100,9 +7620,65 @@ agendarAutoBackup();
 /* ══ BAIXA RÁPIDA ══ */
 function baixaRapida(id) {
   const l = lancamentos.find(x=>x.id===id); if(!l) return;
-  l.pago=true; l.dataPagamento=new Date().toISOString().slice(0,10);
-  saveAll(); renderLancamentos(); renderDashboard(); renderContasPagarDash();
-  toast('✓ Baixa realizada: '+(l.desc||'Lançamento'),'ok');
+  const hoje = new Date().toISOString().slice(0,10);
+  document.getElementById('modalBaixaId').value = id;
+  document.getElementById('modalBaixaData').value = hoje;
+  document.getElementById('modalBaixaDesc').textContent = l.desc || 'Lançamento';
+  document.getElementById('modalBaixaValor').textContent = fmtBRL(parseMoney(l.valor));
+  openModal('modalBaixa');
+}
+function confirmarBaixa() {
+  const id = document.getElementById('modalBaixaId').value;
+  const dataPag = document.getElementById('modalBaixaData').value;
+  _executarBaixa(id, dataPag);
+}
+function _executarBaixa(id, dataPag) {
+  const l = lancamentos.find(x=>x.id===id); if(!l) return;
+  l.pago=true; l.dataPagamento=dataPag || new Date().toISOString().slice(0,10);
+
+  // Se é parcela periódica (Semestral/Anual) com mais parcelas a vencer → agenda próxima
+  const nParcelas = parseInt(l.parcelas)||1;
+  const parcelaNum = parseInt(l.parcelaNum)||1;
+  const period = l.period||'Único';
+  const isPeriodico = (period==='Semestral'||period==='Anual') && nParcelas > 1;
+
+  if (isPeriodico && parcelaNum < nParcelas) {
+    const proxNum = parcelaNum + 1;
+    // Calcula próxima data baseada no period
+    const baseDate = new Date(l.data + 'T12:00:00');
+    let proxData;
+    if (period === 'Anual') {
+      proxData = new Date(baseDate.getFullYear()+1, baseDate.getMonth(), baseDate.getDate());
+    } else { // Semestral
+      proxData = new Date(baseDate.getFullYear(), baseDate.getMonth()+6, baseDate.getDate());
+    }
+    const proxDataStr = proxData.getFullYear()+'-'+
+      String(proxData.getMonth()+1).padStart(2,'0')+'-'+
+      String(proxData.getDate()).padStart(2,'0');
+
+    // Remove sufixo da parcela atual do desc para recompor
+    const descBase = (l.desc||'').replace(/\s*\(\d+\/\d+\)\s*$/, '').trim();
+    const proxDesc = (descBase?descBase+' ':'')+'('+proxNum+'/'+nParcelas+')';
+
+    lancamentos.push({
+      id: uid(),
+      groupId: l.groupId||uid(),
+      dataCriacao: new Date().toISOString().slice(0,10),
+      tipo: l.tipo, banco: l.banco, cc: l.cc, forma: l.forma, cartaoId: l.cartaoId||'',
+      parcelas: String(nParcelas), parcelaNum: proxNum,
+      period, valor: l.valor, desc: proxDesc, data: proxDataStr, pago: false
+    });
+
+    saveAll(); renderLancamentos(); renderDashboard(); renderContasPagarDash();
+    toast('✓ Baixa realizada! Próxima parcela ('+proxNum+'/'+nParcelas+') agendada para '+
+      proxData.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})+'.','ok');
+    saveAll(); renderLancamentos(); renderDashboard(); renderContasPagarDash();
+    closeModal('modalBaixa');
+  } else {
+    saveAll(); renderLancamentos(); renderDashboard(); renderContasPagarDash();
+    closeModal('modalBaixa');
+    toast('✓ Baixa em '+fmtDate(l.dataPagamento)+': '+(l.desc||'Lançamento'),'ok');
+  }
 }
 function desfazerBaixa(id) {
   const l = lancamentos.find(x=>x.id===id); if(!l) return;
@@ -7112,7 +7688,7 @@ function desfazerBaixa(id) {
 }
 function clearLancFilter() {
   ['fLancBusca','fLancDtI','fLancDtF'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['fLancTipo','fLancBanco','fLancCC','fLancStatus'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['fLancTipo','fLancBanco','fLancCartao','fLancCC','fLancStatus'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   renderLancamentos();
 }
 
@@ -7506,6 +8082,7 @@ function concPdfIniciarFila(transacoes, banco) {
   const existentes=lancamentos.filter(l=>!banco||l.banco===banco);
   concPdfFila=transacoes.filter(t=>!concJaLancado(t,existentes));
   concPdfBancoAtivo=banco; concPdfFilaIdx=0;
+  window._concPdfCCPadrao = ''; // reset CC padrão
   if(!concPdfFila.length){toast('✅ Todas as transações já estão lançadas! Nenhuma diferença.','ok');renderConciliadosBody();return;}
   concPdfProximoItem();
 }
@@ -7539,12 +8116,24 @@ function concPdfProximoItem() {
   const sel=document.getElementById('concPdfItemCC');
   if(sel)sel.innerHTML='<option value="">— categoria (opcional) —</option>'+centros.filter(c=>!c.tipo||c.tipo===(t.tipo==='Credito'?'Receita':'Despesa')).map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
   modal.classList.add('on');
+  // Apply default CC if checkbox was set
+  const ccPad = window._concPdfCCPadrao || '';
+  if (ccPad && sel) sel.value = ccPad;
+}
+function concPdfAplicarCCTodos(fromCheckbox) {
+  const cc  = document.getElementById('concPdfItemCC')?.value || '';
+  const chk = document.getElementById('concPdfCCTodos');
+  if (fromCheckbox) {
+    window._concPdfCCPadrao = chk?.checked ? cc : '';
+  } else {
+    if (chk?.checked) window._concPdfCCPadrao = cc;
+  }
 }
 function concPdfItemLancar() {
   const t=concPdfFila[concPdfFilaIdx];
   const desc=document.getElementById('concPdfItemDesc').value.trim()||t.descricao;
   const cc=document.getElementById('concPdfItemCC').value;
-  lancamentos.push({id:uid(),tipo:t.tipo==='Credito'?'Receita':'Despesa',data:t.data,banco:concPdfBancoAtivo,cc:cc||'',forma:'Importado PDF',cartaoId:'',parcelas:'1',period:'Único',valor:t.valor,desc,conciliado:true,pago:true});
+  lancamentos.push({id:uid(),tipo:t.tipo==='Credito'?'Receita':'Despesa',data:t.data,banco:concPdfBancoAtivo,cc:cc||'',forma:'Importado PDF',cartaoId:'',parcelas:'1',period:'Único',valor:t.valor,desc,conciliado:true,pago:true,dataCriacao:new Date().toISOString().slice(0,10),dataPagamento:t.data});
   saveAll(); renderLancamentos(); renderDashboard(); concPdfFilaIdx++; concPdfProximoItem();
 }
 function concPdfItemPular(){concPdfFilaIdx++;concPdfProximoItem();}
@@ -7650,7 +8239,18 @@ function relMovCartao(ym,cartaoFiltro){
   return `<div class="rel-header"><div class="rel-title"><i class="fa fa-credit-card" style="color:var(--gold);margin-right:8px"></i>Movimentação de Cartões — ${relMesLabel(ym)}</div><div class="rel-kpis">${cf.map(c=>{const t=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&(l.cartaoId===c.id||l.cc===c.nome)).reduce((s,l)=>s+parseMoney(l.valor),0);return relKpiHtml(c.nome,relFmt(t),'neg');}).join('')}</div></div>${html}`;
 }
 function relCategoria(ym){
-  const desp=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&l.tipo==='Despesa'&&!isTransferencia(l));
+  // Usa lançamentos individuais do cartão (banco='') E despesas normais (banco preenchido exceto pagamento de fatura)
+  // Isso captura o CC específico de cada compra do cartão para análise correta por categoria
+  const ccExcl = new Set(centros.filter(c=>c.excluirRecDesp).map(c=>c.nome));
+  const desp=lancamentos.filter(l=>
+    l.data && l.data.startsWith(ym) &&
+    l.tipo==='Despesa' &&
+    !isTransferencia(l) &&
+    !(l.cc && ccExcl.has(l.cc)) &&
+    // Inclui lançamentos de cartão (banco='') E despesas normais com banco
+    // Exclui pagamento de fatura (tem banco E desc começa com 'Pagamento fatura')
+    !((l.desc||'').startsWith('Pagamento fatura ') && l.banco)
+  );
   const total=desp.reduce((s,l)=>s+parseMoney(l.valor),0);
   const por={};desp.forEach(l=>{const cat=l.cc||'Sem categoria';por[cat]=(por[cat]||0)+parseMoney(l.valor);});
   const sorted=Object.entries(por).sort((a,b)=>b[1]-a[1]);
@@ -7750,8 +8350,7 @@ function exportarRelatorioPDF(){
 </head><body>
 <div class="pdf-hd"><div><div class="pdf-brand">NMC Personal Finance</div><div class="pdf-sub">Nobrega Mall Consultant</div></div><div><div class="pdf-meta-title">${nomeRel}</div><div class="pdf-meta-date">Gerado em ${data}</div></div></div>
 ${out.innerHTML}
-<div class="pdf-footer"><span>NMC Personal Finance System v20</span><span>Gerado em ${data} — Confidencial</span></div>
-</body></html>`;
+<div class="pdf-footer"><span>NMC Personal Finance System v20</span><span>Gerado em ${data} — Confidencial</span></div></body></html>`;
 
   // Usa iframe oculto — funciona em mobile/PWA sem abrir popup
   let iframe = document.getElementById('_printFrame');
@@ -7788,6 +8387,703 @@ window.clearLancFilter=function(){if(_origClear)_origClear();const s=document.ge
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 if(typeof pdfjsLib!=='undefined'){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}
+
+/* ══════════════════════════════════════════
+   IMPORTAÇÃO DE FATURA DE CARTÃO
+══════════════════════════════════════════ */
+
+let impFatTransacoes = []; // transações parseadas da fatura atual
+
+function impFatDebug() {
+  const txt = window._impFatTextoRaw || '';
+  const w = window.open('', '_blank', 'width=800,height=600');
+  w.document.write('<pre style="font-size:11px;white-space:pre-wrap;font-family:monospace;padding:16px">' + txt.replace(/</g,'&lt;') + '</pre>');
+  w.document.close();
+}
+
+function impFatCartaoChange() {
+  impFatTransacoes = [];
+  document.getElementById('impFatPreviewCard').style.display = 'none';
+  document.getElementById('impFatStatus').textContent = '';
+  document.getElementById('impFatFile').value = '';
+}
+
+async function impFatLerPDF() {
+  const cartaoId = document.getElementById('impFatCartao').value;
+  if (!cartaoId) { toast('Selecione o cartão primeiro.','err'); document.getElementById('impFatFile').value=''; return; }
+
+  const file = document.getElementById('impFatFile').files[0];
+  if (!file) return;
+
+  const status = document.getElementById('impFatStatus');
+  status.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Lendo PDF...';
+
+  try {
+    if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js não carregou.');
+
+    // Read file as ArrayBuffer
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    // Extract text from all pages
+    let fullText = '';
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p);
+      const ct   = await page.getTextContent();
+      // Sort items by vertical position then horizontal
+      const lines = {};
+      ct.items.forEach(it => {
+        const y = Math.round(it.transform[5]);
+        if (!lines[y]) lines[y] = [];
+        lines[y].push({ x: it.transform[4], t: it.str });
+      });
+      Object.keys(lines).sort((a,b) => b-a).forEach(y => {
+        fullText += lines[y].sort((a,b) => a.x-b.x).map(i=>i.t).join(' ') + '\n';
+      });
+    }
+
+    status.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Analisando lançamentos...';
+
+    // Store raw text for debugging
+    window._impFatTextoRaw = fullText;
+
+    // Auto-detect bank from text and use appropriate parser
+    const isNubank = /nubank|nu pagamentos|plano nucel|assinatura.*nubank|nu\s+pagamentos|nupagamentos/i.test(fullText);
+    const parsed = isNubank ? impFatParsearNubank(fullText) : impFatParsearTexto(fullText);
+    window._impFatBanco = isNubank ? 'Nubank' : 'Itaú';
+
+    if (!parsed.transacoes.length) throw new Error(
+      `Nenhum lançamento encontrado (banco detectado: ${window._impFatBanco}). ` +
+      `Use 🔍 Ver texto bruto para verificar o conteúdo extraído.`
+    );
+
+    impFatTransacoes = parsed.transacoes;
+    window._impFatVenc  = parsed.vencimento;
+    window._impFatFech  = parsed.fechamento;
+    impFatProcessar(parsed.vencimento, parsed.fechamento, cartaoId);
+    status.innerHTML = `<span style="color:var(--teal)"><i class="fa fa-check-circle"></i> ${impFatTransacoes.length} lançamentos identificados</span>
+      <span style="margin-left:8px;font-size:10px;font-family:var(--mono);color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 7px">${window._impFatBanco||''}</span>
+      <button onclick="impFatDebug()" style="margin-left:8px;font-size:11px;background:var(--surface);border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:2px 8px;cursor:pointer">🔍 Ver texto bruto</button>`;
+
+  } catch(e) {
+    status.innerHTML = `<span style="color:var(--red)"><i class="fa fa-exclamation-circle"></i> Erro: ${e.message}</span>
+      ${window._impFatTextoRaw ? `<button onclick="impFatDebug()" style="margin-left:8px;font-size:11px;background:var(--surface);border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:2px 8px;cursor:pointer">🔍 Ver texto bruto</button>` : ''}`;
+  }
+}
+
+function impFatParsearTexto(texto) {
+  const linhas = texto.split('\n');
+  const transacoes = [];
+  let vencimento = '', fechamento = '';
+
+  // Detecta vencimento e fechamento
+  linhas.forEach(l => {
+    const mv = l.match(/Vencimento[:\s]+(\d{2})\/(\d{2})\/(\d{4})/i);
+    if (mv) vencimento = `${mv[3]}-${mv[2]}-${mv[1]}`;
+    const mf = l.match(/Previsão prox.*?(\d{2})\/(\d{2})\/(\d{4})/i);
+    if (mf) fechamento = `${mf[3]}-${mf[2]}-${mf[1]}`;
+  });
+
+  const STOP_RE = /compras parceladas.*pr[oó]ximas faturas|total dos lan[çc]amentos\s*atu?ais|simulaç[aã]o de compras|encargos cobrados nesta fatura/i;
+
+  const isMoneyStr = s => /^\d{1,3}(?:\.\d{3})*,\d{2}$/.test(s) || /^\d+,\d{2}$/.test(s);
+
+  const isParcela = s => {
+    const m = s.match(/^(\d{2})\/(\d{2})$/);
+    if (!m) return false;
+    const [pa, pt] = [parseInt(m[1]), parseInt(m[2])];
+    return pa > 0 && pt >= pa && pt <= 99;
+  };
+
+  const extractEmbeddedParcela = desc => {
+    // Parcela embutida no desc sem espaços: "CLINICA ESTA-CT S 06/18" ou "CAXANGA03/08"
+    const m = desc.match(/^(.+?)\s*(\d{2})\/(\d{2})\s*$/);
+    if (!m) return { desc, parcela_atual: 1, parcela_total: 1 };
+    const pa = parseInt(m[2]), pt = parseInt(m[3]);
+    if (pa > 0 && pt >= pa && pt <= 99)
+      return { desc: m[1].trim(), parcela_atual: pa, parcela_total: pt };
+    return { desc, parcela_atual: 1, parcela_total: 1 };
+  };
+
+  for (const rawLine of linhas) {
+    // Normaliza erros de OCR: remove espaços antes/após vírgula e barra em valores e datas
+    const line = rawLine.trim()
+      .replace(/(\d)\s+,\s*(\d)/g, '$1,$2')   // "114 ,66" → "114,66"
+      .replace(/(\d),\s+(\d)/g, '$1,$2')       // "79, 83" → "79,83"
+      .replace(/(\d)\s+\.\s*(\d)/g, '$1.$2')   // "1 .234" → "1.234"
+      .replace(/(\d)\/\s+(\d)/g, '$1/$2');     // "08/ 02" → "08/02"
+    if (!line) continue;
+    if (STOP_RE.test(line)) break;
+
+    // Split by 2+ spaces (PDF.js column separator)
+    const tokens = line.split(/\s{2,}/).map(t => t.trim()).filter(Boolean);
+
+    let i = 0;
+    while (i < tokens.length) {
+      const tok = tokens[i];
+
+      // Deve começar com DD/MM
+      if (!/^\d{2}\/\d{2}$/.test(tok)) { i++; continue; }
+
+      const dateStr = tok;
+      let j = i + 1;
+      const descParts = [];
+      let parcela_atual = 1, parcela_total = 1;
+      let valor = null;
+
+      while (j < tokens.length) {
+        const t = tokens[j];
+
+        // Skip subtotais de cartão e de produtos/serviços
+        if (/lançamentos no cart|lançamentos prod/i.test(t)) {
+          j++;
+          if (j < tokens.length && isMoneyStr(tokens[j])) j++;
+          continue;
+        }
+
+        // Valor negativo: token "-" seguido de valor
+        if (t === '-' && j+1 < tokens.length && isMoneyStr(tokens[j+1])) {
+          valor = -parseFloat(tokens[j+1].replace(/\./g,'').replace(',','.'));
+          j += 2; break;
+        }
+
+        // Valor positivo
+        if (isMoneyStr(t)) {
+          valor = parseFloat(t.replace(/\./g,'').replace(',','.'));
+          j++; break;
+        }
+
+        // Parcela separada (com espaços)
+        if (isParcela(t) && descParts.length > 0) {
+          const m = t.match(/^(\d{2})\/(\d{2})$/);
+          parcela_atual = parseInt(m[1]);
+          parcela_total = parseInt(m[2]);
+          j++; continue;
+        }
+
+        // Se for outra data DD/MM sem desc acumulado → não é transação, pula
+        if (/^\d{2}\/\d{2}$/.test(t) && descParts.length === 0) { break; }
+
+        // Skip tokens de localização (categoria.cidade)
+        if (/^(SAÚDE|VEÍCULOS|DIVERSOS|ALIMENTAÇÃO|VESTUÁRIO|HOBBY|EDUCAÇÃO|SERVIÇOS)\s*\./i.test(t)) { j++; continue; }
+
+        descParts.push(t);
+        j++;
+      }
+
+      if (valor !== null && descParts.length > 0) {
+        let desc = descParts.join(' ').trim();
+        // Extrai parcela embutida no desc (sem espaços separadores)
+        if (parcela_atual === 1 && parcela_total === 1) {
+          const ep = extractEmbeddedParcela(desc);
+          desc = ep.desc;
+          parcela_atual = ep.parcela_atual;
+          parcela_total = ep.parcela_total;
+        }
+        // Limpa sufixos de localização residuais
+        desc = desc.replace(/\s+\.[A-Z].*$/, '').trim();
+        transacoes.push({ data: dateStr, desc, valor, parcela_atual, parcela_total });
+      }
+
+      i = j > i ? j : i + 1;
+    }
+  }
+
+  return { vencimento, fechamento, transacoes };
+}
+
+
+
+
+function impFatParsearNubank(texto) {
+  const MESES = {JAN:1,FEV:2,MAR:3,ABR:4,MAI:5,JUN:6,JUL:7,AGO:8,SET:9,OUT:10,NOV:11,DEZ:12};
+  const linhas = texto.split('\n');
+  const transacoes = [];
+  let vencimento = '', fechamento = '';
+
+  // Detecta vencimento
+  linhas.forEach(l => {
+    const mv = l.match(/Data de vencimento[:\s]+(\d{1,2})\s+([A-Z]{3})\s+(\d{4})/i);
+    if (mv) {
+      const mes = MESES[mv[2].toUpperCase()];
+      if (mes) vencimento = `${mv[3]}-${String(mes).padStart(2,'0')}-${mv[1].padStart(2,'0')}`;
+    }
+    const mf = l.match(/Fechamento da pr[oó]xima fatura[\s]+(\d{1,2})\s+([A-Z]{3})\s+(\d{4})/i);
+    if (mf) {
+      const mes = MESES[mf[2].toUpperCase()];
+      if (mes) fechamento = `${mf[3]}-${String(mes).padStart(2,'0')}-${mf[1].padStart(2,'0')}`;
+    }
+  });
+
+  const vencAno = vencimento ? parseInt(vencimento.slice(0,4)) : new Date().getFullYear();
+  const vencMes = vencimento ? parseInt(vencimento.slice(5,7)) : new Date().getMonth()+1;
+
+  const parseData = (dd, mmStr) => {
+    const mm = MESES[mmStr.toUpperCase()];
+    if (!mm) return null;
+    const ano = mm > vencMes + 2 ? vencAno - 1 : vencAno;
+    return `${ano}-${String(mm).padStart(2,'0')}-${dd.padStart(2,'0')}`;
+  };
+
+  // Padrões
+  const DATE_RE   = /^\s*(\d{1,2})\s+(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)\s*$/i;
+  const NEG_RE    = /[−\-]R\$/;
+  const STOP_RE   = /Em cumprimento|Como assegurado|5 de 5|Banco Central/i;
+  const IN_TX_RE  = /TRANSAÇÕES/i;
+  const IN_PAG_RE = /^Pagamentos e Financiamentos/i;
+  const SKIP_RE   = /^(Referente ao|Saldo em aberto de|Valor original|[•\-]\s*Saldo|[•\-]\s*Valor|Antonio E M|ANTONIO E M)/i;
+  // Encargos que se cancelam (par débito+crédito) — ignorar
+  const CANCEL_RE = /^(Saldo em atraso|Crédito de atraso|Juros de dívida encerrada|Encerramento de dívida)/i;
+  // Encargos reais a importar
+  const ENCARGO_RE = /^(Multa|IOF de atraso|Taxa|Mora)/i;
+
+  let inTransacoes = false, inPagamentos = false;
+  let pendingDate = null;
+
+  for (const rawLine of linhas) {
+    const l = rawLine.trim();
+    if (!l) continue;
+    if (STOP_RE.test(l)) break;
+    if (IN_TX_RE.test(l))  { inTransacoes = true; continue; }
+    if (!inTransacoes) continue;
+    if (IN_PAG_RE.test(l)) { inPagamentos = true; continue; }
+
+    // Linha de data sozinha: "08 FEV"
+    const dm = l.match(DATE_RE);
+    if (dm) { pendingDate = [dm[1], dm[2].toUpperCase()]; continue; }
+
+    if (!pendingDate) continue;
+
+    // Ignora detalhe/footnote
+    if (SKIP_RE.test(l)) continue;
+
+    // Ignora linhas negativas
+    if (NEG_RE.test(l)) { pendingDate = null; continue; }
+
+    // Em pagamentos: só importa encargos reais (não canceláveis)
+    if (inPagamentos) {
+      if (CANCEL_RE.test(l)) { pendingDate = null; continue; }
+      if (!ENCARGO_RE.test(l)) continue;
+    }
+
+    // Extrai valor do final da linha
+    const mv = l.match(/R\$\s*([\d.,]+)\s*$/);
+    if (!mv) continue;
+
+    const valorStr = mv[1];
+    const valor = parseFloat(valorStr.replace(/\./g,'').replace(',','.'));
+    if (isNaN(valor) || valor <= 0) continue;
+
+    // Descrição: tudo antes do R$
+    let desc = l.slice(0, mv.index).trim().replace(/R\$\s*$/, '').trim();
+
+    // Remove prefixo de cartão: "•••• 8430 " ou "NU "
+    desc = desc.replace(/^[•\s]+\d{4}\s+/, '').replace(/^NU\s+/i, '').trim();
+
+    // Extrai parcela do desc: "Parcela 3/12"
+    let parcela_atual = 1, parcela_total = 1;
+    const pm = desc.match(/[Pp]arcela\s+(\d+)\/(\d+)/);
+    if (pm) {
+      parcela_atual = parseInt(pm[1]);
+      parcela_total = parseInt(pm[2]);
+      desc = desc.slice(0, pm.index).replace(/[\s\-–]+$/, '').trim();
+    }
+
+    const dataStr = parseData(pendingDate[0], pendingDate[1]);
+    if (!dataStr) continue;
+
+    transacoes.push({ data: dataStr, desc, valor, parcela_atual, parcela_total, isEncargo: inPagamentos });
+    pendingDate = null;
+  }
+
+  return { vencimento, fechamento, transacoes };
+}
+
+function impFatProcessar(vencimento, fechamento, cartaoId) {
+  const cartao = cartoes.find(c => c.id === cartaoId);
+  if (!cartao) return;
+
+  // Determina o ano de cada transação baseado no vencimento da fatura
+  const vencDate = vencimento ? new Date(vencimento + 'T12:00:00') : new Date();
+  const vencMes  = vencDate.getMonth(); // 0-11
+  const vencAno  = vencDate.getFullYear();
+
+  const body = document.getElementById('impFatBody');
+  let html = '';
+  let novos = 0, duplicados = 0, totalValor = 0;
+
+  // Constrói lista expandida: parcela atual + futuras
+  const linhas = [];
+
+  impFatTransacoes.forEach(t => {
+    // Suporta formato DD/MM (Itaú) e YYYY-MM-DD (Nubank)
+    let dataBase;
+    if (t.data && t.data.includes('-') && t.data.length === 10) {
+      // Já é YYYY-MM-DD (Nubank)
+      dataBase = t.data;
+    } else {
+      // DD/MM (Itaú) — estima o ano
+      const [dd, mm] = t.data.split('/').map(Number);
+      let ano = vencAno;
+      if (mm > vencMes + 2) ano = vencAno - 1;
+      dataBase = `${ano}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
+    }
+    const nAtual = t.parcela_atual || 1;
+    const nTotal = t.parcela_total || 1;
+
+    // Parcela atual (desta fatura) — data = vencimento
+    const groupKey = `${cartaoId}|${t.desc}|${nTotal}|${t.valor}`;
+    const idxAtual = linhas.length;
+    linhas.push({
+      desc: t.desc + (nTotal > 1 ? ` (${nAtual}/${nTotal})` : ''),
+      valor: t.valor,
+      data: vencimento || dataBase,
+      cartaoId,
+      parcela: nAtual,
+      total: nTotal,
+      futuro: false,
+      groupKey,
+      idxPai: idxAtual,  // índice da parcela atual (pai do grupo)
+      hash: `${cartaoId}|${t.desc}|${nAtual}|${nTotal}|${t.valor}`
+    });
+
+    // Parcelas futuras (não gera para encargos)
+    if (nTotal > 1 && !t.isEncargo) {
+      for (let p = nAtual + 1; p <= nTotal; p++) {
+        const offset = p - nAtual;
+        const d = new Date(vencDate.getFullYear(), vencDate.getMonth() + offset, vencDate.getDate());
+        const futData = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        linhas.push({
+          desc: t.desc + ` (${p}/${nTotal})`,
+          valor: t.valor,
+          data: futData,
+          cartaoId,
+          parcela: p,
+          total: nTotal,
+          futuro: true,
+          groupKey,
+          idxPai: idxAtual,  // aponta para a parcela atual do mesmo grupo
+          hash: `${cartaoId}|${t.desc}|${p}|${nTotal}|${t.valor}`
+        });
+      }
+    }
+  });
+
+  // Verifica duplicatas contra lançamentos existentes
+  linhas.forEach(l => {
+    const jaExiste = lancamentos.some(x =>
+      x.impFatHash === l.hash ||
+      (x.cartaoId === l.cartaoId && x.desc === l.desc && x.data === l.data && Math.abs(parseMoney(x.valor) - l.valor) < 0.01)
+    );
+    l.duplicado = jaExiste;
+    if (jaExiste) duplicados++;
+    else { novos++; totalValor += l.valor; }
+
+    const cor = jaExiste ? 'color:var(--text3)' : l.futuro ? 'color:var(--text2)' : 'color:var(--text)';
+    const badge = jaExiste
+      ? '<span class="badge" style="background:rgba(99,102,241,.1);color:#818cf8;font-size:9px">JÁ IMPORTADO</span>'
+      : l.futuro
+      ? '<span class="badge badge-gold" style="font-size:9px">FUTURO</span>'
+      : '<span class="badge badge-teal" style="font-size:9px">NOVO</span>';
+
+    const ccOpts = '<option value="">—</option>' + centros.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+    const ccSel = jaExiste ? '—' : `<select data-linha="${linhas.indexOf(l)}" class="impfat-cc-sel" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:11px;padding:3px 6px;outline:none">${ccOpts}</select>`;
+
+    html += `<tr style="${jaExiste?'opacity:.5':''}">
+      <td class="td-mono" style="${cor}">${l.data.split('-').reverse().join('/')}</td>
+      <td style="${cor}">${l.desc}</td>
+      <td style="text-align:center;${cor}">${l.total>1?l.parcela+'/'+l.total:'À vista'}</td>
+      <td style="min-width:120px">${ccSel}</td>
+      <td class="td-mono" style="text-align:right;${cor}">${fmtBRL(l.valor)}</td>
+      <td>${badge}</td>
+    </tr>`;
+  });
+
+  body.innerHTML = html || '<tr><td colspan="5"><div class="empty">Nenhum lançamento encontrado.</div></td></tr>';
+  // Totais por tipo
+  const totalAtual   = linhas.filter(l=>!l.futuro&&!l.duplicado).reduce((s,l)=>s+l.valor,0);
+  const totalFuturo  = linhas.filter(l=>l.futuro&&!l.duplicado).reduce((s,l)=>s+l.valor,0);
+  const totalFatura  = impFatTransacoes.reduce((s,t)=>s+t.valor,0);
+
+  // Proxima fatura: lançamentos com data no mês seguinte ao vencimento
+  const proxMes = vencimento
+    ? (() => { const d=new Date(vencimento+'T12:00:00'); d.setMonth(d.getMonth()+1); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); })()
+    : '';
+  const totalProxFatura = linhas.filter(l=>l.futuro&&!l.duplicado&&l.data.startsWith(proxMes)).reduce((s,l)=>s+l.valor,0);
+
+  document.getElementById('impFatResumo').textContent =
+    `${novos} novos · ${duplicados} já importados`;
+
+  // Resumo financeiro
+  const resumoEl = document.getElementById('impFatResumoFin');
+  if (resumoEl) {
+    resumoEl.innerHTML = `
+      <div style="display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;margin-top:12px;padding:12px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:var(--r)">
+        <div><span style="color:var(--text3)">Total desta fatura (PDF):</span> <strong style="color:var(--gold)">${fmtBRL(totalFatura)}</strong></div>
+        <div><span style="color:var(--text3)">Lançamentos atuais:</span> <strong style="color:var(--teal)">${fmtBRL(totalAtual)}</strong></div>
+        ${proxMes?`<div><span style="color:var(--text3)">Próxima fatura (${proxMes.split('-').reverse().join('/')}):</span> <strong style="color:#f59e0b">${fmtBRL(totalProxFatura)}</strong></div>`:''}
+        <div><span style="color:var(--text3)">Total futuro (todas parcelas):</span> <strong style="color:var(--text2)">${fmtBRL(totalFuturo)}</strong></div>
+        ${Math.abs(totalAtual-totalFatura)>0.05?`<div style="color:var(--red)"><i class="fa fa-exclamation-triangle"></i> Diferença: ${fmtBRL(Math.abs(totalAtual-totalFatura))}</div>`:'<div style="color:var(--teal)"><i class="fa fa-check"></i> Total confere</div>'}
+      </div>`;
+  }
+
+  document.getElementById('impFatPreviewCard').style.display = '';
+
+  // Store lines for import
+  window._impFatLinhas = linhas;
+}
+
+function impFatImportar() {
+  const linhas = window._impFatLinhas || [];
+  // Collect CC values from row selectors before filtering
+  document.querySelectorAll('.impfat-cc-sel').forEach(sel => {
+    const idx = parseInt(sel.dataset.linha);
+    if (!isNaN(idx) && linhas[idx]) linhas[idx].cc = sel.value;
+  });
+  const novas = linhas.filter(l => !l.duplicado);
+  if (!novas.length) { toast('Nenhum lançamento novo para importar.','inf'); return; }
+
+  const cartao = cartoes.find(c => c.id === (document.getElementById('impFatCartao').value));
+  const banco  = cartao?.banco || '';
+
+  // Propaga CC das parcelas atuais para as futuras do mesmo grupo
+  const ccPorGrupo = {};
+  novas.filter(l=>!l.futuro).forEach(l => { if (l.cc) ccPorGrupo[l.groupKey] = l.cc; });
+  novas.filter(l=>l.futuro).forEach(l => { if (!l.cc && ccPorGrupo[l.groupKey]) l.cc = ccPorGrupo[l.groupKey]; });
+
+  novas.forEach(l => {
+    lancamentos.push({
+      id: uid(),
+      tipo: 'Despesa',
+      data: l.data,
+      banco: '',          // lançamento do cartão — NÃO debita conta corrente
+      cc: l.cc || '',
+      forma: 'Cartão',
+      cartaoId: l.cartaoId,
+      parcelas: String(l.total),
+      parcelaNum: l.parcela,
+      period: l.total > 1 ? 'Mensal' : 'Único',
+      valor: Math.abs(l.valor).toFixed(2).replace('.', ','),
+      desc: l.desc,
+      pago: false,
+      dataCriacao: new Date().toISOString().slice(0,10),
+      impFatHash: l.hash,
+      conciliado: false
+    });
+  });
+
+  saveAll(); renderLancamentos(); renderDashboard();
+
+  // Refresh preview to show updated status
+  const cartaoId = document.getElementById('impFatCartao').value;
+  const venc = window._impFatVenc;
+  impFatProcessar(window._impFatVenc, window._impFatFech, cartaoId);
+
+  toast(`✓ ${novas.length} lançamentos importados!`, 'ok');
+}
+
+// Apply global CC to all rows
+function impFatAplicarCC() {
+  const cc = document.getElementById('impFatCCGlobal')?.value || '';
+  if (!cc) { toast('Selecione um centro de custo.','inf'); return; }
+  document.querySelectorAll('.impfat-cc-sel').forEach(sel => sel.value = cc);
+  toast('CC aplicado a todos os lançamentos.','ok');
+}
+
+// Launch fatura payment lancamento
+function pagarFaturaCartao(cartaoId, cartaoNome, totalFatura, ymFatura) {
+  if (!totalFatura || totalFatura <= 0) { toast('Nenhum lançamento nesta fatura.','inf'); return; }
+
+  // Determina data de vencimento da próxima fatura
+  const cartao = cartoes.find(c=>c.id===cartaoId);
+  const hoje   = new Date();
+  const fatMes = ymFatura || hoje.toISOString().slice(0,7);
+  const [fatY, fatM] = fatMes.split('-').map(Number);
+  const vencDia = cartao?.venc ? parseInt(cartao.venc) : 10;
+  const ultimoDia = new Date(fatY, fatM, 0).getDate();
+  const vencData = `${fatY}-${String(fatM).padStart(2,'0')}-${String(Math.min(vencDia,ultimoDia)).padStart(2,'0')}`;
+
+  // Seleciona conta bancária para débito
+  const bancOpts = bancos.map(b=>b.nome).join(', ');
+  const bancoPag = window.prompt('Pagamento fatura ' + cartaoNome + ' — ' + fmtBRL(totalFatura) + '\nVencimento: ' + fmtDate(vencData) + '\n\nQual conta será debitada?\n' + bancOpts);
+  if (!bancoPag) return;
+  const bancoObj = bancos.find(b=>b.nome.toLowerCase()===bancoPag.trim().toLowerCase());
+  if (!bancoObj) { toast('Banco não encontrado.','err'); return; }
+
+  const ym = fatMes;
+  lancamentos.push({dataCriacao:new Date().toISOString().slice(0,10),
+    id: uid(),
+    tipo: 'Despesa',
+    data: vencData,
+    banco: bancoObj.nome,
+    cc: 'Cartões',
+    forma: 'Débito Automático',
+    cartaoId: '',
+    parcelas: '1',
+    period: 'Único',
+    valor: totalFatura.toFixed(2).replace('.', ','),
+    desc: `Pagamento fatura ${cartaoNome} ${ym}`,
+    pago: false,
+    impFatHash: `pagfatura|${cartaoId}|${ym}`
+  });
+
+  saveAll(); renderCartoes(); renderLancamentos(); renderDashboard();
+  toast(`✓ Pagamento de ${fmtBRL(totalFatura)} agendado para ${fmtDate(vencData)} — ${bancoObj.nome}`, 'ok');
+}
+
+function impFatPagarFatura() {
+  const cartaoId = document.getElementById('impFatCartao').value;
+  const cartao   = cartoes.find(c => c.id === cartaoId);
+  if (!cartao) { toast('Selecione o cartão.','err'); return; }
+
+  const venc = window._impFatVenc;
+  if (!venc) { toast('Vencimento não identificado.','err'); return; }
+
+  // Total das linhas desta fatura (não futuras)
+  const linhas = (window._impFatLinhas || []).filter(l => !l.futuro && !l.duplicado);
+  const total  = linhas.reduce((s,l) => s+l.valor, 0);
+  if (!total) { toast('Nenhum lançamento para pagar.','err'); return; }
+
+  // Ask which bank account to debit
+  const bancoOpts = bancos.map(b => b.nome).join('\n');
+  const bancoPag  = window.prompt('Qual conta corrente será debitada no pagamento da fatura?\n\n' + bancoOpts);
+  if (!bancoPag) return;
+  const bancoObj  = bancos.find(b => b.nome.toLowerCase() === bancoPag.trim().toLowerCase());
+  if (!bancoObj) { toast('Banco não encontrado.','err'); return; }
+
+  lancamentos.push({dataCriacao:new Date().toISOString().slice(0,10),
+    id:  uid(),
+    tipo: 'Despesa',
+    data: venc,
+    banco: bancoObj.nome,
+    cc:   'Cartões',
+    forma: 'Débito Automático',
+    cartaoId: '',
+    parcelas: '1',
+    period: 'Único',
+    valor: total,
+    desc:  `Pagamento fatura ${cartao.nome} ${venc.slice(0,7)}`,
+    pago:  false,
+    impFatHash: `pagfatura|${cartaoId}|${venc}`
+  });
+
+  saveAll(); renderLancamentos(); renderDashboard();
+  toast(`✓ Pagamento de ${fmtBRL(total)} agendado para ${fmtDate(venc)}.`, 'ok');
+}
+
+// Populate cartao select when tab opens
+function initImpFatTab() {
+  const sel = document.getElementById('impFatCartao');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— selecione —</option>' +
+    [...cartoes].filter(c=>(c.tipoCt||'credito')==='credito')
+      .sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'))
+      .map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+  sel.value = cur;
+
+  // Populate CC global select
+  const ccSel = document.getElementById('impFatCCGlobal');
+  if (ccSel) {
+    const curCC = ccSel.value;
+    ccSel.innerHTML = '<option value="">— selecione CC global —</option>' +
+      [...centros].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'))
+        .map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+    ccSel.value = curCC;
+  }
+}
+
+
+function abrirDetalhesDash(tipo) {
+  const mes   = document.getElementById('dashMes')?.value  || nowYM();
+  const banco = document.getElementById('dashBanco')?.value || '';
+
+  // Usa a mesma lógica de getDashData
+  const data = getDashData();
+
+  let itens, titulo, cor;
+  if (tipo === 'receita') {
+    itens  = data.filter(l => l.tipo==='Receita' && !isTransferencia(l) && !l.cartaoId);
+    titulo = '↑ Total Receitas';
+    cor    = 'var(--teal)';
+  } else if (tipo === 'saldo') {
+    // Saldo = todas as receitas e despesas do período (exceto transferências)
+    itens  = data.filter(l => !isTransferencia(l) && (
+      (l.tipo==='Receita' && !l.cartaoId) ||
+      (l.tipo==='Despesa' && l.banco!=='')
+    ));
+    titulo = '= Saldo do Período';
+    cor    = 'var(--gold)';
+  } else {
+    itens  = data.filter(l => l.tipo==='Despesa' && !isTransferencia(l) && l.banco!=='');
+    titulo = '↓ Total Despesas';
+    cor    = 'var(--red)';
+  }
+
+  // Ordena por data desc
+  itens = [...itens].sort((a,b) => (b.data||'').localeCompare(a.data||''));
+
+  const total = tipo === 'saldo'
+    ? itens.reduce((s,l) => s + (l.tipo==='Receita' ? parseMoney(l.valor) : -parseMoney(l.valor)), 0)
+    : itens.reduce((s,l) => s + parseMoney(l.valor), 0);
+
+  // Período label
+  const mesLabel = mes==='__ano__' ? 'Ano atual'
+    : mes==='__6m__' ? 'Próximos 6 meses'
+    : (() => { try { const d=new Date(mes+'-01T12:00'); return d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}); } catch(e){ return mes; } })();
+
+  document.getElementById('modalDashDetTitulo').textContent = titulo;
+  document.getElementById('modalDashDetTitulo').style.color = cor;
+  document.getElementById('modalDashDetSubtitulo').textContent = mesLabel + (banco ? ' · ' + banco : '');
+  document.getElementById('modalDashDetCount').textContent = itens.length + ' lançamento(s)';
+  document.getElementById('modalDashDetTotal').style.color = cor;
+  document.getElementById('modalDashDetTotal').textContent = fmtBRL(total);
+
+  document.getElementById('modalDashDetBody').innerHTML = itens.length
+    ? itens.map(l => {
+        const cartao = l.cartaoId ? (cartoes.find(c=>c.id===l.cartaoId)?.nome || 'Cartão') : '';
+        const conta  = l.banco || cartao || '—';
+        const status = l.pago ? '' : '<span class="badge" style="font-size:9px;background:rgba(245,158,11,.1);color:#f59e0b">Pendente</span>';
+        return `<tr>
+          <td class="td-mono" style="white-space:nowrap">${fmtDate(l.data)}</td>
+          <td>${l.desc||'—'} ${status}</td>
+          <td style="color:var(--text3);font-size:12px">${conta}</td>
+          <td style="color:var(--text3);font-size:12px">${l.cc||'—'}</td>
+          <td class="td-mono" style="text-align:right;color:${cor}">${fmtBRL(parseMoney(l.valor))}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="5"><div class="empty">Nenhum lançamento no período.</div></td></tr>';
+
+  openModal('modalDashDetalhes');
+}
+
+
+function toggleImpFat() {
+  const col = document.getElementById('impFatCollapse');
+  const chv = document.getElementById('impFatChevron');
+  if (!col) return;
+  const open = col.style.display !== 'none';
+  col.style.display = open ? 'none' : 'block';
+  if (chv) chv.style.transform = open ? '' : 'rotate(180deg)';
+}
+
+
+
+
+function instalarPWA() {
+  const e = window._pwaInstallEvent;
+  if (!e) { toast('Use o menu do browser para instalar.', 'inf'); return; }
+  e.prompt();
+  e.userChoice.then(r => {
+    if (r.outcome === 'accepted') {
+      toast('✓ App instalado!', 'ok');
+      const btn = document.getElementById('btnInstalarPWA');
+      if (btn) btn.style.display = 'none';
+    }
+    window._pwaInstallEvent = null;
+  });
+}
+
 </script>
 
 <!-- Modal Limpar Dados -->
@@ -7806,6 +9102,55 @@ if(typeof pdfjsLib!=='undefined'){pdfjsLib.GlobalWorkerOptions.workerSrc='https:
       <button class="btn btn-danger" style="min-width:110px;background:var(--red);color:#fff;border-color:var(--red)" onclick="executarLimpeza()">
         <i class="fa fa-trash"></i> Apagar tudo
       </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Detalhes Receitas/Despesas Dashboard -->
+<div class="modal-bg" id="modalDashDetalhes" onclick="if(event.target===this)closeModal('modalDashDetalhes')">
+  <div class="modal" style="max-width:600px;width:96vw;max-height:85vh;display:flex;flex-direction:column">
+    <button class="modal-close" onclick="closeModal('modalDashDetalhes')"><i class="fa fa-times"></i></button>
+    <div class="modal-title" id="modalDashDetTitulo">Detalhes</div>
+    <div style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:12px" id="modalDashDetSubtitulo"></div>
+    <div style="overflow-y:auto;flex:1">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Banco/Cartão</th>
+            <th>CC</th>
+            <th style="text-align:right">Valor</th>
+          </tr>
+        </thead>
+        <tbody id="modalDashDetBody"></tbody>
+      </table>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <span style="font-size:12px;color:var(--text3);font-family:var(--mono)" id="modalDashDetCount"></span>
+      <span style="font-size:16px;font-family:var(--mono);font-weight:600" id="modalDashDetTotal"></span>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar Baixa -->
+<div class="modal-bg" id="modalBaixa" onclick="if(event.target===this)closeModal('modalBaixa')">
+  <div class="modal" style="max-width:400px">
+    <button class="modal-close" onclick="closeModal('modalBaixa')"><i class="fa fa-times"></i></button>
+    <div class="modal-title" style="color:var(--teal)"><i class="fa fa-check-circle"></i> Confirmar Baixa</div>
+    <input type="hidden" id="modalBaixaId">
+    <div style="margin-bottom:16px;padding:12px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border)">
+      <div style="font-size:13px;color:var(--text);margin-bottom:4px" id="modalBaixaDesc"></div>
+      <div style="font-size:18px;font-family:var(--mono);color:var(--red);font-weight:600" id="modalBaixaValor"></div>
+    </div>
+    <div class="field">
+      <label>Data do Pagamento</label>
+      <input type="date" id="modalBaixaData">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalBaixa')">Cancelar</button>
+      <button class="btn btn-gold" onclick="confirmarBaixa()"><i class="fa fa-check"></i> Confirmar Baixa</button>
     </div>
   </div>
 </div>
