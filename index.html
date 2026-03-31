@@ -1664,45 +1664,47 @@ initTema();
 
         <!-- Centros de Custo -->
         <div class="card">
-          <div class="card-title"><i class="fa fa-tags" style="color:var(--gold)"></i> Centros de Custo <span class="badge badge-gold" style="margin-left:8px">3 Níveis: Grupo → Subgrupo → CC</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap">
+          <div class="card-title"><i class="fa fa-tags" style="color:var(--gold)"></i> Centros de Custo <span class="badge badge-gold" style="margin-left:8px">3 Níveis</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px">
             <div class="field" style="margin:0">
-              <label>Grupo (Nível 1)</label>
-              <input id="inCCGrupo" placeholder="Ex: Pessoal, Profissional..." list="listGruposCC">
+              <label>Nível 1 — Grupo</label>
+              <input id="inCCGrupo" placeholder="Ex: Pessoal, Profissional, Patrimônio, Financeiro..." list="listGruposCC" style="width:100%">
               <datalist id="listGruposCC"></datalist>
             </div>
             <div class="field" style="margin:0">
-              <label>Subgrupo (Nível 2)</label>
-              <input id="inCCSub" placeholder="Ex: Moradia, Saúde..." list="listSubsCC">
+              <label>Nível 2 — Subgrupo</label>
+              <input id="inCCSub" placeholder="Ex: Moradia, Saúde, Transporte, Alimentação Casa..." list="listSubsCC" style="width:100%">
               <datalist id="listSubsCC"></datalist>
             </div>
             <div class="field" style="margin:0">
-              <label>Centro de Custo (Nível 3)</label>
-              <input id="inCC" placeholder="Ex: Condomínio, IRPF...">
+              <label>Nível 3 — Centro de Custo</label>
+              <input id="inCC" placeholder="Ex: Aluguel/Financiamento, Plano/Consultas/Medicamentos, IRPF..." style="width:100%">
             </div>
-            <div class="field" style="margin:0">
-              <label>Tipo</label>
-              <select id="inCCTipo" style="width:100%">
-                <option value="Despesa">Despesa</option>
-                <option value="Receita">Receita</option>
-                <option value="Ambos">Ambos</option>
-              </select>
+            <div class="input-row cols2">
+              <div class="field" style="margin:0">
+                <label>Tipo</label>
+                <select id="inCCTipo" style="width:100%">
+                  <option value="Despesa">Despesa</option>
+                  <option value="Receita">Receita</option>
+                  <option value="Ambos">Ambos</option>
+                </select>
+              </div>
+              <div class="field" style="margin:0">
+                <label>Excluir de Rec/Desp <span style="color:var(--text3);font-size:10px">(não soma nos totais)</span></label>
+                <select id="inCCExcluir" style="width:100%">
+                  <option value="nao">Não — incluir nos totais</option>
+                  <option value="sim">Sim — excluir dos totais</option>
+                </select>
+              </div>
             </div>
-            <button class="btn btn-gold btn-sm" onclick="addCC()" style="white-space:nowrap;height:42px"><i class="fa fa-plus"></i> Adicionar</button>
-          </div>
-          <div style="margin-bottom:12px">
-            <div class="field" style="max-width:320px">
-              <label>Excluir de Rec/Desp <span style="color:var(--text3);font-size:10px">(não conta nos totais do dashboard)</span></label>
-              <select id="inCCExcluir" style="width:100%">
-                <option value="nao">Não</option>
-                <option value="sim">Sim — excluir</option>
-              </select>
-            </div>
+            <button class="btn btn-gold" onclick="addCC()" style="width:100%">
+              <i class="fa fa-plus"></i> Adicionar Centro de Custo
+            </button>
           </div>
           <div class="hr"></div>
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Centro de Custo</th><th style="width:100px">Tipo</th><th style="width:200px">Hierarquia</th><th style="width:80px">Ações</th></tr></thead>
+              <thead><tr><th>Centro de Custo</th><th style="width:90px">Tipo</th><th style="width:190px">Hierarquia</th><th style="width:72px">Ações</th></tr></thead>
               <tbody id="tblCCBody"></tbody>
             </table>
           </div>
@@ -2334,6 +2336,55 @@ initTema();
         </div>
       </section>
 
+      <!-- ──────────── FINANCIAMENTOS ──────────── -->
+      <section class="section" id="tab-financiamentos">
+        <div class="page-hd">
+          <div>
+            <div class="page-title">Financiamentos</div>
+            <div class="page-sub">Controle de parcelas e saldo devedor</div>
+          </div>
+          <button class="btn btn-gold" onclick="openModalFinanc()">
+            <i class="fa fa-plus"></i> Novo Financiamento
+          </button>
+        </div>
+
+        <!-- Cards de resumo -->
+        <div class="financ-grid" id="financGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:24px">
+          <div class="empty" style="grid-column:1/-1"><i class="fa fa-university"></i>Nenhum financiamento cadastrado.</div>
+        </div>
+
+        <!-- Próximas parcelas -->
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-title"><i class="fa fa-calendar-alt" style="color:var(--gold)"></i> Próximas Parcelas <span class="badge badge-gold">3 meses</span></div>
+          <div id="financProxParcelas">
+            <div class="empty"><i class="fa fa-check-circle" style="color:var(--teal)"></i>Nenhuma parcela futura.</div>
+          </div>
+        </div>
+
+        <!-- Tabela detalhada -->
+        <div class="card" style="padding:0">
+          <div class="card-title" style="padding:16px 20px 12px">
+            <i class="fa fa-table" style="color:var(--gold)"></i> Resumo Geral
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Descrição</th>
+                  <th>Valor Total</th>
+                  <th>Parcela</th>
+                  <th>Parcelas</th>
+                  <th>Saldo Dev.</th>
+                  <th>Próx. Venc.</th>
+                  <th>Status</th>
+                  <th style="width:80px">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tblFinancBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
       <!-- ──────────── CONCILIAÇÃO BANCÁRIA ──────────── -->
       <section class="section" id="tab-conciliacao">
@@ -3893,8 +3944,11 @@ function switchTab(id, btn) {
   if (btn) btn.classList.add('active');
   else document.querySelector(`[data-tab="${id}"]`)?.classList.add('active');
   if (id==='dashboard')  { renderDashboard(); renderContasPagarDash(); }
+  if (id==='financiamentos') { renderFinanciamentos(); }
   if (id==='config')     renderSysInfo();
+  if (id==='financiamentos') { renderFinanciamentos(); }
   if (id==='cartoes') { renderCartoes(); renderFaturasProjetadas(); initImpFatTab(); }
+  if (id==='financiamentos') { renderFinanciamentos(); }
   if (id==='metas')      { renderMetas(); renderLimitesCC(); }
   if (id==='orcamento')  { initOrcamento(); }
   if (id==='recorrentes'){ renderRecorrentes(); verificarRecorrentesPendentes(); }
@@ -4469,7 +4523,11 @@ function renderCartoes() {
     return `<div class="card" style="margin-bottom:0">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
         <div style="font-family:var(--serif);font-size:17px;font-weight:600;color:var(--text)">${c.nome}</div>
-        <span class="badge ${isDebito?'badge-teal':'badge-gold'}">${isDebito?'Débito':'Crédito'}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="badge ${isDebito?'badge-teal':'badge-gold'}">${isDebito?'Débito':'Crédito'}</span>
+          <button class="btn btn-ghost btn-icon btn-edit" style="padding:5px 8px" onclick="openModalCartao('${c.id}')" title="Editar cartão"><i class="fa fa-pencil-alt"></i></button>
+          <button class="btn btn-ghost btn-icon btn-danger" style="padding:5px 8px" onclick="delCartao('${c.id}')" title="Excluir cartão"><i class="fa fa-trash"></i></button>
+        </div>
       </div>
       <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:4px">${isDebito?'SALDO DISPONÍVEL':'LIMITE TOTAL'}</div>
       <div style="font-family:var(--mono);font-size:19px;color:var(--text);margin-bottom:14px">${isDebito?fmtBRL(disp):fmtBRL(c.limite)}</div>
@@ -5482,22 +5540,32 @@ function renderFinanciamentos() {
   // Tabela
   if (tbody) {
     tbody.innerHTML = financiamentos.map(f => {
-      const restantes = f.parcelas - f.pagas;
+      const pagasF = getPagasFinanc(f);
+      const restantes = f.parcelas - pagasF;
       const saldo = getSaldoDevedor(f);
       const proxVenc = restantes > 0 ? fmtDate(getProxVencFinanc(f)) : '—';
       const statusBadge = restantes <= 0 ? '<span class="badge badge-teal">Quitado</span>'
                         : '<span class="badge badge-gold">Ativo</span>';
       return `<tr>
-        <td>${f.desc}</td>
-        <td class="td-mono">${fmtBRL(f.total)}</td>
-        <td class="td-mono">${fmtBRL(f.parcelaMensal)}</td>
-        <td class="td-mono">${getPagasFinanc(f)}/${f.parcelas}</td>
-        <td class="td-mono">${fmtBRL(saldo)}</td>
-        <td class="td-mono">${proxVenc}</td>
-        <td>${statusBadge}</td>
+        <td style="font-weight:500">${f.desc} ${statusBadge}</td>
+        <td>${f.banco||'—'}</td>
+        <td class="td-mono" style="text-align:right;color:var(--red)">${fmtBRL(f.parcelaMensal)}</td>
+        <td class="td-mono" style="text-align:right;color:var(--red)">${fmtBRL(saldo)}</td>
         <td>
-          <button class="btn btn-ghost btn-icon btn-edit" onclick="openModalFinanc('${f.id}')"><i class="fa fa-pencil-alt"></i></button>
-          <button class="btn btn-ghost btn-icon btn-danger" onclick="delFinanc('${f.id}')"><i class="fa fa-trash"></i></button>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:80px;height:5px;background:var(--surface);border-radius:99px;overflow:hidden">
+              <div style="width:${Math.round(pagasF/f.parcelas*100)}%;height:100%;background:var(--teal);border-radius:99px"></div>
+            </div>
+            <span style="font-family:var(--mono);font-size:11px;color:var(--text3)">${pagasF}/${f.parcelas}</span>
+          </div>
+        </td>
+        <td class="td-mono" style="font-size:12px">${proxVenc}</td>
+        <td>
+          <div style="display:flex;gap:4px">
+            ${restantes > 0 ? `<button class="btn btn-ghost btn-icon" title="Parcelas" onclick="openModalParcelas('${f.id}')"><i class="fa fa-list-ol"></i></button>` : ''}
+            <button class="btn btn-ghost btn-icon btn-edit" title="Editar" onclick="openModalFinanc('${f.id}')"><i class="fa fa-pencil-alt"></i></button>
+            <button class="btn btn-ghost btn-icon btn-danger" title="Excluir" onclick="delFinanc('${f.id}')"><i class="fa fa-trash"></i></button>
+          </div>
         </td>
       </tr>`;
     }).join('');
@@ -9982,16 +10050,16 @@ function abrirDetalhesDash(tipo) {
     ? itens.map(l => {
         const cartao = l.cartaoId ? (cartoes.find(c=>c.id===l.cartaoId)?.nome || 'Cartão') : '';
         const conta  = l.banco || cartao || '—';
-        const status = l.pago ? '' : '<span class="badge" style="font-size:9px;background:rgba(245,158,11,.1);color:#f59e0b">Pendente</span>';
+        const status = l.pago ? '' : '<span class="badge" style="font-size:9px;background:rgba(245,158,11,.1);color:#f59e0b">Pend.</span>';
+        const ccInfo = l.cc ? `<div style="font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.cc}</div>` : '';
         return `<tr>
-          <td class="td-mono" style="white-space:nowrap">${fmtDate(l.data)}</td>
-          <td>${l.desc||'—'} ${status}</td>
-          <td style="color:var(--text3);font-size:12px">${conta}</td>
-          <td style="color:var(--text3);font-size:12px">${l.cc||'—'}</td>
-          <td class="td-mono" style="text-align:right;color:${cor}">${fmtBRL(parseMoney(l.valor))}</td>
+          <td class="td-mono" style="font-size:12px;white-space:nowrap">${fmtDate(l.data)}</td>
+          <td style="overflow:hidden"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(l.desc||'').replace(/"/g,'&quot;')}">${l.desc||'—'} ${status}</div>${ccInfo}</td>
+          <td style="color:var(--text3);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${conta}">${conta}</td>
+          <td class="td-mono" style="text-align:right;color:${cor};font-size:13px;white-space:nowrap">${fmtBRL(parseMoney(l.valor))}</td>
         </tr>`;
       }).join('')
-    : '<tr><td colspan="5"><div class="empty">Nenhum lançamento no período.</div></td></tr>';
+    : '<tr><td colspan="4"><div class="empty">Nenhum lançamento no período.</div></td></tr>';
 
   openModal('modalDashDetalhes');
 }
@@ -10645,18 +10713,23 @@ function relOrcadoRealizado(ym) {
 
 <!-- Modal Detalhes Receitas/Despesas Dashboard -->
 <div class="modal-bg" id="modalDashDetalhes" onclick="if(event.target===this)closeModal('modalDashDetalhes')">
-  <div class="modal" style="max-width:600px;width:96vw;max-height:85vh;display:flex;flex-direction:column">
+  <div class="modal" style="max-width:640px;width:96vw;max-height:88vh;display:flex;flex-direction:column">
     <button class="modal-close" onclick="closeModal('modalDashDetalhes')"><i class="fa fa-times"></i></button>
     <div class="modal-title" id="modalDashDetTitulo">Detalhes</div>
     <div style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:12px" id="modalDashDetSubtitulo"></div>
-    <div style="overflow-y:auto;flex:1">
-      <table>
+    <div style="overflow-y:auto;overflow-x:hidden;flex:1">
+      <table style="table-layout:fixed;width:100%">
+        <colgroup>
+          <col style="width:86px">
+          <col>
+          <col style="width:100px">
+          <col style="width:96px">
+        </colgroup>
         <thead>
           <tr>
             <th>Data</th>
-            <th>Descrição</th>
-            <th>Banco/Cartão</th>
-            <th>CC</th>
+            <th>Descrição / CC</th>
+            <th>Conta</th>
             <th style="text-align:right">Valor</th>
           </tr>
         </thead>
