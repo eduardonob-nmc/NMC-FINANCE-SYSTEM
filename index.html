@@ -1340,6 +1340,9 @@ initTema();
           <button class="nav-item" data-tab="metas" onclick="switchTab('metas',this)">
             <i class="fa fa-bullseye ni"></i> Metas
           </button>
+          <button class="nav-item" data-tab="orcamento" onclick="switchTab('orcamento',this)">
+            <i class="fa fa-chart-bar ni"></i> Orçamento
+          </button>
           <button class="nav-item" data-tab="config" onclick="switchTab('config',this)">
             <i class="fa fa-cog ni"></i> Configuração
           </button>
@@ -1488,8 +1491,18 @@ initTema();
           <div id="dashLimiteCCBody"></div>
         </div>
 
-        <!-- Próximas Faturas -->
+        <!-- Drill-down hierárquico de despesas -->
+        <div class="card">
+          <div class="card-title" style="justify-content:space-between">
+            <span><i class="fa fa-sitemap" style="color:var(--gold)"></i> Despesas — Análise Hierárquica</span>
+            <button class="btn btn-ghost btn-sm" onclick="_drillReset()" style="font-family:var(--mono);font-size:10px"><i class="fa fa-home"></i> Início</button>
+          </div>
+          <div id="dashDrillDown">
+            <div class="empty"><i class="fa fa-sitemap"></i>Carregando...</div>
+          </div>
+        </div>
 
+        <!-- Próximas Faturas -->
         <div class="card" id="alertFaturasCard" style="margin-top:0">
           <div class="card-title">
             <i class="fa fa-credit-card" style="color:var(--gold)"></i>
@@ -1651,35 +1664,45 @@ initTema();
 
         <!-- Centros de Custo -->
         <div class="card">
-          <div class="card-title"><i class="fa fa-tags" style="color:var(--gold)"></i> Centros de Custo</div>
-          <div class="cad-form">
-            <div class="field cad-field-grow">
-              <label>Nome</label>
-              <input id="inCC" placeholder="Ex: Alimentação, Moradia...">
+          <div class="card-title"><i class="fa fa-tags" style="color:var(--gold)"></i> Centros de Custo <span class="badge badge-gold" style="margin-left:8px">3 Níveis: Grupo → Subgrupo → CC</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap">
+            <div class="field" style="margin:0">
+              <label>Grupo (Nível 1)</label>
+              <input id="inCCGrupo" placeholder="Ex: Pessoal, Profissional..." list="listGruposCC">
+              <datalist id="listGruposCC"></datalist>
             </div>
-            <div class="field cad-field-tipo">
+            <div class="field" style="margin:0">
+              <label>Subgrupo (Nível 2)</label>
+              <input id="inCCSub" placeholder="Ex: Moradia, Saúde..." list="listSubsCC">
+              <datalist id="listSubsCC"></datalist>
+            </div>
+            <div class="field" style="margin:0">
+              <label>Centro de Custo (Nível 3)</label>
+              <input id="inCC" placeholder="Ex: Condomínio, IRPF...">
+            </div>
+            <div class="field" style="margin:0">
               <label>Tipo</label>
-              <select id="inCCTipo">
-                <option value="Receita">Receita</option>
+              <select id="inCCTipo" style="width:100%">
                 <option value="Despesa">Despesa</option>
+                <option value="Receita">Receita</option>
                 <option value="Ambos">Ambos</option>
               </select>
             </div>
-            <div class="field" style="flex:1 1 180px">
-              <label>Excluir de Rec/Desp <span style="color:var(--text3);font-size:10px">(não conta nos totais)</span></label>
+            <button class="btn btn-gold btn-sm" onclick="addCC()" style="white-space:nowrap;height:42px"><i class="fa fa-plus"></i> Adicionar</button>
+          </div>
+          <div style="margin-bottom:12px">
+            <div class="field" style="max-width:320px">
+              <label>Excluir de Rec/Desp <span style="color:var(--text3);font-size:10px">(não conta nos totais do dashboard)</span></label>
               <select id="inCCExcluir" style="width:100%">
                 <option value="nao">Não</option>
                 <option value="sim">Sim — excluir</option>
               </select>
             </div>
-            <div class="cad-btn-wrap">
-              <button class="btn btn-gold btn-sm" onclick="addCC()"><i class="fa fa-plus"></i> Adicionar</button>
-            </div>
           </div>
           <div class="hr"></div>
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Centro de Custo</th><th style="width:90px">Tipo</th><th style="width:72px">Ações</th></tr></thead>
+              <thead><tr><th>Centro de Custo</th><th style="width:100px">Tipo</th><th style="width:200px">Hierarquia</th><th style="width:80px">Ações</th></tr></thead>
               <tbody id="tblCCBody"></tbody>
             </table>
           </div>
@@ -2566,6 +2589,115 @@ initTema();
       </section>
 
       <!-- ──────────── RELATÓRIOS ──────────── -->
+      <!-- ──────────── ORÇAMENTO ──────────── -->
+      <section class="section" id="tab-orcamento">
+        <div class="page-hd">
+          <div>
+            <div class="page-title">Orçamento Anual</div>
+            <div class="page-sub">Planejamento orçamentário e acompanhamento Orçado vs Realizado</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="orcAno" onchange="renderOrcamento()" style="padding:9px 14px;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);outline:none"></select>
+            <button class="btn btn-gold" onclick="aprovarPlanoAnual()"><i class="fa fa-check-circle"></i> Aprovar Plano</button>
+          </div>
+        </div>
+
+        <!-- Tabs Orçamento -->
+        <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+          <button class="btn btn-gold btn-sm" id="orcTabPlan" onclick="orcSwitchTab('plan')"><i class="fa fa-pencil-alt"></i> Planejamento</button>
+          <button class="btn btn-outline btn-sm" id="orcTabAcomp" onclick="orcSwitchTab('acomp')"><i class="fa fa-balance-scale"></i> Orçado vs Realizado</button>
+        </div>
+
+        <!-- Planejamento -->
+        <div id="orcPanelPlan">
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title"><i class="fa fa-plus-circle" style="color:var(--teal)"></i> Adicionar Linha de Orçamento</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:10px;align-items:flex-end">
+              <div class="field" style="margin:0">
+                <label>Grupo</label>
+                <input id="orcInGrupo" placeholder="Ex: Pessoal" list="orcListGrupos">
+                <datalist id="orcListGrupos"></datalist>
+              </div>
+              <div class="field" style="margin:0">
+                <label>Subgrupo</label>
+                <input id="orcInSub" placeholder="Ex: Moradia" list="orcListSubs">
+                <datalist id="orcListSubs"></datalist>
+              </div>
+              <div class="field" style="margin:0">
+                <label>Centro de Custo</label>
+                <select id="orcInCC" style="width:100%;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:15px;outline:none"></select>
+              </div>
+              <button class="btn btn-teal btn-sm" onclick="orcAdicionarLinha()" style="white-space:nowrap;height:42px;background:var(--teal);color:#fff;border-color:var(--teal)"><i class="fa fa-plus"></i> Adicionar</button>
+            </div>
+          </div>
+
+          <div class="card" style="padding:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px 12px">
+              <div style="font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Plano Anual — <span id="orcAnoLabel"></span></div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="orcPreencherMeses()"><i class="fa fa-copy"></i> Replicar Jan→Dez</button>
+                <button class="btn btn-ghost btn-sm" onclick="orcLimparPlano()"><i class="fa fa-trash"></i> Limpar Plano</button>
+              </div>
+            </div>
+            <div style="overflow-x:auto">
+              <table id="tblOrcamento" style="min-width:1200px">
+                <thead id="tblOrcHead"></thead>
+                <tbody id="tblOrcBody"></tbody>
+                <tfoot id="tblOrcFoot"></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acompanhamento -->
+        <div id="orcPanelAcomp" style="display:none">
+          <div class="card" style="margin-bottom:16px">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+              <div class="filter-field">
+                <label>Mês</label>
+                <select id="orcAcompMes" onchange="renderOrcAcomp()" style="padding:9px 14px;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);outline:none">
+                  <option value="">Todos os meses</option>
+                  <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
+                  <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
+                  <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
+                  <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label>Grupo</label>
+                <select id="orcAcompGrupo" onchange="renderOrcAcomp()" style="padding:9px 14px;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);outline:none">
+                  <option value="">Todos os grupos</option>
+                </select>
+              </div>
+              <button class="btn btn-gold btn-sm" onclick="renderOrcAcomp()"><i class="fa fa-sync-alt"></i> Atualizar</button>
+            </div>
+          </div>
+
+          <!-- Stats resumo -->
+          <div class="stats-grid" id="orcAcompStats" style="grid-template-columns:repeat(4,1fr);margin-bottom:18px"></div>
+
+          <!-- Tabela acompanhamento -->
+          <div class="card" style="padding:0">
+            <div style="overflow-x:auto">
+              <table id="tblOrcAcomp">
+                <thead>
+                  <tr>
+                    <th>Grupo</th><th>Subgrupo</th><th>Centro de Custo</th>
+                    <th style="text-align:right">Orçado</th>
+                    <th style="text-align:right">Realizado</th>
+                    <th style="text-align:right">Diferença</th>
+                    <th style="width:140px">Progresso</th>
+                  </tr>
+                </thead>
+                <tbody id="tblOrcAcompBody"></tbody>
+                <tfoot id="tblOrcAcompFoot"></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ──────────── RELATÓRIOS ──────────── -->
       <section class="section" id="tab-relatorios">
         <div class="page-hd">
           <div><div class="page-title">Relatórios</div><div class="page-sub">Análises exportáveis em PDF</div></div>
@@ -2579,7 +2711,9 @@ initTema();
                 <option value="banco">Movimentação Bancária por Conta</option>
                 <option value="cartao">Movimentação por Cartão</option>
                 <option value="categoria">Despesas por Categoria</option>
+                <option value="categoria_hierarquia">Despesas por Hierarquia (Grupo→Sub→CC)</option>
                 <option value="rxd">Receitas vs Despesas (Período)</option>
+                <option value="orcado_realizado">Orçado vs Realizado</option>
                 <option value="inadimplencia">Contas a Vencer / Em Atraso</option>
                 <option value="investimentos">Posição de Investimentos</option>
                 <option value="recorrentes">Lançamentos Recorrentes</option>
@@ -2929,25 +3063,31 @@ initTema();
 
 <!-- Modal Editar CC -->
 <div class="modal-bg" id="modalEditCC">
-  <div class="modal" style="width:420px">
+  <div class="modal" style="width:480px">
     <button class="modal-close" onclick="closeModal('modalEditCC')"><i class="fa fa-times"></i></button>
     <div class="modal-title">Editar Centro de Custo</div>
     <input type="hidden" id="editCCIdx">
-    <div class="field"><label>Nome</label><input id="editCCNome"></div>
-    <div class="field">
-      <label>Tipo</label>
-      <select id="editCCTipo">
-        <option value="Receita">Receita</option>
-        <option value="Despesa">Despesa</option>
-        <option value="Ambos">Ambos</option>
-      </select>
+    <div class="input-row cols2">
+      <div class="field"><label>Grupo (Nível 1)</label><input id="editCCGrupo" list="editListGruposCC"><datalist id="editListGruposCC"></datalist></div>
+      <div class="field"><label>Subgrupo (Nível 2)</label><input id="editCCSub" list="editListSubsCC"><datalist id="editListSubsCC"></datalist></div>
     </div>
-    <div class="field">
-      <label>Excluir de Rec/Desp</label>
-      <select id="editCCExcluir">
-        <option value="nao">Não — incluir nos totais</option>
-        <option value="sim">Sim — excluir dos totais</option>
-      </select>
+    <div class="field"><label>Nome do Centro de Custo (Nível 3)</label><input id="editCCNome"></div>
+    <div class="input-row cols2">
+      <div class="field">
+        <label>Tipo</label>
+        <select id="editCCTipo">
+          <option value="Receita">Receita</option>
+          <option value="Despesa">Despesa</option>
+          <option value="Ambos">Ambos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Excluir de Rec/Desp</label>
+        <select id="editCCExcluir">
+          <option value="nao">Não — incluir nos totais</option>
+          <option value="sim">Sim — excluir dos totais</option>
+        </select>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modalEditCC')">Cancelar</button>
@@ -3480,6 +3620,7 @@ let investimentos  = [];
 let movsInvest     = [];
 let metas          = [];
 let recorrentes    = [];
+let orcamento      = [];
 
 let usuarios = _loadUsuarios();
 
@@ -3540,17 +3681,69 @@ function _loadAllData() {
   movsInvest     = LS.get('movsInvest');
   metas          = LS.get('metas');
   recorrentes    = LS.get('recorrentes');
+  orcamento      = LS.get('orcamento');
   _migrateTransferencias(); // migra dados antigos sem a flag
 
   // seeds de dados financeiros (só se vazios)
   if (!formas.length)  formas  = [{nome:'PIX'},{nome:'Boleto'},{nome:'Transferência'},{nome:'Cartão'},{nome:'Dinheiro'},{nome:'Débito Automático'}];
   if (!bancos.length)  bancos  = [{nome:'Banco do Brasil',saldoInicial:0,chequeEspecial:0},{nome:'Nubank',saldoInicial:0,chequeEspecial:0},{nome:'Bradesco',saldoInicial:0,chequeEspecial:0}];
   if (!centros.length) centros = [
-    {nome:'Salário',tipo:'Receita'},{nome:'Freelance',tipo:'Receita'},
-    {nome:'Alimentação',tipo:'Despesa'},{nome:'Moradia',tipo:'Despesa'},
-    {nome:'Transporte',tipo:'Despesa'},{nome:'Saúde',tipo:'Despesa'},
-    {nome:'Lazer',tipo:'Despesa'},{nome:'Educação',tipo:'Despesa'},
+    // ── PESSOAL
+    {nome:'Aluguel/Financiamento',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Moradia'},
+    {nome:'Condomínio',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Moradia'},
+    {nome:'Energia/Água/Internet',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Moradia'},
+    {nome:'Taxas / Impostos / IPTU',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Moradia'},
+    {nome:'Supermercado/Feira',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Alimentação Casa'},
+    {nome:'Restaurantes/Delivery',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Alimentação Fora'},
+    {nome:'Plano/Consultas/Medicamentos',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Saúde'},
+    {nome:'Combustível/Manutenção',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Transporte'},
+    {nome:'Uber/Taxi/Onibus',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Transporte'},
+    {nome:'Planos Funerários /Taxas/Condominios Cemitério',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Segurança Pessoal'},
+    {nome:'Seguros / Seguro Cartão',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Segurança Pessoal'},
+    {nome:'Viagens',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Vida Pessoal'},
+    {nome:'Lazer',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Vida Pessoal'},
+    {nome:'Assinaturas Laser',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Vida Pessoal'},
+    {nome:'Assinaturas Internet',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Vida Pessoal'},
+    {nome:'Cursos / Faculdade / MBA',tipo:'Despesa',grupo:'Pessoal',subgrupo:'Educação'},
+    // ── PROFISSIONAL
+    {nome:'Aluguel/Condomínio',tipo:'Despesa',grupo:'Profissional',subgrupo:'Estrutura'},
+    {nome:'Energia/Internet',tipo:'Despesa',grupo:'Profissional',subgrupo:'Estrutura'},
+    {nome:'Softwares/SaaS',tipo:'Despesa',grupo:'Profissional',subgrupo:'Tecnologia'},
+    {nome:'Materiais/Equipamentos',tipo:'Despesa',grupo:'Profissional',subgrupo:'Operacional'},
+    {nome:'Refeições',tipo:'Despesa',grupo:'Profissional',subgrupo:'Alimentação Trabalho'},
+    {nome:'Combustível/Deslocamento',tipo:'Despesa',grupo:'Profissional',subgrupo:'Transporte'},
+    {nome:'Publicidade/Tráfego',tipo:'Despesa',grupo:'Profissional',subgrupo:'Marketing'},
+    {nome:'Contador/Consultorias',tipo:'Despesa',grupo:'Profissional',subgrupo:'Serviços'},
+    {nome:'Despesas Operacionais',tipo:'Despesa',grupo:'Profissional',subgrupo:'Operacional'},
+    // ── PATRIMÔNIO
+    {nome:'Aquisição de Veículo',tipo:'Despesa',grupo:'Patrimônio',subgrupo:'Veículos'},
+    {nome:'Compra/Upgrade Equipamentos Lar',tipo:'Despesa',grupo:'Patrimônio',subgrupo:'Equipamentos do Lar'},
+    {nome:'Aquisição/Manutenção TI',tipo:'Despesa',grupo:'Patrimônio',subgrupo:'Equipamentos de TI'},
+    {nome:'Aquisição/Manutenção Imóvel',tipo:'Despesa',grupo:'Patrimônio',subgrupo:'Moradia'},
+    // ── FINANCEIRO
+    {nome:'IRPF',tipo:'Despesa',grupo:'Financeiro',subgrupo:'Impostos PF'},
+    {nome:'DAS/ISS',tipo:'Despesa',grupo:'Financeiro',subgrupo:'Impostos PJ'},
+    {nome:'Taxas/Juros',tipo:'Despesa',grupo:'Financeiro',subgrupo:'Encargos'},
+    {nome:'Tarifas / Anuidade',tipo:'Despesa',grupo:'Financeiro',subgrupo:'Tarifas'},
+    {nome:'Empréstimos',tipo:'Despesa',grupo:'Financeiro',subgrupo:'Dívidas'},
+    {nome:'Diversos',tipo:'Despesa',grupo:'Financeiro',subgrupo:'Dívidas'},
+    {nome:'Pró-labore',tipo:'Ambos',grupo:'Financeiro',subgrupo:'Remuneração'},
+    {nome:'Distribuição de lucros',tipo:'Ambos',grupo:'Financeiro',subgrupo:'Remuneração'},
+    {nome:'Aplicação CDB',tipo:'Ambos',grupo:'Financeiro',subgrupo:'Investimentos'},
+    {nome:'Carteira Bolsa',tipo:'Ambos',grupo:'Financeiro',subgrupo:'Investimentos'},
+    {nome:'Contratos',tipo:'Receita',grupo:'Financeiro',subgrupo:'Faturamento'},
+    {nome:'Venda pela Internet',tipo:'Receita',grupo:'Financeiro',subgrupo:'Faturamento'},
+    {nome:'Outras Receitas',tipo:'Receita',grupo:'Financeiro',subgrupo:'Faturamento'},
   ];
+
+  // ── Migração: CCs antigos sem grupo/subgrupo recebem defaults
+  centros.forEach(c => {
+    if (!c.grupo) c.grupo = 'Outros';
+    if (!c.subgrupo) c.subgrupo = 'Geral';
+  });
+
+  // ── Seed orçamento hierárquico (budget)
+  if (!LS.get('orcamento').length) LS.set('orcamento', []);
 }
 
 function saveAll() {
@@ -3564,7 +3757,8 @@ function saveAll() {
   LS.set('movsInvest',      movsInvest);
   LS.set('metas',           metas);
   LS.set('recorrentes',     recorrentes);
-  _saveUsuarios(usuarios); // usuarios sempre com chave mestra
+  LS.set('orcamento',       orcamento);
+  _saveUsuarios(usuarios);
 }
 
 /* ══════════════════════════════════════════
@@ -3702,6 +3896,7 @@ function switchTab(id, btn) {
   if (id==='config')     renderSysInfo();
   if (id==='cartoes') { renderCartoes(); renderFaturasProjetadas(); initImpFatTab(); }
   if (id==='metas')      { renderMetas(); renderLimitesCC(); }
+  if (id==='orcamento')  { initOrcamento(); }
   if (id==='recorrentes'){ renderRecorrentes(); verificarRecorrentesPendentes(); }
   if (id==='conciliacao'){ renderConciliadosBody(); concSwitchTab('arq'); }
   if (id==='relatorios') { relPopularFiltros(); relOnTipoChange(); }
@@ -3741,6 +3936,7 @@ function renderAll() {
   renderMetas();
   renderRecorrentes();
   refreshSelects();
+  _populateCCDataLists();
 }
 
 /* ══════════════════════════════════════════
@@ -3760,15 +3956,37 @@ function refreshSelects() {
     el.value = cur;
   });
 
-  // CC selects
-  ['mLancCC','fLancCC'].forEach(id => {
+  // CC selects — exibe "Grupo – Subgrupo – CC" agrupado
+  ['mLancCC','fLancCC','mRecCC','mMetaCC','concItemCC','concPdfItemCC'].forEach(id => {
     const el = document.getElementById(id); if (!el) return;
     const cur = el.value;
-    const tipo = id==='mLancCC' ? (document.getElementById('mLancTipo')?.value||'') : '';
-    const filt = (tipo ? centros.filter(c=>c.tipo===tipo||c.tipo==='Ambos') : centros)
-                   .sort(sortNome);
-    el.innerHTML = (id==='fLancCC'?'<option value="">Todos os centros</option>':'<option value="">— selecione —</option>') +
-      filt.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+    const isFiltro = id==='fLancCC';
+    const isNenhum = ['mMetaCC','concItemCC','concPdfItemCC'].includes(id);
+    const tipo = id==='mLancCC' ? (document.getElementById('mLancTipo')?.value||'') :
+                 id==='mRecCC'  ? (document.getElementById('mRecTipo')?.value||'') : '';
+    let filt = tipo ? centros.filter(c=>c.tipo===tipo||c.tipo==='Ambos') : centros;
+    // Agrupa por grupo
+    const grupos = {};
+    filt.forEach(c => {
+      const g = c.grupo||'Outros';
+      if (!grupos[g]) grupos[g] = [];
+      grupos[g].push(c);
+    });
+    let html = isFiltro ? '<option value="">Todos os centros</option>' :
+               isNenhum ? '<option value="">— nenhum —</option>' :
+               '<option value="">— selecione —</option>';
+    Object.keys(grupos).sort((a,b)=>a.localeCompare(b,'pt-BR')).forEach(g => {
+      html += `<optgroup label="${g}">`;
+      grupos[g].sort((a,b)=>{
+        const sa = a.subgrupo||'Geral', sb = b.subgrupo||'Geral';
+        return sa.localeCompare(sb,'pt-BR') || a.nome.localeCompare(b.nome,'pt-BR');
+      }).forEach(c => {
+        const s = c.subgrupo||'Geral';
+        html += `<option value="${c.nome}">${s} – ${c.nome}</option>`;
+      });
+      html += '</optgroup>';
+    });
+    el.innerHTML = html;
     el.value = cur;
   });
 
@@ -3960,48 +4178,167 @@ function delBanco(i) {
 }
 
 /* ══════════════════════════════════════════
-   CENTROS DE CUSTO
+   CENTROS DE CUSTO — HIERARQUIA 3 NÍVEIS
 ══════════════════════════════════════════ */
+
+// Helper: retorna label completo "Grupo – Subgrupo – CC"
+function ccLabel(c) {
+  if (!c) return '';
+  const g = c.grupo || 'Outros';
+  const s = c.subgrupo || 'Geral';
+  return `${g} – ${s} – ${c.nome}`;
+}
+
+// Helper: gera HTML de options hierárquico para selects de CC
+function _buildCCOpts(firstLabel, tipoFiltro) {
+  let html = '<option value="">' + (firstLabel||'— selecione —') + '</option>';
+  const grupos = {};
+  const filtered = tipoFiltro
+    ? centros.filter(c => c.tipo === tipoFiltro || c.tipo === 'Ambos')
+    : centros;
+  filtered.forEach(c => {
+    const g = c.grupo||'Outros';
+    if (!grupos[g]) grupos[g] = [];
+    grupos[g].push(c);
+  });
+  Object.keys(grupos).sort().forEach(g => {
+    html += '<optgroup label="' + g + '">';
+    grupos[g].sort((a,b)=>(a.subgrupo||'').localeCompare(b.subgrupo||'')||a.nome.localeCompare(b.nome)).forEach(c => {
+      const sub = c.subgrupo||'Geral';
+      html += '<option value="' + c.nome + '">' + sub + ' \u2013 ' + c.nome + '</option>';
+    });
+    html += '</optgroup>';
+  });
+  return html;
+}
+
+// Helper: retorna todos os grupos distintos
+function ccGrupos() {
+  return [...new Set(centros.map(c => c.grupo||'Outros'))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+}
+
+// Helper: retorna subgrupos de um grupo
+function ccSubgrupos(grupo) {
+  return [...new Set(centros.filter(c=>(c.grupo||'Outros')===grupo).map(c=>c.subgrupo||'Geral'))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+}
+
 function addCC() {
   const n = document.getElementById('inCC').value.trim();
   const t = document.getElementById('inCCTipo').value;
+  const g = document.getElementById('inCCGrupo').value.trim() || 'Outros';
+  const s = document.getElementById('inCCSub').value.trim() || 'Geral';
   const excluir = document.getElementById('inCCExcluir')?.value || 'nao';
   if (!n) { toast('Informe o nome.','err'); return; }
-  centros.push({nome:n,tipo:t,excluirRecDesp:excluir==='sim'}); saveAll(); renderCC(); refreshSelects();
-  document.getElementById('inCC').value=''; document.getElementById('inCCExcluir').value='nao';;
+  if (centros.find(c=>c.nome===n && c.grupo===g && c.subgrupo===s)) { toast('Centro já cadastrado neste grupo/subgrupo.','err'); return; }
+  centros.push({nome:n, tipo:t, grupo:g, subgrupo:s, excluirRecDesp:excluir==='sim'});
+  saveAll(); renderCC(); refreshSelects();
+  document.getElementById('inCC').value='';
+  document.getElementById('inCCExcluir').value='nao';
   toast('Centro cadastrado!');
 }
 
 function renderCC() {
   const tb = document.getElementById('tblCCBody'); if (!tb) return;
-  if (!centros.length) { tb.innerHTML=`<tr><td colspan="3"><div class="empty"><i class="fa fa-tags"></i>Nenhum centro.</div></td></tr>`; return; }
+  if (!centros.length) {
+    tb.innerHTML=`<tr><td colspan="4"><div class="empty"><i class="fa fa-tags"></i>Nenhum centro.</div></td></tr>`;
+    _populateCCDataLists();
+    return;
+  }
   const colorMap = {Receita:'badge-teal', Despesa:'badge-red', Ambos:'badge-gold'};
-  const centrosOrd = [...centros].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
-  tb.innerHTML = centrosOrd.map((c,i)=>`<tr>
-    <td>${c.nome}</td>
-    <td><span class="badge ${colorMap[c.tipo]||'badge-gold'}">${c.tipo}</span>${c.excluirRecDesp?'<span class="badge" style="margin-left:4px;background:rgba(99,102,241,.15);color:#818cf8;font-size:9px">✕ R/D</span>':''}</td>
-    <td>
-      <button class="btn btn-ghost btn-icon btn-edit" onclick="openEditCC(centros.findIndex(x=>x.nome==='${c.nome}'))"><i class="fa fa-pencil-alt"></i></button>
-      <button class="btn btn-ghost btn-icon btn-danger" onclick="delCC(centros.findIndex(x=>x.nome==='${c.nome}'))"><i class="fa fa-trash"></i></button>
-    </td>
-  </tr>`).join('');
+  // Agrupa por grupo → subgrupo → cc
+  const grupos = {};
+  centros.forEach((c,idx) => {
+    const g = c.grupo||'Outros';
+    const s = c.subgrupo||'Geral';
+    if (!grupos[g]) grupos[g] = {};
+    if (!grupos[g][s]) grupos[g][s] = [];
+    grupos[g][s].push({c, idx});
+  });
+  let html = '';
+  Object.keys(grupos).sort((a,b)=>a.localeCompare(b,'pt-BR')).forEach(g => {
+    html += `<tr style="background:var(--surface)"><td colspan="4" style="font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);padding:8px 14px 4px"><i class="fa fa-layer-group" style="margin-right:6px"></i>${g}</td></tr>`;
+    Object.keys(grupos[g]).sort((a,b)=>a.localeCompare(b,'pt-BR')).forEach(s => {
+      html += `<tr style="background:var(--card2)"><td colspan="4" style="font-size:12px;color:var(--text2);padding:5px 14px 5px 28px;font-family:var(--mono)"><i class="fa fa-sitemap" style="margin-right:6px;color:var(--blue)"></i>${s}</td></tr>`;
+      grupos[g][s].forEach(({c,idx}) => {
+        html += `<tr>
+          <td style="padding-left:44px">${c.nome}</td>
+          <td><span class="badge ${colorMap[c.tipo]||'badge-gold'}">${c.tipo}</span>${c.excluirRecDesp?'<span class="badge" style="margin-left:4px;background:rgba(99,102,241,.15);color:#818cf8;font-size:9px">✕ R/D</span>':''}</td>
+          <td style="font-size:11px;color:var(--text3);font-family:var(--mono)">${g} – ${s}</td>
+          <td>
+            <button class="btn btn-ghost btn-icon btn-edit" onclick="openEditCC(${idx})"><i class="fa fa-pencil-alt"></i></button>
+            <button class="btn btn-ghost btn-icon btn-danger" onclick="delCC(${idx})"><i class="fa fa-trash"></i></button>
+          </td>
+        </tr>`;
+      });
+    });
+  });
+  tb.innerHTML = html;
+  _populateCCDataLists();
+}
+
+function _populateCCDataLists() {
+  // Popula datalists de grupo e subgrupo nos formulários de CC
+  const grupos = ccGrupos();
+  ['listGruposCC','editListGruposCC','orcListGrupos'].forEach(id => {
+    const dl = document.getElementById(id); if (!dl) return;
+    dl.innerHTML = grupos.map(g => '<option value="' + g + '">').join('');
+  });
+  // Subgrupos: atualiza dinamicamente baseado no grupo digitado
+  const allSubs = [...new Set(centros.map(c=>c.subgrupo||'Geral'))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  ['listSubsCC','editListSubsCC','orcListSubs'].forEach(id => {
+    const dl = document.getElementById(id); if (!dl) return;
+    dl.innerHTML = allSubs.map(s => '<option value="' + s + '">').join('');
+  });
+  // Popula select de CC no formulário de orçamento
+  const orcCC = document.getElementById('orcInCC');
+  if (orcCC) {
+    const cur = orcCC.value;
+    let html = '<option value="">— selecione CC —</option>';
+    const grupos2 = {};
+    centros.forEach(c => {
+      const g = c.grupo||'Outros';
+      if (!grupos2[g]) grupos2[g] = [];
+      grupos2[g].push(c);
+    });
+    Object.keys(grupos2).sort().forEach(g => {
+      html += '<optgroup label="' + g + '">';
+      grupos2[g].sort((a,b)=>(a.subgrupo||'').localeCompare(b.subgrupo||'')||a.nome.localeCompare(b.nome)).forEach(c => {
+        const sub = c.subgrupo||'Geral';
+        html += '<option value="' + c.nome + '">' + sub + ' \u2013 ' + c.nome + '</option>';
+      });
+      html += '</optgroup>';
+    });
+    orcCC.innerHTML = html;
+    orcCC.value = cur;
+  }
 }
 
 function openEditCC(i) {
   document.getElementById('editCCIdx').value=i;
   document.getElementById('editCCNome').value=centros[i].nome;
   document.getElementById('editCCTipo').value=centros[i].tipo;
+  document.getElementById('editCCGrupo').value=centros[i].grupo||'Outros';
+  document.getElementById('editCCSub').value=centros[i].subgrupo||'Geral';
   const excEl = document.getElementById('editCCExcluir');
   if (excEl) excEl.value = centros[i].excluirRecDesp ? 'sim' : 'nao';
+  _populateCCDataLists();
   openModal('modalEditCC');
 }
 function saveCC() {
   const i=+document.getElementById('editCCIdx').value;
   const n=document.getElementById('editCCNome').value.trim();
   const t=document.getElementById('editCCTipo').value;
+  const g=document.getElementById('editCCGrupo').value.trim()||'Outros';
+  const s=document.getElementById('editCCSub').value.trim()||'Geral';
   const excluir = document.getElementById('editCCExcluir')?.value || 'nao';
   if (!n) { toast('Informe o nome.','err'); return; }
-  centros[i]={nome:n,tipo:t,excluirRecDesp:excluir==='sim'}; saveAll(); renderCC(); refreshSelects();
+  const oldNome = centros[i].nome;
+  centros[i]={nome:n, tipo:t, grupo:g, subgrupo:s, excluirRecDesp:excluir==='sim'};
+  // Atualiza lançamentos que usavam o nome antigo
+  if (oldNome !== n) {
+    lancamentos.forEach(l => { if (l.cc === oldNome) l.cc = n; });
+  }
+  saveAll(); renderCC(); refreshSelects();
   closeModal('modalEditCC'); toast('Centro atualizado!');
 }
 function delCC(i) {
@@ -4570,7 +4907,7 @@ function renderLancamentos() {
       <td class="td-mono" style="color:var(--text3);font-size:11px">${l.dataCriacao?fmtDate(l.dataCriacao):'—'}</td>
       <td class="td-mono" style="color:${l.dataPagamento?'var(--teal)':'var(--text3)'};font-size:11px">${l.dataPagamento?fmtDate(l.dataPagamento):'—'}</td>
       <td>${l.banco||'—'}</td>
-      <td>${l.cc||'—'}</td>
+      <td title="${(()=>{const c=centros.find(x=>x.nome===l.cc);return c?ccLabel(c):'';})()}">${l.cc ? (()=>{const c=centros.find(x=>x.nome===l.cc);return c?`<span style="font-size:11px;color:var(--text3)">${c.grupo||''} – </span>${c.nome}`:l.cc;})() : '—'}</td>
       <td>${formaExib}</td>
       <td class="td-mono">${l.parcelaNum ? l.parcelaNum+'/'+l.parcelas : (l.parcelas||'1')+(l.parcelas&&l.parcelas!='1'?'×':'')}</td>
       <td>${l.period||'Único'}</td>
@@ -6006,6 +6343,11 @@ function renderDashboard() {
   renderPrevisaoDash();
   renderAlertaLimiteCCDash();
   renderAlertasInlineDash();
+  // Drill-down hierárquico
+  const ymDrill = (document.getElementById('dashMes')||{}).value || nowYM();
+  renderDashDrillDown(ymDrill);
+  // Mantém datalists de CC atualizados
+  _populateCCDataLists();
 }
 
 function buildDashInvestChart() {
@@ -6672,8 +7014,7 @@ function proximoConciliacao() {
     </div>`;
   // Pré-preenche campos
   document.getElementById('concItemDesc').value = item.memo;
-  document.getElementById('concItemCC').innerHTML = '<option value="">— selecione —</option>' +
-    centros.filter(c=>c.tipo===(item.tipo==='CREDIT'?'Receita':'Despesa')||c.tipo==='Ambos').map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+  document.getElementById('concItemCC').innerHTML = _buildCCOpts('— selecione —', item.tipo==='CREDIT'?'Receita':'Despesa');
   modalEl.classList.add('on');
 }
 
@@ -6753,7 +7094,7 @@ function openModalMeta(id) {
   document.getElementById('mMetaObs').value   = m?.obs||'';
   // populate CC
   const sel = document.getElementById('mMetaCC');
-  sel.innerHTML = '<option value="">— nenhum —</option>' + centros.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+  sel.innerHTML = _buildCCOpts('— nenhum —');
   if (m?.cc) sel.value = m.cc;
   document.getElementById('mMetaMensal').value = m?.mensal ? fmtBRL(m.mensal) : '';
   openModal('modalMeta');
@@ -7015,7 +7356,7 @@ function openModalRecorrente(id) {
   if (r?.banco) sb.value = r.banco;
   // CC
   const sc = document.getElementById('mRecCC');
-  sc.innerHTML = '<option value="">— nenhum —</option>' + centros.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+  sc.innerHTML = _buildCCOpts('— nenhum —');
   if (r?.cc) sc.value = r.cc;
   // Forma
   const sf = document.getElementById('mRecForma');
@@ -8114,7 +8455,7 @@ function concPdfProximoItem() {
     <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Item ${concPdfFilaIdx+1} de ${concPdfFila.length} — não encontrado nos lançamentos (tolerância ±3 dias).</div>`;
   document.getElementById('concPdfItemDesc').value=t.descricao;
   const sel=document.getElementById('concPdfItemCC');
-  if(sel)sel.innerHTML='<option value="">— categoria (opcional) —</option>'+centros.filter(c=>!c.tipo||c.tipo===(t.tipo==='Credito'?'Receita':'Despesa')).map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+  if(sel)sel.innerHTML=_buildCCOpts('— categoria (opcional) —', t.tipo==='Credito'?'Receita':'Despesa');
   modal.classList.add('on');
   // Apply default CC if checkbox was set
   const ccPad = window._concPdfCCPadrao || '';
@@ -8173,7 +8514,7 @@ function relPopularFiltros(){
 }
 function relOnTipoChange(){
   const tipo=(document.getElementById('relTipo')||{}).value||'fluxo';
-  const showMes=['fluxo','banco','cartao','categoria','inadimplencia'].includes(tipo);
+  const showMes=['fluxo','banco','cartao','categoria','categoria_hierarquia','inadimplencia','orcado_realizado'].includes(tipo);
   const showBanco=tipo==='banco', showCartao=tipo==='cartao', showPer=tipo==='rxd';
   const g=(id,v)=>{const el=document.getElementById(id);if(el)el.style.display=v?'':'none';};
   g('relFiltroMesWrap',showMes); g('relFiltroBancoWrap',showBanco); g('relFiltroCartaoWrap',showCartao);
@@ -8189,14 +8530,16 @@ function renderRelatorio(){
   const ate=(document.getElementById('relAte')||{}).value||'';
   const out=document.getElementById('relatorioOutput'); if(!out) return;
   switch(tipo){
-    case 'fluxo':        out.innerHTML=relFluxoCaixa(ym); break;
-    case 'banco':        out.innerHTML=relMovBanco(ym,banco); break;
-    case 'cartao':       out.innerHTML=relMovCartao(ym,cartao); break;
-    case 'categoria':    out.innerHTML=relCategoria(ym); break;
-    case 'rxd':          out.innerHTML=relRxD(de,ate); break;
-    case 'inadimplencia':out.innerHTML=relInadimplencia(ym); break;
-    case 'investimentos':out.innerHTML=relInvestimentos(); break;
-    case 'recorrentes':  out.innerHTML=relRecorrentes(); break;
+    case 'fluxo':               out.innerHTML=relFluxoCaixa(ym); break;
+    case 'banco':               out.innerHTML=relMovBanco(ym,banco); break;
+    case 'cartao':              out.innerHTML=relMovCartao(ym,cartao); break;
+    case 'categoria':           out.innerHTML=relCategoria(ym); break;
+    case 'categoria_hierarquia':out.innerHTML=relCategoriaHierarquia(ym); break;
+    case 'rxd':                 out.innerHTML=relRxD(de,ate); break;
+    case 'orcado_realizado':    out.innerHTML=relOrcadoRealizado(ym); break;
+    case 'inadimplencia':       out.innerHTML=relInadimplencia(ym); break;
+    case 'investimentos':       out.innerHTML=relInvestimentos(); break;
+    case 'recorrentes':         out.innerHTML=relRecorrentes(); break;
     default: out.innerHTML='<div class="rel-empty"><i class="fa fa-chart-bar"></i>Selecione um relatório.</div>';
   }
 }
@@ -8308,6 +8651,590 @@ function relRecorrentes(){
     <div class="rel-section">${relSecHd('check-circle','Ativos',''+ativos.length)}${relTblWrap(cols,rowsFn(ativos)||'<tr><td colspan="6"><div class="rel-empty"><i class="fa fa-inbox"></i>Nenhum recorrente ativo.</div></td></tr>')}</div>
     ${inativ.length?`<div class="rel-section">${relSecHd('pause-circle','Inativos',''+inativ.length)}${relTblWrap(cols,rowsFn(inativ))}</div>`:''}`;
 }
+
+/* ══════════════════════════════════════════════════════
+   ORÇAMENTO ANUAL — MÓDULO COMPLETO
+══════════════════════════════════════════════════════ */
+
+const MESES_CURTOS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const MESES_NOMES  = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function initOrcamento() {
+  // Preenche select de ano
+  const anoSel = document.getElementById('orcAno');
+  if (!anoSel) return;
+  const anoAtual = new Date().getFullYear();
+  anoSel.innerHTML = '';
+  for (let a = anoAtual - 1; a <= anoAtual + 2; a++) {
+    const o = document.createElement('option');
+    o.value = a; o.textContent = a;
+    if (a === anoAtual) o.selected = true;
+    anoSel.appendChild(o);
+  }
+  // Preenche select de grupo no acompanhamento
+  const grupoSel = document.getElementById('orcAcompGrupo');
+  if (grupoSel) {
+    grupoSel.innerHTML = '<option value="">Todos os grupos</option>' +
+      ccGrupos().map(g=>`<option value="${g}">${g}</option>`).join('');
+  }
+  _populateCCDataLists();
+  orcSwitchTab('plan');
+  renderOrcamento();
+}
+
+function orcSwitchTab(tab) {
+  const plan  = document.getElementById('orcPanelPlan');
+  const acomp = document.getElementById('orcPanelAcomp');
+  const btnP  = document.getElementById('orcTabPlan');
+  const btnA  = document.getElementById('orcTabAcomp');
+  if (!plan) return;
+  if (tab === 'plan') {
+    plan.style.display=''; acomp.style.display='none';
+    btnP.className='btn btn-gold btn-sm'; btnA.className='btn btn-outline btn-sm';
+    renderOrcamento();
+  } else {
+    plan.style.display='none'; acomp.style.display='';
+    btnP.className='btn btn-outline btn-sm'; btnA.className='btn btn-gold btn-sm';
+    renderOrcAcomp();
+  }
+}
+
+// Retorna registros de orçamento do ano
+function orcGetAno(ano) {
+  return orcamento.filter(o => o.ano === +ano);
+}
+
+// Retorna ou cria registro de orçamento para um CC + ano
+function orcGetLinha(ccNome, ano) {
+  let l = orcamento.find(o => o.cc === ccNome && o.ano === +ano);
+  if (!l) { l = {cc:ccNome, ano:+ano, meses:new Array(12).fill(0), aprovado:false}; orcamento.push(l); }
+  return l;
+}
+
+function orcAdicionarLinha() {
+  const ccNome = document.getElementById('orcInCC').value;
+  if (!ccNome) { toast('Selecione um Centro de Custo.','err'); return; }
+  const ano = +(document.getElementById('orcAno').value || new Date().getFullYear());
+  const existe = orcamento.find(o=>o.cc===ccNome && o.ano===ano);
+  if (existe) { toast('Este CC já está no plano do ano.','warn'); return; }
+  orcamento.push({cc:ccNome, ano, meses:new Array(12).fill(0), aprovado:false});
+  saveAll();
+  renderOrcamento();
+  toast('Linha adicionada ao orçamento!');
+}
+
+function renderOrcamento() {
+  const ano = +(document.getElementById('orcAno')?.value || new Date().getFullYear());
+  const label = document.getElementById('orcAnoLabel');
+  if (label) label.textContent = ano;
+  const head = document.getElementById('tblOrcHead');
+  const body = document.getElementById('tblOrcBody');
+  const foot = document.getElementById('tblOrcFoot');
+  if (!head || !body || !foot) return;
+
+  // Cabeçalho
+  head.innerHTML = `<tr>
+    <th style="min-width:120px">Grupo</th><th style="min-width:120px">Subgrupo</th><th style="min-width:160px">Centro de Custo</th>
+    ${MESES_CURTOS.map(m=>`<th style="text-align:right;min-width:90px">${m}</th>`).join('')}
+    <th style="text-align:right;min-width:110px;background:var(--card2)">Total Ano</th>
+    <th style="width:70px">Ações</th>
+  </tr>`;
+
+  const linhasAno = orcGetAno(ano);
+
+  if (!linhasAno.length) {
+    body.innerHTML = `<tr><td colspan="${3+12+2}" style="text-align:center;padding:32px"><div class="empty"><i class="fa fa-chart-bar"></i>Nenhuma linha de orçamento para ${ano}.<br><small style="color:var(--text3)">Use o formulário acima para adicionar centros de custo ao plano.</small></div></td></tr>`;
+    foot.innerHTML = '';
+    return;
+  }
+
+  // Agrupa por Grupo → Subgrupo → CC
+  const grupos = {};
+  linhasAno.forEach(linha => {
+    const cc = centros.find(c=>c.nome===linha.cc);
+    const g = cc?.grupo || 'Outros', s = cc?.subgrupo || 'Geral';
+    if (!grupos[g]) grupos[g] = {};
+    if (!grupos[g][s]) grupos[g][s] = [];
+    grupos[g][s].push(linha);
+  });
+
+  const totaisMeses = new Array(12).fill(0);
+  let html = '';
+
+  Object.keys(grupos).sort().forEach(g => {
+    const gTotais = new Array(12).fill(0);
+    let gHtml = '';
+    Object.keys(grupos[g]).sort().forEach(s => {
+      grupos[g][s].forEach(linha => {
+        const cc = centros.find(c=>c.nome===linha.cc);
+        const total = linha.meses.reduce((a,b)=>a+b,0);
+        linha.meses.forEach((v,i) => { gTotais[i] += v; totaisMeses[i] += v; });
+        gHtml += `<tr>
+          <td style="padding-left:8px;font-size:11px;color:var(--text3)">${g}</td>
+          <td style="font-size:11px;color:var(--blue)">${s}</td>
+          <td style="font-weight:500">${linha.cc}</td>
+          ${linha.meses.map((v,mi)=>`<td style="text-align:right;padding:4px 6px">
+            <input type="text" value="${v?fmtBRL(v):''}" placeholder="—"
+              style="width:80px;text-align:right;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:4px 6px;font-family:var(--mono);font-size:12px;outline:none"
+              oninput="maskMoney(this)"
+              onblur="orcSalvarCelula(this,'${linha.cc}',${ano},${mi})">
+          </td>`).join('')}
+          <td style="text-align:right;font-family:var(--mono);font-weight:600;color:var(--gold);background:var(--card2)">${total?fmtBRL(total):'—'}</td>
+          <td style="text-align:center">
+            <button class="btn btn-ghost btn-icon btn-danger" onclick="orcRemoverLinha('${linha.cc}',${ano})" title="Remover"><i class="fa fa-times"></i></button>
+          </td>
+        </tr>`;
+      });
+    });
+    const gTotal = gTotais.reduce((a,b)=>a+b,0);
+    html += `<tr style="background:rgba(201,168,76,.07)">
+      <td colspan="3" style="font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:600;padding:8px 14px"><i class="fa fa-layer-group" style="margin-right:6px"></i>${g}</td>
+      ${gTotais.map(v=>`<td style="text-align:right;font-family:var(--mono);font-size:12px;color:var(--gold)">${v?fmtK(v):'—'}</td>`).join('')}
+      <td style="text-align:right;font-family:var(--mono);font-weight:700;color:var(--gold);background:var(--card2)">${gTotal?fmtBRL(gTotal):'—'}</td>
+      <td></td>
+    </tr>` + gHtml;
+  });
+
+  body.innerHTML = html;
+  const totAnual = totaisMeses.reduce((a,b)=>a+b,0);
+  foot.innerHTML = `<tr style="background:var(--surface)">
+    <td colspan="3" style="font-weight:700;font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase">TOTAL ORÇAMENTO ${ano}</td>
+    ${totaisMeses.map(v=>`<td style="text-align:right;font-family:var(--mono);font-weight:700;color:var(--teal)">${v?fmtK(v):'—'}</td>`).join('')}
+    <td style="text-align:right;font-family:var(--mono);font-weight:700;color:var(--teal);background:var(--card2)">${totAnual?fmtBRL(totAnual):'—'}</td>
+    <td></td>
+  </tr>`;
+}
+
+function orcSalvarCelula(input, ccNome, ano, mesIdx) {
+  const val = parseMoney(input.value) || 0;
+  const linha = orcGetLinha(ccNome, +ano);
+  linha.meses[mesIdx] = val;
+  saveAll();
+  // Reforça o display
+  if (input) input.value = val ? fmtBRL(val) : '';
+}
+
+function orcRemoverLinha(ccNome, ano) {
+  if (!confirm(`Remover "${ccNome}" do orçamento de ${ano}?`)) return;
+  const idx = orcamento.findIndex(o=>o.cc===ccNome && o.ano===+ano);
+  if (idx > -1) { orcamento.splice(idx,1); saveAll(); renderOrcamento(); toast('Linha removida.'); }
+}
+
+function orcPreencherMeses() {
+  const ano = +(document.getElementById('orcAno')?.value || new Date().getFullYear());
+  const linhas = orcGetAno(ano);
+  if (!linhas.length) { toast('Sem linhas no plano para replicar.','warn'); return; }
+  // Para cada linha, replica o valor de Janeiro (índice 0) nos demais 11 meses
+  linhas.forEach(l => {
+    const base = l.meses[0] || 0;
+    for (let i = 1; i < 12; i++) l.meses[i] = base;
+  });
+  saveAll(); renderOrcamento();
+  toast('Valores de Janeiro replicados para todos os meses!');
+}
+
+function orcLimparPlano() {
+  const ano = +(document.getElementById('orcAno')?.value || new Date().getFullYear());
+  if (!confirm(`Limpar TODOS os valores do plano de ${ano}?`)) return;
+  const linhas = orcGetAno(ano);
+  linhas.forEach(l => { l.meses = new Array(12).fill(0); l.aprovado = false; });
+  saveAll(); renderOrcamento();
+  toast('Plano limpo.');
+}
+
+function aprovarPlanoAnual() {
+  const ano = +(document.getElementById('orcAno')?.value || new Date().getFullYear());
+  const linhas = orcGetAno(ano);
+  if (!linhas.length) { toast('Sem linhas para aprovar.','warn'); return; }
+  const total = linhas.reduce((s,l)=>s+l.meses.reduce((a,b)=>a+b,0),0);
+  if (!total) { toast('O plano está zerado. Preencha os valores antes de aprovar.','warn'); return; }
+  if (!confirm(`Aprovar o Plano Anual ${ano} com orçamento total de ${fmtBRL(total)}?`)) return;
+  linhas.forEach(l => l.aprovado = true);
+  saveAll();
+  toast(`✓ Plano Anual ${ano} aprovado! Total: ${fmtBRL(total)}`,'ok');
+}
+
+// ── Acompanhamento Orçado vs Realizado
+function orcGetRealizado(ccNome, ano, mes) {
+  // mes: string '01'..'12' ou '' para o ano todo
+  const ccExcl = centros.find(c=>c.nome===ccNome)?.excluirRecDesp;
+  let itens = lancamentos.filter(l =>
+    l.cc === ccNome && l.pago &&
+    l.data && l.data.startsWith(String(ano)) &&
+    (l.tipo==='Despesa' || l.tipo==='Receita')
+  );
+  if (mes) itens = itens.filter(l => l.data.substring(5,7) === mes);
+  return itens.reduce((s,l) => {
+    const v = parseMoney(l.valor);
+    return s + (l.tipo==='Receita' ? v : -v);
+  }, 0);
+}
+
+function renderOrcAcomp() {
+  const ano = +(document.getElementById('orcAno')?.value || new Date().getFullYear());
+  const mes  = document.getElementById('orcAcompMes')?.value || '';
+  const grupFilt = document.getElementById('orcAcompGrupo')?.value || '';
+  const body = document.getElementById('tblOrcAcompBody');
+  const foot = document.getElementById('tblOrcAcompFoot');
+  const stats = document.getElementById('orcAcompStats');
+  if (!body) return;
+
+  const linhas = orcGetAno(ano);
+  let filtradas = linhas;
+  if (grupFilt) filtradas = filtradas.filter(l => {
+    const cc = centros.find(c=>c.nome===l.cc);
+    return (cc?.grupo||'Outros') === grupFilt;
+  });
+
+  if (!filtradas.length) {
+    body.innerHTML = `<tr><td colspan="7"><div class="empty"><i class="fa fa-balance-scale"></i>Sem orçamento para os filtros selecionados.</div></td></tr>`;
+    if (foot) foot.innerHTML = '';
+    if (stats) stats.innerHTML = '';
+    return;
+  }
+
+  let totOrc = 0, totReal = 0;
+  let linhasAcima = 0, linhasAbaixo = 0;
+
+  const rows = filtradas.map(linha => {
+    const cc = centros.find(c=>c.nome===linha.cc);
+    const g = cc?.grupo||'Outros', s = cc?.subgrupo||'Geral';
+    // Orçado: soma dos meses filtrados
+    const orcado = mes
+      ? (linha.meses[+mes-1]||0)
+      : linha.meses.reduce((a,b)=>a+b,0);
+    // Realizado: lançamentos pagos no período (base caixa)
+    const real = mes
+      ? Math.abs(orcGetRealizado(linha.cc, ano, mes))
+      : Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0'))
+          .reduce((s,m2)=>s+Math.abs(orcGetRealizado(linha.cc,ano,m2)),0);
+
+    totOrc += orcado; totReal += real;
+    const diff = orcado - real;
+    const pct = orcado > 0 ? Math.min(200, Math.round((real/orcado)*100)) : (real>0?100:0);
+    const cor = pct > 100 ? 'var(--red)' : pct > 80 ? '#f59e0b' : 'var(--teal)';
+    if (pct > 100) linhasAcima++; else linhasAbaixo++;
+
+    return `<tr>
+      <td style="font-size:12px;color:var(--gold)">${g}</td>
+      <td style="font-size:12px;color:var(--blue)">${s}</td>
+      <td style="font-weight:500">${linha.cc}</td>
+      <td style="text-align:right;font-family:var(--mono)">${orcado?fmtBRL(orcado):'—'}</td>
+      <td style="text-align:right;font-family:var(--mono)">${real?fmtBRL(real):'—'}</td>
+      <td style="text-align:right;font-family:var(--mono);color:${diff>=0?'var(--teal)':'var(--red)'};font-weight:600">${fmtBRL(diff)}</td>
+      <td>
+        ${orcado>0?`<div style="display:flex;align-items:center;gap:8px">
+          <div style="flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden">
+            <div style="height:100%;width:${Math.min(100,pct)}%;background:${cor};border-radius:99px;transition:width .4s"></div>
+          </div>
+          <span style="font-family:var(--mono);font-size:11px;color:${cor};min-width:36px;text-align:right">${pct}%</span>
+        </div>`:'<span style="color:var(--text3);font-size:11px">—</span>'}
+      </td>
+    </tr>`;
+  }).join('');
+
+  body.innerHTML = rows;
+
+  const diffTotal = totOrc - totReal;
+  const pctTotal = totOrc>0 ? Math.round((totReal/totOrc)*100) : 0;
+  if (foot) foot.innerHTML = `<tr style="background:var(--surface)">
+    <td colspan="3" style="font-weight:700;font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase">TOTAL</td>
+    <td style="text-align:right;font-family:var(--mono);font-weight:700">${fmtBRL(totOrc)}</td>
+    <td style="text-align:right;font-family:var(--mono);font-weight:700">${fmtBRL(totReal)}</td>
+    <td style="text-align:right;font-family:var(--mono);font-weight:700;color:${diffTotal>=0?'var(--teal)':'var(--red)'}">${fmtBRL(diffTotal)}</td>
+    <td style="font-family:var(--mono);font-size:12px;color:${pctTotal>100?'var(--red)':pctTotal>80?'#f59e0b':'var(--teal)'}">
+      ${pctTotal}% executado
+    </td>
+  </tr>`;
+
+  if (stats) stats.innerHTML = `
+    <div class="stat-card"><div class="stat-label">Orçado</div><div class="stat-val" style="color:var(--gold);font-family:var(--mono)">${fmtBRL(totOrc)}</div></div>
+    <div class="stat-card"><div class="stat-label">Realizado</div><div class="stat-val" style="color:var(--blue);font-family:var(--mono)">${fmtBRL(totReal)}</div></div>
+    <div class="stat-card"><div class="stat-label">Diferença</div><div class="stat-val" style="color:${diffTotal>=0?'var(--teal)':'var(--red)'};font-family:var(--mono)">${fmtBRL(diffTotal)}</div></div>
+    <div class="stat-card"><div class="stat-label">Execução</div><div class="stat-val" style="color:${pctTotal>100?'var(--red)':pctTotal>80?'#f59e0b':'var(--teal)'};font-family:var(--mono)">${pctTotal}%</div></div>
+  `;
+}
+
+/* ══════════════════════════════════════════════════════
+   NOVOS RELATÓRIOS GERENCIAIS
+══════════════════════════════════════════════════════ */
+
+// Relatório: Despesas por Hierarquia (Grupo→Subgrupo→CC)
+function relCategoriaHierarquia(ym) {
+  const ccExcl = new Set(centros.filter(c=>c.excluirRecDesp).map(c=>c.nome));
+  const desp = lancamentos.filter(l =>
+    l.data && l.data.startsWith(ym) &&
+    l.tipo==='Despesa' && !isTransferencia(l) &&
+    !(l.cc && ccExcl.has(l.cc)) &&
+    !((l.desc||'').startsWith('Pagamento fatura ') && l.banco)
+  );
+  const total = desp.reduce((s,l)=>s+parseMoney(l.valor),0);
+  if (!total) return `<div class="rel-header"><div class="rel-title"><i class="fa fa-sitemap" style="color:var(--gold);margin-right:8px"></i>Hierarquia de Despesas — ${relMesLabel(ym)}</div></div><div class="rel-empty"><i class="fa fa-inbox"></i>Sem despesas no período.</div>`;
+
+  // Agrupa Grupo → Subgrupo → CC
+  const hier = {};
+  desp.forEach(l => {
+    const cc = centros.find(c=>c.nome===l.cc);
+    const g = cc?.grupo || 'Outros';
+    const s = cc?.subgrupo || 'Geral';
+    const n = l.cc || 'Sem categoria';
+    if (!hier[g]) hier[g] = {};
+    if (!hier[g][s]) hier[g][s] = {};
+    if (!hier[g][s][n]) hier[g][s][n] = 0;
+    hier[g][s][n] += parseMoney(l.valor);
+  });
+
+  let html = '';
+  Object.keys(hier).sort().forEach(g => {
+    const gTotal = Object.values(hier[g]).reduce((s,sub)=>s+Object.values(sub).reduce((a,b)=>a+b,0),0);
+    const gPct = total ? Math.round(gTotal/total*100) : 0;
+    html += `<div class="rel-section" style="margin-bottom:14px">
+      <div class="rel-section-hd">
+        <span><i class="fa fa-layer-group"></i>${g}</span>
+        <span style="font-family:var(--mono);color:var(--red)">${relFmt(gTotal)} <span style="color:var(--text3);font-size:10px">${gPct}%</span></span>
+      </div>
+      <table class="rel-table"><thead><tr><th>Subgrupo</th><th>Centro de Custo</th><th style="text-align:right">Valor</th><th style="width:140px">Participação</th></tr></thead><tbody>`;
+    Object.keys(hier[g]).sort().forEach(s => {
+      const sTotal = Object.values(hier[g][s]).reduce((a,b)=>a+b,0);
+      html += `<tr style="background:rgba(0,0,0,.03)"><td colspan="2" style="font-weight:600;color:var(--blue);font-size:12px"><i class="fa fa-angle-right" style="margin-right:6px"></i>${s}</td><td style="text-align:right;font-family:var(--mono);font-size:12px;color:var(--red)">${relFmt(sTotal)}</td><td></td></tr>`;
+      Object.entries(hier[g][s]).sort((a,b)=>b[1]-a[1]).forEach(([ccNome, val])=>{
+        const pct = total ? Math.round(val/total*100) : 0;
+        html += `<tr><td style="padding-left:24px;color:var(--text3);font-size:11px">${s}</td><td style="padding-left:32px">${ccNome}</td>
+          <td style="text-align:right;font-family:var(--mono);color:var(--red)">${relFmt(val)}</td>
+          <td><div class="rel-bar-wrap"><div class="rel-bar"><div class="rel-bar-fill" style="width:${Math.min(100,pct)}%;background:var(--red)"></div></div><div class="rel-bar-pct">${pct}%</div></div></td></tr>`;
+      });
+    });
+    html += `</tbody><tfoot><tr><td colspan="2">Subtotal ${g}</td><td style="color:var(--red)">${relFmt(gTotal)}</td><td>${gPct}%</td></tr></tfoot></table></div>`;
+  });
+
+  return `<div class="rel-header"><div class="rel-title"><i class="fa fa-sitemap" style="color:var(--gold);margin-right:8px"></i>Hierarquia de Despesas — ${relMesLabel(ym)}</div>
+    <div class="rel-subtitle">Visão Grupo → Subgrupo → Centro de Custo (Base Caixa)</div>
+    <div class="rel-kpis">${relKpiHtml('Total Despesas',relFmt(total),'neg')}${relKpiHtml('Grupos',Object.keys(hier).length,'neu')}${relKpiHtml('Mês',relMesLabel(ym),'neu')}</div></div>${html}`;
+}
+
+// Relatório: Orçado vs Realizado (período)
+function relOrcadoRealizado(de, ate) {
+  const anoSel = document.getElementById('orcAno');
+  const ano = +(anoSel?.value || new Date().getFullYear());
+  const linhas = orcGetAno(ano);
+
+  if (!linhas.length) return `<div class="rel-empty"><i class="fa fa-balance-scale"></i>Sem orçamento aprovado para ${ano}. Acesse a aba <strong>Orçamento</strong> para criar o plano.</div>`;
+
+  // Meses do período
+  const mesesPeriodo = [];
+  const inicio = de || `${ano}-01`;
+  const fim    = ate || `${ano}-12`;
+  const [ya,ma] = inicio.split('-').map(Number);
+  const [yz,mz] = fim.split('-').map(Number);
+  let cur = new Date(ya, ma-1, 1);
+  const end = new Date(yz, mz-1, 1);
+  while (cur <= end) {
+    mesesPeriodo.push(`${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}`);
+    cur.setMonth(cur.getMonth()+1);
+  }
+
+  let totOrc = 0, totReal = 0;
+  const rows = linhas.map(linha => {
+    const cc = centros.find(c=>c.nome===linha.cc);
+    const g = cc?.grupo||'Outros', s = cc?.subgrupo||'Geral';
+    const orcado = mesesPeriodo.reduce((sum,ym)=>sum+(linha.meses[+ym.split('-')[1]-1]||0),0);
+    const real   = mesesPeriodo.reduce((sum,ym)=>sum+Math.abs(orcGetRealizado(linha.cc,+ym.split('-')[0],ym.split('-')[1])),0);
+    if (!orcado && !real) return '';
+    totOrc += orcado; totReal += real;
+    const diff = orcado - real;
+    const pct  = orcado>0 ? Math.min(200,Math.round(real/orcado*100)) : (real>0?100:0);
+    const cor  = pct>100 ? 'var(--red)' : pct>80 ? '#f59e0b' : 'var(--teal)';
+    return `<tr>
+      <td style="font-size:11px;color:var(--gold)">${g}</td>
+      <td style="font-size:11px;color:var(--blue)">${s}</td>
+      <td>${linha.cc}</td>
+      <td style="text-align:right;font-family:var(--mono)">${orcado?relFmt(orcado):'—'}</td>
+      <td style="text-align:right;font-family:var(--mono)">${real?relFmt(real):'—'}</td>
+      <td style="text-align:right;font-family:var(--mono);color:${diff>=0?'var(--teal)':'var(--red)'};font-weight:600">${relFmt(diff)}</td>
+      <td><div class="rel-bar-wrap"><div class="rel-bar"><div class="rel-bar-fill" style="width:${Math.min(100,pct)}%;background:${cor}"></div></div><div class="rel-bar-pct" style="color:${cor}">${pct}%</div></div></td>
+    </tr>`;
+  }).filter(Boolean).join('');
+
+  const pctTot = totOrc>0 ? Math.round(totReal/totOrc*100) : 0;
+  const foot = `<tr><td colspan="3">TOTAL PERÍODO</td><td style="text-align:right">${relFmt(totOrc)}</td><td style="text-align:right">${relFmt(totReal)}</td><td style="text-align:right;color:${(totOrc-totReal)>=0?'var(--teal)':'var(--red)'}">${relFmt(totOrc-totReal)}</td><td>${pctTot}% executado</td></tr>`;
+
+  return `<div class="rel-header">
+    <div class="rel-title"><i class="fa fa-balance-scale" style="color:var(--gold);margin-right:8px"></i>Orçado vs Realizado — ${ano}</div>
+    <div class="rel-subtitle">Período: ${inicio} → ${fim} · Base Caixa (lançamentos pagos)</div>
+    <div class="rel-kpis">${relKpiHtml('Orçado',relFmt(totOrc),'neu')}${relKpiHtml('Realizado',relFmt(totReal),'neg')}${relKpiHtml('Diferença',relFmt(totOrc-totReal),(totOrc-totReal)>=0?'pos':'neg')}${relKpiHtml('Execução',pctTot+'%',pctTot>100?'neg':pctTot>80?'neu':'pos')}</div>
+  </div>
+  <div class="rel-section">${relSecHd('balance-scale','Detalhamento por Centro de Custo')}
+    ${relTblWrap(['Grupo','Subgrupo','Centro de Custo','Orçado','Realizado','Diferença','Execução'],rows,foot)}
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   DASHBOARD DRILL-DOWN — HIERARQUIA CC
+══════════════════════════════════════════════════════ */
+
+// Estado do drill-down
+let _ddState = {nivel:0, grupo:null, subgrupo:null};
+
+function dashDrillDown(nivel, grupo, subgrupo) {
+  _ddState = {nivel, grupo: grupo||null, subgrupo: subgrupo||null};
+  renderDashDrillDown();
+}
+
+function renderDashDrillDown() {
+  const container = document.getElementById('dashDrillDownPanel');
+  if (!container) return;
+
+  const mes  = document.getElementById('dashMes')?.value  || nowYM();
+  const banco = document.getElementById('dashBanco')?.value || '';
+  const {nivel, grupo, subgrupo} = _ddState;
+
+  // Coleta despesas do período
+  const ccExcl = new Set(centros.filter(c=>c.excluirRecDesp).map(c=>c.nome));
+  let lancs = lancamentos.filter(l =>
+    l.tipo==='Despesa' && !isTransferencia(l) &&
+    !(l.cc && ccExcl.has(l.cc)) &&
+    !((l.desc||'').startsWith('Pagamento fatura ') && l.banco)
+  );
+
+  // Filtra pelo período (mês ou ano)
+  if (mes === '__ano__') {
+    const ano = new Date().getFullYear();
+    lancs = lancs.filter(l => l.data && l.data.startsWith(String(ano)));
+  } else if (mes === '__6m__') {
+    const agora = new Date();
+    const limite = new Date(agora.getFullYear(), agora.getMonth() - 6, 1);
+    lancs = lancs.filter(l => l.data && new Date(l.data) >= limite);
+  } else {
+    lancs = lancs.filter(l => l.data && l.data.startsWith(mes));
+  }
+
+  if (banco) lancs = lancs.filter(l => l.banco === banco || l.cartaoId);
+
+  // Nível 0: por Grupo
+  if (nivel === 0) {
+    const por = {};
+    lancs.forEach(l => {
+      const cc = centros.find(c=>c.nome===l.cc);
+      const g = cc?.grupo || 'Outros';
+      por[g] = (por[g]||0) + parseMoney(l.valor);
+    });
+    if (!Object.keys(por).length) { container.innerHTML = '<div class="empty"><i class="fa fa-chart-bar"></i>Sem despesas no período para drill-down.</div>'; return; }
+    const total = Object.values(por).reduce((a,b)=>a+b,0);
+    container.innerHTML = `
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">
+        <i class="fa fa-layer-group" style="color:var(--gold);margin-right:6px"></i>Despesas por Grupo · clique para detalhar
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${Object.entries(por).sort((a,b)=>b[1]-a[1]).map(([g,v])=>{
+          const pct = total ? Math.round(v/total*100) : 0;
+          const orcLine = orcGetAno(new Date().getFullYear()).filter(o=>{
+            const cc=centros.find(c=>c.nome===o.cc); return (cc?.grupo||'Outros')===g;
+          });
+          const orcMes = mes&&!['__ano__','__6m__'].includes(mes)
+            ? orcLine.reduce((s,o)=>s+(o.meses[+mes.split('-')[1]-1]||0),0)
+            : orcLine.reduce((s,o)=>s+o.meses.reduce((a,b)=>a+b,0),0);
+          return `<div onclick="dashDrillDown(1,'${g.replace(/'/g,"\\'")}',null)" style="cursor:pointer;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;transition:border-color .15s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-weight:600;color:var(--text)">${g}</span>
+              <div style="text-align:right">
+                <span style="font-family:var(--mono);color:var(--red);font-size:14px">${fmtBRL(v)}</span>
+                ${orcMes ? `<br><span style="font-family:var(--mono);font-size:10px;color:var(--text3)">Orc: ${fmtBRL(orcMes)}</span>` : ''}
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${orcMes&&v>orcMes?'var(--red)':'var(--teal)'};border-radius:99px"></div>
+              </div>
+              <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${pct}%</span>
+              <span style="font-family:var(--mono);font-size:10px;color:var(--gold)">▶ detalhar</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    return;
+  }
+
+  // Nível 1: Subgrupos do grupo
+  if (nivel === 1) {
+    const por = {};
+    lancs.filter(l=>{const cc=centros.find(c=>c.nome===l.cc);return (cc?.grupo||'Outros')===grupo;}).forEach(l=>{
+      const cc=centros.find(c=>c.nome===l.cc); const s=cc?.subgrupo||'Geral';
+      por[s]=(por[s]||0)+parseMoney(l.valor);
+    });
+    const total=Object.values(por).reduce((a,b)=>a+b,0);
+    container.innerHTML=`
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <button class="btn btn-ghost btn-sm" onclick="dashDrillDown(0,null,null)"><i class="fa fa-chevron-left"></i> Grupos</button>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--gold)">${grupo}</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text3)">→ Subgrupos</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${Object.entries(por).sort((a,b)=>b[1]-a[1]).map(([s,v])=>{
+          const pct=total?Math.round(v/total*100):0;
+          return `<div onclick="dashDrillDown(2,'${grupo.replace(/'/g,"\\'")}','${s.replace(/'/g,"\\'")}')\" style="cursor:pointer;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;transition:border-color .15s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="font-size:13px;color:var(--blue)">${s}</span>
+              <span style="font-family:var(--mono);color:var(--red)">${fmtBRL(v)}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:var(--blue);border-radius:99px"></div>
+              </div>
+              <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${pct}%</span>
+              <span style="font-family:var(--mono);font-size:10px;color:var(--blue)">▶ detalhar</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    return;
+  }
+
+  // Nível 2: Centros de Custo do subgrupo
+  if (nivel === 2) {
+    const por = {};
+    lancs.filter(l=>{
+      const cc=centros.find(c=>c.nome===l.cc);
+      return (cc?.grupo||'Outros')===grupo && (cc?.subgrupo||'Geral')===subgrupo;
+    }).forEach(l=>{ por[l.cc||'Sem CC']=(por[l.cc||'Sem CC']||0)+parseMoney(l.valor); });
+    const total=Object.values(por).reduce((a,b)=>a+b,0);
+    container.innerHTML=`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="dashDrillDown(0,null,null)"><i class="fa fa-chevron-left"></i> Grupos</button>
+        <button class="btn btn-ghost btn-sm" onclick="dashDrillDown(1,'${grupo.replace(/'/g,"\\'")}',null)"><i class="fa fa-chevron-left"></i> ${grupo}</button>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--blue)">${subgrupo}</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text3)">→ Centros de Custo</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${Object.entries(por).sort((a,b)=>b[1]-a[1]).map(([cc,v])=>{
+          const pct=total?Math.round(v/total*100):0;
+          const ano=new Date().getFullYear();
+          const orcLine=orcamento.find(o=>o.cc===cc&&o.ano===ano);
+          const mesNum=mes&&!['__ano__','__6m__'].includes(mes)?+mes.split('-')[1]:null;
+          const orcMes=orcLine?(mesNum?orcLine.meses[mesNum-1]:orcLine.meses.reduce((a,b)=>a+b,0)):0;
+          return `<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="font-size:13px;font-weight:500">${cc}</span>
+              <div style="text-align:right">
+                <span style="font-family:var(--mono);color:var(--red)">${fmtBRL(v)}</span>
+                ${orcMes?`<br><span style="font-family:var(--mono);font-size:10px;color:${v>orcMes?'var(--red)':'var(--teal)'}">Orc: ${fmtBRL(orcMes)} · ${Math.round(v/orcMes*100)}%</span>`:''}
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${orcMes&&v>orcMes?'var(--red)':'var(--teal)'};border-radius:99px"></div>
+              </div>
+              <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${pct}% do subgrupo</span>
+            </div>
+          </div>`;
+        }).join('')}
+        <div style="margin-top:8px;padding:10px 14px;background:var(--surface);border-radius:var(--r);font-family:var(--mono);display:flex;justify-content:space-between">
+          <span style="font-size:11px;color:var(--text3)">TOTAL ${subgrupo}</span>
+          <span style="color:var(--red);font-weight:600">${fmtBRL(total)}</span>
+        </div>
+      </div>`;
+  }
+}
+
 function exportarRelatorioPDF(){
   const out = document.getElementById('relatorioOutput');
   if (!out || !out.innerHTML.trim()) { toast('Gere um relatório antes de exportar.','err'); return; }
@@ -8786,7 +9713,7 @@ function impFatProcessar(vencimento, fechamento, cartaoId) {
       ? '<span class="badge badge-gold" style="font-size:9px">FUTURO</span>'
       : '<span class="badge badge-teal" style="font-size:9px">NOVO</span>';
 
-    const ccOpts = '<option value="">—</option>' + centros.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+    const ccOpts = _buildCCOpts('—', 'Despesa');
     const ccSel = jaExiste ? '—' : `<select data-linha="${linhas.indexOf(l)}" class="impfat-cc-sel" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:11px;padding:3px 6px;outline:none">${ccOpts}</select>`;
 
     html += `<tr style="${jaExiste?'opacity:.5':''}">
@@ -8982,13 +9909,25 @@ function initImpFatTab() {
       .map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
   sel.value = cur;
 
-  // Populate CC global select
+  // Populate CC global select — hierárquico
   const ccSel = document.getElementById('impFatCCGlobal');
   if (ccSel) {
     const curCC = ccSel.value;
-    ccSel.innerHTML = '<option value="">— selecione CC global —</option>' +
-      [...centros].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'))
-        .map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+    const grupos = {};
+    centros.forEach(c => {
+      const g = c.grupo||'Outros';
+      if (!grupos[g]) grupos[g] = [];
+      grupos[g].push(c);
+    });
+    let html = '<option value="">— selecione CC global —</option>';
+    Object.keys(grupos).sort().forEach(g => {
+      html += `<optgroup label="${g}">`;
+      grupos[g].sort((a,b)=>(a.subgrupo||'').localeCompare(b.subgrupo||'')||a.nome.localeCompare(b.nome)).forEach(c => {
+        html += `<option value="${c.nome}">${c.subgrupo||'Geral'} – ${c.nome}</option>`;
+      });
+      html += '</optgroup>';
+    });
+    ccSel.innerHTML = html;
     ccSel.value = curCC;
   }
 }
@@ -9082,6 +10021,603 @@ function instalarPWA() {
     }
     window._pwaInstallEvent = null;
   });
+}
+
+/* ══════════════════════════════════════════
+   MÓDULO ORÇAMENTO ANUAL
+══════════════════════════════════════════ */
+
+const MESES_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const MESES_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+// Recupera entrada do orçamento: {ccNome, ano, mes(1-12)} → valor
+function orcGet(ccNome, ano, mes) {
+  const e = orcamento.find(o => o.cc === ccNome && o.ano === ano && o.mes === mes);
+  return e ? e.valor : 0;
+}
+function orcSet(ccNome, ano, mes, valor) {
+  const idx = orcamento.findIndex(o => o.cc === ccNome && o.ano === ano && o.mes === mes);
+  if (valor === 0 || valor === '') {
+    if (idx >= 0) orcamento.splice(idx, 1);
+  } else {
+    if (idx >= 0) orcamento[idx].valor = valor;
+    else orcamento.push({ cc: ccNome, ano, mes, valor });
+  }
+  LS.set('orcamento', orcamento);
+}
+
+// Realizado caixa para CC num mês/ano
+function orcRealizado(ccNome, ano, mes) {
+  const prefix = `${ano}-${String(mes).padStart(2,'0')}`;
+  return lancamentos
+    .filter(l => l.data && l.data.startsWith(prefix) && l.cc === ccNome && l.pago)
+    .reduce((s, l) => s + parseMoney(l.valor), 0);
+}
+
+let _orcLinhas = []; // CCs ativos no plano
+
+function initOrcamento() {
+  _populateCCDataLists();
+  const anoSel = document.getElementById('orcAno');
+  if (anoSel && !anoSel.innerHTML.trim()) {
+    const ano = new Date().getFullYear();
+    for (let a = ano - 1; a <= ano + 2; a++) {
+      const o = document.createElement('option');
+      o.value = a; o.textContent = a;
+      if (a === ano) o.selected = true;
+      anoSel.appendChild(o);
+    }
+  }
+  // Preenche grupo filter no acompanhamento
+  const gSel = document.getElementById('orcAcompGrupo');
+  if (gSel) {
+    const cur = gSel.value;
+    gSel.innerHTML = '<option value="">Todos os grupos</option>' +
+      ccGrupos().map(g => `<option value="${g}">${g}</option>`).join('');
+    if (cur) gSel.value = cur;
+  }
+  renderOrcamento();
+}
+
+function orcSwitchTab(tab) {
+  document.getElementById('orcPanelPlan').style.display = tab === 'plan' ? '' : 'none';
+  document.getElementById('orcPanelAcomp').style.display = tab === 'acomp' ? '' : 'none';
+  document.getElementById('orcTabPlan').className = tab === 'plan' ? 'btn btn-gold btn-sm' : 'btn btn-outline btn-sm';
+  document.getElementById('orcTabAcomp').className = tab === 'acomp' ? 'btn btn-gold btn-sm' : 'btn btn-outline btn-sm';
+  if (tab === 'acomp') renderOrcAcomp();
+}
+
+function renderOrcamento() {
+  const ano = parseInt((document.getElementById('orcAno')||{}).value) || new Date().getFullYear();
+  const lbl = document.getElementById('orcAnoLabel');
+  if (lbl) lbl.textContent = ano;
+
+  // Build _orcLinhas: CCs que têm ao menos 1 entrada de orçamento no ano OU foram adicionados manualmente
+  const ccNoPlano = new Set(orcamento.filter(o => o.ano === ano).map(o => o.cc));
+  _orcLinhas = centros.filter(c => ccNoPlano.has(c.nome));
+
+  const head = document.getElementById('tblOrcHead');
+  const body = document.getElementById('tblOrcBody');
+  const foot = document.getElementById('tblOrcFoot');
+  if (!head) return;
+
+  // Header
+  head.innerHTML = `<tr>
+    <th style="min-width:140px">Grupo</th>
+    <th style="min-width:110px">Subgrupo</th>
+    <th style="min-width:170px">Centro de Custo</th>
+    ${MESES_PT.map(m => `<th style="text-align:right;min-width:90px">${m}</th>`).join('')}
+    <th style="text-align:right;min-width:100px">Total</th>
+    <th style="width:50px"></th>
+  </tr>`;
+
+  if (!_orcLinhas.length) {
+    body.innerHTML = `<tr><td colspan="${15}" style="text-align:center;padding:24px">
+      <div class="empty"><i class="fa fa-chart-bar"></i>Adicione centros de custo ao plano usando o formulário acima.</div>
+    </td></tr>`;
+    foot.innerHTML = '';
+    return;
+  }
+
+  // Agrupar por grupo/subgrupo
+  const grupos = {};
+  _orcLinhas.forEach(c => {
+    const g = c.grupo || 'Outros';
+    const s = c.subgrupo || 'Geral';
+    if (!grupos[g]) grupos[g] = {};
+    if (!grupos[g][s]) grupos[g][s] = [];
+    grupos[g][s].push(c);
+  });
+
+  let html = '';
+  const totaisMes = Array(12).fill(0);
+  let totalGeral = 0;
+
+  Object.keys(grupos).sort().forEach(g => {
+    html += `<tr style="background:var(--surface)">
+      <td colspan="${15}" style="padding:8px 14px 4px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold)">
+        <i class="fa fa-layer-group" style="margin-right:6px"></i>${g}
+      </td>
+    </tr>`;
+    Object.keys(grupos[g]).sort().forEach(s => {
+      html += `<tr style="background:var(--card2)">
+        <td colspan="${15}" style="padding:5px 14px 5px 28px;font-size:12px;color:var(--text2);font-family:var(--mono)">
+          <i class="fa fa-sitemap" style="margin-right:6px;color:var(--blue)"></i>${s}
+        </td>
+      </tr>`;
+      grupos[g][s].forEach(c => {
+        let totalLinha = 0;
+        const cells = MESES_PT.map((_, mi) => {
+          const mes = mi + 1;
+          const val = orcGet(c.nome, ano, mes);
+          totalLinha += val;
+          totaisMes[mi] += val;
+          return `<td style="padding:4px 6px;text-align:right">
+            <input type="text" value="${val > 0 ? val.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : ''}"
+              placeholder="0,00"
+              style="width:82px;text-align:right;padding:5px 7px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;outline:none"
+              oninput="maskMoney(this)"
+              onblur="orcSalvarCell(this,'${c.nome}',${ano},${mes})"
+              onfocus="this.select()">
+          </td>`;
+        }).join('');
+        totalGeral += totalLinha;
+        html += `<tr>
+          <td style="padding-left:44px;font-size:12px;color:var(--text3)">${g}</td>
+          <td style="font-size:12px;color:var(--text3)">${s}</td>
+          <td style="font-weight:500">${c.nome}</td>
+          ${cells}
+          <td style="text-align:right;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--gold)">${totalLinha > 0 ? fmtBRL(totalLinha) : '—'}</td>
+          <td style="text-align:center">
+            <button class="btn btn-ghost btn-icon btn-danger btn-sm" onclick="orcRemoverLinha('${c.nome}')" title="Remover do plano"><i class="fa fa-times"></i></button>
+          </td>
+        </tr>`;
+      });
+    });
+  });
+
+  body.innerHTML = html;
+  foot.innerHTML = `<tr style="background:var(--surface)">
+    <td colspan="3" style="font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.5px">TOTAL ORÇADO</td>
+    ${totaisMes.map(t => `<td style="text-align:right;font-family:var(--mono);font-size:12px;color:var(--gold);font-weight:600">${t > 0 ? fmtBRL(t) : '—'}</td>`).join('')}
+    <td style="text-align:right;font-family:var(--mono);font-size:13px;color:var(--gold);font-weight:700">${fmtBRL(totalGeral)}</td>
+    <td></td>
+  </tr>`;
+}
+
+function orcSalvarCell(input, ccNome, ano, mes) {
+  const val = parseMoney(input.value);
+  orcSet(ccNome, ano, mes, val);
+  renderOrcamento(); // re-render totals
+}
+
+function orcAdicionarLinha() {
+  const ccNome = document.getElementById('orcInCC').value;
+  if (!ccNome) { toast('Selecione um centro de custo.', 'err'); return; }
+  const ano = parseInt(document.getElementById('orcAno').value) || new Date().getFullYear();
+  // Garante ao menos 1 entrada no orçamento para aparecer na lista
+  const jaExiste = orcamento.some(o => o.cc === ccNome && o.ano === ano);
+  if (!jaExiste) orcamento.push({ cc: ccNome, ano, mes: 1, valor: 0 });
+  LS.set('orcamento', orcamento);
+  renderOrcamento();
+  toast('Linha adicionada ao plano!');
+}
+
+function orcRemoverLinha(ccNome) {
+  if (!confirm(`Remover "${ccNome}" do plano de orçamento?`)) return;
+  const ano = parseInt(document.getElementById('orcAno').value) || new Date().getFullYear();
+  orcamento = orcamento.filter(o => !(o.cc === ccNome && o.ano === ano));
+  LS.set('orcamento', orcamento);
+  renderOrcamento();
+  toast('Linha removida.');
+}
+
+function orcPreencherMeses() {
+  // Replica o valor de Jan para todos os outros meses das linhas com Jan preenchido
+  const ano = parseInt(document.getElementById('orcAno').value) || new Date().getFullYear();
+  let count = 0;
+  _orcLinhas.forEach(c => {
+    const janVal = orcGet(c.nome, ano, 1);
+    if (janVal > 0) {
+      for (let m = 2; m <= 12; m++) {
+        orcSet(c.nome, ano, m, janVal);
+      }
+      count++;
+    }
+  });
+  renderOrcamento();
+  toast(count > 0 ? `✓ Janeiro replicado para ${count} centro(s).` : 'Preencha janeiro primeiro.', count > 0 ? 'ok' : 'err');
+}
+
+function orcLimparPlano() {
+  if (!confirm('Apagar todo o orçamento deste ano?')) return;
+  const ano = parseInt(document.getElementById('orcAno').value) || new Date().getFullYear();
+  orcamento = orcamento.filter(o => o.ano !== ano);
+  LS.set('orcamento', orcamento);
+  renderOrcamento();
+  toast('Plano limpo.');
+}
+
+function aprovarPlanoAnual() {
+  const ano = parseInt(document.getElementById('orcAno').value) || new Date().getFullYear();
+  const totalOrc = orcamento.filter(o => o.ano === ano).reduce((s, o) => s + o.valor, 0);
+  if (totalOrc === 0) { toast('O plano está vazio. Preencha valores antes de aprovar.', 'err'); return; }
+  // Marca aprovação (flag no LS)
+  const aprovacoes = LS.get('orcAprovacoes') || [];
+  const idx = aprovacoes.findIndex(a => a.ano === ano);
+  const registro = { ano, data: new Date().toISOString(), total: totalOrc };
+  if (idx >= 0) aprovacoes[idx] = registro; else aprovacoes.push(registro);
+  localStorage.setItem('nmc_orcAprovacoes', JSON.stringify(aprovacoes));
+  toast(`✓ Plano ${ano} aprovado! Total orçado: ${fmtBRL(totalOrc)}`, 'ok');
+}
+
+function renderOrcAcomp() {
+  const ano = parseInt((document.getElementById('orcAno')||{}).value) || new Date().getFullYear();
+  const mesFiltro = (document.getElementById('orcAcompMes')||{}).value || '';
+  const grupoFiltro = (document.getElementById('orcAcompGrupo')||{}).value || '';
+
+  const meses = mesFiltro ? [parseInt(mesFiltro)] : Array.from({length:12},(_,i)=>i+1);
+
+  // Coleta CCs que têm orçamento ou lançamentos no período
+  const ccComOrc = new Set(orcamento.filter(o => o.ano === ano).map(o => o.cc));
+  const ccComLanc = new Set();
+  lancamentos.forEach(l => {
+    if (l.data && l.data.startsWith(String(ano)) && l.cc) ccComLanc.add(l.cc);
+  });
+  const allCCs = new Set([...ccComOrc, ...ccComLanc]);
+
+  let rows = centros
+    .filter(c => allCCs.has(c.nome) && (!grupoFiltro || (c.grupo||'Outros') === grupoFiltro))
+    .sort((a,b) => ((a.grupo||'')+(a.subgrupo||'')+(a.nome||'')).localeCompare((b.grupo||'')+(b.subgrupo||'')+(b.nome||'')));
+
+  let totalOrc = 0, totalReal = 0;
+  let html = '';
+
+  rows.forEach(c => {
+    const orc = meses.reduce((s, m) => s + orcGet(c.nome, ano, m), 0);
+    const real = meses.reduce((s, m) => s + orcRealizado(c.nome, ano, m), 0);
+    const diff = orc - real;
+    const pct = orc > 0 ? Math.min(120, Math.round((real / orc) * 100)) : (real > 0 ? 100 : 0);
+    const cor = pct > 90 ? 'var(--red)' : pct > 70 ? '#f59e0b' : 'var(--teal)';
+    totalOrc += orc; totalReal += real;
+    html += `<tr>
+      <td style="font-size:12px;color:var(--text3)">${c.grupo||'Outros'}</td>
+      <td style="font-size:12px;color:var(--text3)">${c.subgrupo||'Geral'}</td>
+      <td style="font-weight:500">${c.nome}</td>
+      <td style="text-align:right;font-family:var(--mono);color:var(--gold)">${orc > 0 ? fmtBRL(orc) : '—'}</td>
+      <td style="text-align:right;font-family:var(--mono);color:var(--teal)">${real > 0 ? fmtBRL(real) : '—'}</td>
+      <td style="text-align:right;font-family:var(--mono);color:${diff >= 0 ? 'var(--teal)' : 'var(--red)'}">${orc > 0 ? fmtBRL(diff) : '—'}</td>
+      <td>
+        ${orc > 0 ? `<div style="display:flex;align-items:center;gap:6px">
+          <div style="flex:1;height:7px;background:var(--surface);border-radius:99px;overflow:hidden">
+            <div style="width:${Math.min(100,pct)}%;height:100%;background:${cor};border-radius:99px;transition:width .4s"></div>
+          </div>
+          <span style="font-family:var(--mono);font-size:11px;min-width:34px;color:${cor}">${pct}%</span>
+        </div>` : '<span style="color:var(--text3);font-size:11px">—</span>'}
+      </td>
+    </tr>`;
+  });
+
+  const tbody = document.getElementById('tblOrcAcompBody');
+  const tfoot = document.getElementById('tblOrcAcompFoot');
+  if (tbody) tbody.innerHTML = html || `<tr><td colspan="7"><div class="empty"><i class="fa fa-chart-bar"></i>Nenhum dado no período.</div></td></tr>`;
+  if (tfoot) {
+    const diffT = totalOrc - totalReal;
+    tfoot.innerHTML = `<tr>
+      <td colspan="3" style="font-family:var(--mono);font-size:11px;font-weight:700">TOTAL</td>
+      <td style="text-align:right;font-family:var(--mono);color:var(--gold);font-weight:700">${fmtBRL(totalOrc)}</td>
+      <td style="text-align:right;font-family:var(--mono);color:var(--teal);font-weight:700">${fmtBRL(totalReal)}</td>
+      <td style="text-align:right;font-family:var(--mono);color:${diffT>=0?'var(--teal)':'var(--red)'};font-weight:700">${fmtBRL(diffT)}</td>
+      <td></td>
+    </tr>`;
+  }
+
+  // Stats
+  const stats = document.getElementById('orcAcompStats');
+  if (stats) {
+    const pctTotal = totalOrc > 0 ? Math.round((totalReal/totalOrc)*100) : 0;
+    const economy = totalOrc - totalReal;
+    stats.innerHTML = `
+      <div class="stat-card"><div class="stat-label">Total Orçado</div><div class="stat-val" style="color:var(--gold)">${fmtBRL(totalOrc)}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Realizado</div><div class="stat-val" style="color:var(--teal)">${fmtBRL(totalReal)}</div></div>
+      <div class="stat-card"><div class="stat-label">${economy>=0?'Economia':'Estouro'}</div><div class="stat-val" style="color:${economy>=0?'var(--teal)':'var(--red)'}">${fmtBRL(Math.abs(economy))}</div></div>
+      <div class="stat-card"><div class="stat-label">Execução Orçamentária</div><div class="stat-val" style="color:${pctTotal>90?'var(--red)':pctTotal>70?'#f59e0b':'var(--teal)'}">${pctTotal}%</div></div>`;
+  }
+}
+
+/* ══════════════════════════════════════════
+   DASHBOARD DRILL-DOWN HIERÁRQUICO
+══════════════════════════════════════════ */
+let _drillState = { nivel: 0, grupo: null, subgrupo: null }; // 0=grupos, 1=subgrupos, 2=ccs
+
+function renderDashDrillDown(ym) {
+  const el = document.getElementById('dashDrillDown');
+  if (!el) return;
+
+  const ccExcl = new Set(centros.filter(c => c.excluirRecDesp).map(c => c.nome));
+  const desp = lancamentos.filter(l =>
+    l.data && l.data.startsWith(ym) && l.tipo === 'Despesa' && !isTransferencia(l) && !(l.cc && ccExcl.has(l.cc))
+  );
+
+  let html = '';
+  const breadcrumb = _drillBreadcrumb();
+
+  if (_drillState.nivel === 0) {
+    // Nível 1: Grupos
+    const porGrupo = {};
+    desp.forEach(l => {
+      const c = centros.find(x => x.nome === l.cc);
+      const g = c ? (c.grupo || 'Outros') : 'Sem categoria';
+      porGrupo[g] = (porGrupo[g] || 0) + parseMoney(l.valor);
+    });
+    const total = Object.values(porGrupo).reduce((s, v) => s + v, 0);
+    const sorted = Object.entries(porGrupo).sort((a, b) => b[1] - a[1]);
+    html = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Despesas por Grupo — ${ym}</span>
+      </div>
+      ${sorted.map(([g, v]) => {
+        const pct = total > 0 ? Math.round((v/total)*100) : 0;
+        // Busca orçamento do grupo no mês
+        const [ano, mes] = ym.split('-');
+        const orc = centros.filter(c=>(c.grupo||'Outros')===g && !ccExcl.has(c.nome))
+          .reduce((s,c)=>s+orcGet(c.nome, parseInt(ano), parseInt(mes)),0);
+        return `<div onclick="_drillDown('grupo','${g.replace(/'/g,"\\'")}');event.stopPropagation()"
+          style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r);cursor:pointer;transition:background .15s;border:1px solid var(--border);margin-bottom:6px"
+          onmouseover="this.style.background='var(--card2)'" onmouseout="this.style.background=''">
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+              <span style="font-weight:500;font-size:13px">${g}</span>
+              <span style="font-family:var(--mono);font-size:12px;color:var(--red)">${fmtBRL(v)}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;height:6px;background:var(--surface);border-radius:99px;overflow:hidden">
+                <div style="width:${pct}%;height:100%;background:var(--red);border-radius:99px"></div>
+              </div>
+              <span style="font-family:var(--mono);font-size:10px;color:var(--text3);min-width:28px">${pct}%</span>
+              ${orc > 0 ? `<span style="font-family:var(--mono);font-size:10px;color:var(--gold)">orc: ${fmtBRL(orc)}</span>` : ''}
+            </div>
+          </div>
+          <i class="fa fa-chevron-right" style="color:var(--text3);font-size:11px"></i>
+        </div>`;
+      }).join('')}
+      <div style="text-align:right;font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:8px;border-top:1px solid var(--border);padding-top:8px">Total: <strong style="color:var(--red)">${fmtBRL(total)}</strong></div>`;
+
+  } else if (_drillState.nivel === 1) {
+    // Nível 2: Subgrupos do grupo
+    const g = _drillState.grupo;
+    const despG = desp.filter(l => { const c = centros.find(x=>x.nome===l.cc); return c ? (c.grupo||'Outros')===g : false; });
+    const por = {};
+    despG.forEach(l => {
+      const c = centros.find(x=>x.nome===l.cc);
+      const s = c ? (c.subgrupo||'Geral') : 'Geral';
+      por[s] = (por[s]||0) + parseMoney(l.valor);
+    });
+    const total = Object.values(por).reduce((s,v)=>s+v,0);
+    const sorted = Object.entries(por).sort((a,b)=>b[1]-a[1]);
+    html = `
+      ${breadcrumb}
+      <div style="margin-bottom:12px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold)">${g}</div>
+      ${sorted.map(([s, v]) => {
+        const pct = total > 0 ? Math.round((v/total)*100) : 0;
+        return `<div onclick="_drillDown('sub','${s.replace(/'/g,"\\'")}');event.stopPropagation()"
+          style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r);cursor:pointer;border:1px solid var(--border);margin-bottom:6px"
+          onmouseover="this.style.background='var(--card2)'" onmouseout="this.style.background=''">
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+              <span style="font-weight:500;font-size:13px">${s}</span>
+              <span style="font-family:var(--mono);font-size:12px;color:var(--red)">${fmtBRL(v)}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;height:6px;background:var(--surface);border-radius:99px;overflow:hidden">
+                <div style="width:${pct}%;height:100%;background:#4a8fff;border-radius:99px"></div>
+              </div>
+              <span style="font-family:var(--mono);font-size:10px;color:var(--text3);min-width:28px">${pct}%</span>
+            </div>
+          </div>
+          <i class="fa fa-chevron-right" style="color:var(--text3);font-size:11px"></i>
+        </div>`;
+      }).join('')}
+      <div style="text-align:right;font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:8px;border-top:1px solid var(--border);padding-top:8px">Total ${g}: <strong style="color:var(--red)">${fmtBRL(total)}</strong></div>`;
+
+  } else {
+    // Nível 3: CCs do subgrupo
+    const g = _drillState.grupo, s = _drillState.subgrupo;
+    const despS = desp.filter(l => {
+      const c = centros.find(x=>x.nome===l.cc);
+      return c ? (c.grupo||'Outros')===g && (c.subgrupo||'Geral')===s : false;
+    });
+    const por = {};
+    despS.forEach(l => { por[l.cc||'—'] = (por[l.cc||'—']||0) + parseMoney(l.valor); });
+    const total = Object.values(por).reduce((s,v)=>s+v,0);
+    const sorted = Object.entries(por).sort((a,b)=>b[1]-a[1]);
+    const [ano, mes] = ym.split('-');
+    html = `
+      ${breadcrumb}
+      <div style="margin-bottom:12px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--blue)">${g} → ${s}</div>
+      ${sorted.map(([cc, v]) => {
+        const pct = total > 0 ? Math.round((v/total)*100) : 0;
+        const orc = orcGet(cc, parseInt(ano), parseInt(mes));
+        const pctOrc = orc > 0 ? Math.min(120, Math.round((v/orc)*100)) : 0;
+        const corOrc = pctOrc > 90 ? 'var(--red)' : pctOrc > 70 ? '#f59e0b' : 'var(--teal)';
+        return `<div style="padding:10px 12px;border-radius:var(--r);border:1px solid var(--border);margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-weight:500;font-size:13px">${cc}</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--red)">${fmtBRL(v)}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:${orc>0?'5px':'0'}">
+            <div style="flex:1;height:5px;background:var(--surface);border-radius:99px;overflow:hidden">
+              <div style="width:${pct}%;height:100%;background:var(--red);border-radius:99px"></div>
+            </div>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${pct}%</span>
+          </div>
+          ${orc > 0 ? `<div style="display:flex;align-items:center;gap:8px">
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">vs orç: ${fmtBRL(orc)}</span>
+            <div style="flex:1;height:4px;background:var(--surface);border-radius:99px;overflow:hidden">
+              <div style="width:${Math.min(100,pctOrc)}%;height:100%;background:${corOrc};border-radius:99px"></div>
+            </div>
+            <span style="font-family:var(--mono);font-size:10px;color:${corOrc}">${pctOrc}%</span>
+          </div>` : ''}
+        </div>`;
+      }).join('')}
+      <div style="text-align:right;font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:8px;border-top:1px solid var(--border);padding-top:8px">Total ${s}: <strong style="color:var(--red)">${fmtBRL(total)}</strong></div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+function _drillBreadcrumb() {
+  let parts = ['<span onclick="_drillReset()" style="cursor:pointer;color:var(--gold)">Grupos</span>'];
+  if (_drillState.grupo) parts.push(`<span onclick="_drillDown(\'grupo\',\'${_drillState.grupo.replace(/'/g,"\\'")}\',true)" style="cursor:pointer;color:var(--blue)">${_drillState.grupo}</span>`);
+  if (_drillState.subgrupo) parts.push(`<span style="color:var(--text)">${_drillState.subgrupo}</span>`);
+  return `<div style="font-family:var(--mono);font-size:11px;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+    ${parts.join('<i class="fa fa-chevron-right" style="color:var(--text3);font-size:9px"></i>')}
+  </div>`;
+}
+
+function _drillDown(tipo, val, goBack) {
+  if (tipo === 'grupo') {
+    if (goBack) { _drillState = { nivel: 1, grupo: val, subgrupo: null }; }
+    else { _drillState.grupo = val; _drillState.nivel = 1; _drillState.subgrupo = null; }
+  } else if (tipo === 'sub') {
+    _drillState.subgrupo = val; _drillState.nivel = 2;
+  }
+  const ym = (document.getElementById('dashMes')||{}).value || nowYM();
+  renderDashDrillDown(ym);
+}
+function _drillReset() {
+  _drillState = { nivel: 0, grupo: null, subgrupo: null };
+  const ym = (document.getElementById('dashMes')||{}).value || nowYM();
+  renderDashDrillDown(ym);
+}
+
+/* ══════════════════════════════════════════
+   NOVOS RELATÓRIOS GERENCIAIS
+══════════════════════════════════════════ */
+
+function relCategoriaHierarquia(ym) {
+  const ccExcl = new Set(centros.filter(c => c.excluirRecDesp).map(c => c.nome));
+  const desp = lancamentos.filter(l =>
+    l.data && l.data.startsWith(ym) && l.tipo === 'Despesa' && !isTransferencia(l) &&
+    !(l.cc && ccExcl.has(l.cc)) && !((l.desc||'').startsWith('Pagamento fatura ') && l.banco)
+  );
+  const total = desp.reduce((s, l) => s + parseMoney(l.valor), 0);
+
+  // Agrupa por grupo → subgrupo → cc
+  const tree = {};
+  desp.forEach(l => {
+    const c = centros.find(x => x.nome === l.cc);
+    const g = c ? (c.grupo||'Outros') : 'Sem categoria';
+    const s = c ? (c.subgrupo||'Geral') : 'Geral';
+    const cc = l.cc || 'Sem categoria';
+    if (!tree[g]) tree[g] = {};
+    if (!tree[g][s]) tree[g][s] = {};
+    tree[g][s][cc] = (tree[g][s][cc] || 0) + parseMoney(l.valor);
+  });
+
+  let rows = '';
+  Object.keys(tree).sort().forEach(g => {
+    const totG = Object.values(tree[g]).flatMap(s => Object.values(s)).reduce((a,b)=>a+b,0);
+    const pctG = total > 0 ? Math.round((totG/total)*100) : 0;
+    rows += `<tr style="background:var(--surface)">
+      <td colspan="2" style="font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);padding:8px 12px">
+        <i class="fa fa-layer-group" style="margin-right:6px"></i>${g}
+      </td>
+      <td style="text-align:right;font-family:var(--mono);font-weight:700;color:var(--red)">${relFmt(totG)}</td>
+      <td style="width:150px">
+        <div class="rel-bar-wrap"><div class="rel-bar"><div class="rel-bar-fill" style="width:${pctG}%"></div></div><div class="rel-bar-pct">${pctG}%</div></div>
+      </td>
+    </tr>`;
+    Object.keys(tree[g]).sort().forEach(s => {
+      const totS = Object.values(tree[g][s]).reduce((a,b)=>a+b,0);
+      rows += `<tr style="background:var(--card2)">
+        <td colspan="2" style="font-size:11px;color:var(--blue);padding:5px 12px 5px 24px;font-family:var(--mono)">
+          <i class="fa fa-sitemap" style="margin-right:5px"></i>${s} — <span style="color:var(--text2)">${relFmt(totS)}</span>
+        </td><td></td><td></td>
+      </tr>`;
+      Object.entries(tree[g][s]).sort((a,b)=>b[1]-a[1]).forEach(([cc, v]) => {
+        const pct = total > 0 ? Math.round((v/total)*100) : 0;
+        rows += `<tr>
+          <td style="padding-left:40px"></td>
+          <td>${cc}</td>
+          <td style="text-align:right;font-family:var(--mono);color:var(--red)">${relFmt(v)}</td>
+          <td><div class="rel-bar-wrap"><div class="rel-bar"><div class="rel-bar-fill" style="width:${pct}%"></div></div><div class="rel-bar-pct">${pct}%</div></div></td>
+        </tr>`;
+      });
+    });
+  });
+
+  return `<div class="rel-header">
+    <div class="rel-title"><i class="fa fa-sitemap" style="color:var(--gold);margin-right:8px"></i>Despesas por Hierarquia — ${relMesLabel(ym)}</div>
+    <div class="rel-kpis">${relKpiHtml('Total Despesas',relFmt(total),'neg')}${relKpiHtml('Grupos',Object.keys(tree).length,'neu')}</div>
+  </div>
+  <div class="rel-section">${relSecHd('layer-group','Visão Hierárquica')}${relTblWrap(['Grupo','Centro de Custo','Total','Participação'],rows)}</div>`;
+}
+
+function relOrcadoRealizado(ym) {
+  const [ano, mes] = ym.split('-').map(Number);
+  const ccExcl = new Set(centros.filter(c => c.excluirRecDesp).map(c => c.nome));
+  const desp = lancamentos.filter(l =>
+    l.data && l.data.startsWith(ym) && l.tipo === 'Despesa' && !isTransferencia(l) &&
+    l.pago && !(l.cc && ccExcl.has(l.cc))
+  );
+
+  let totalOrc = 0, totalReal = 0;
+  let rows = '';
+
+  // Agrupa por grupo
+  const grupos = {};
+  centros.forEach(c => {
+    const g = c.grupo || 'Outros';
+    if (!grupos[g]) grupos[g] = [];
+    grupos[g].push(c);
+  });
+
+  Object.keys(grupos).sort().forEach(g => {
+    const totGOrc = grupos[g].reduce((s,c) => s + orcGet(c.nome, ano, mes), 0);
+    const totGReal = grupos[g].reduce((s,c) => {
+      const v = desp.filter(l => l.cc === c.nome).reduce((a,l)=>a+parseMoney(l.valor),0);
+      return s + v;
+    }, 0);
+    if (totGOrc === 0 && totGReal === 0) return;
+    const diffG = totGOrc - totGReal;
+    const pctG = totGOrc > 0 ? Math.min(120, Math.round((totGReal/totGOrc)*100)) : (totGReal>0?999:0);
+    const corG = pctG > 90 ? '#e05252' : pctG > 70 ? '#f59e0b' : '#3eb89a';
+    totalOrc += totGOrc; totalReal += totGReal;
+    rows += `<tr style="background:var(--surface)">
+      <td style="font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);padding:8px 12px" colspan="2">
+        <i class="fa fa-layer-group" style="margin-right:6px"></i>${g}
+      </td>
+      <td style="text-align:right;font-family:var(--mono);font-weight:600;color:var(--gold)">${totGOrc>0?relFmt(totGOrc):'—'}</td>
+      <td style="text-align:right;font-family:var(--mono);font-weight:600;color:var(--teal)">${relFmt(totGReal)}</td>
+      <td style="text-align:right;font-family:var(--mono);font-weight:600;color:${diffG>=0?'var(--teal)':'var(--red)'}">${totGOrc>0?relFmt(diffG):'—'}</td>
+      <td>${totGOrc>0?`<div class="rel-bar-wrap"><div class="rel-bar"><div class="rel-bar-fill" style="width:${Math.min(100,pctG)}%;background:${corG}"></div></div><div class="rel-bar-pct" style="color:${corG}">${pctG>100?'>100':pctG}%</div></div>`:'—'}</td>
+    </tr>`;
+    grupos[g].forEach(c => {
+      const orc = orcGet(c.nome, ano, mes);
+      const real = desp.filter(l=>l.cc===c.nome).reduce((a,l)=>a+parseMoney(l.valor),0);
+      if (orc === 0 && real === 0) return;
+      const diff = orc - real;
+      const pct = orc > 0 ? Math.min(120,Math.round((real/orc)*100)) : (real>0?999:0);
+      const cor = pct > 90 ? '#e05252' : pct > 70 ? '#f59e0b' : '#3eb89a';
+      rows += `<tr>
+        <td style="padding-left:24px;font-size:11px;color:var(--text3)">${c.subgrupo||'Geral'}</td>
+        <td>${c.nome}</td>
+        <td style="text-align:right;font-family:var(--mono);color:var(--gold)">${orc>0?relFmt(orc):'—'}</td>
+        <td style="text-align:right;font-family:var(--mono);color:var(--teal)">${real>0?relFmt(real):'—'}</td>
+        <td style="text-align:right;font-family:var(--mono);color:${diff>=0?'var(--teal)':'var(--red)'}">${orc>0?relFmt(diff):'—'}</td>
+        <td>${orc>0?`<div class="rel-bar-wrap"><div class="rel-bar"><div class="rel-bar-fill" style="width:${Math.min(100,pct)}%;background:${cor}"></div></div><div class="rel-bar-pct" style="color:${cor}">${pct>100?'>100':pct}%</div></div>`:'—'}</td>
+      </tr>`;
+    });
+  });
+
+  const diffT = totalOrc - totalReal;
+  return `<div class="rel-header">
+    <div class="rel-title"><i class="fa fa-balance-scale" style="color:var(--gold);margin-right:8px"></i>Orçado vs Realizado — ${relMesLabel(ym)}</div>
+    <div class="rel-subtitle">Base caixa — considera apenas lançamentos pagos</div>
+    <div class="rel-kpis">${relKpiHtml('Total Orçado',relFmt(totalOrc),'neu')}${relKpiHtml('Total Realizado',relFmt(totalReal),'neg')}${relKpiHtml(diffT>=0?'Economia':'Estouro',relFmt(Math.abs(diffT)),diffT>=0?'pos':'neg')}${relKpiHtml('Execução',(totalOrc>0?Math.round((totalReal/totalOrc)*100):0)+'%',totalOrc>0&&totalReal/totalOrc>0.9?'neg':'pos')}</div>
+  </div>
+  <div class="rel-section">${relSecHd('balance-scale','Detalhamento por Grupo e CC')}${relTblWrap(['Grupo','Centro de Custo','Orçado','Realizado','Diferença','Progresso'],rows,`<tr><td colspan="2">TOTAL</td><td style="color:var(--gold)">${relFmt(totalOrc)}</td><td style="color:var(--teal)">${relFmt(totalReal)}</td><td style="color:${diffT>=0?'var(--teal)':'var(--red)'}">${relFmt(diffT)}</td><td></td></tr>`)}</div>`;
 }
 
 </script>
