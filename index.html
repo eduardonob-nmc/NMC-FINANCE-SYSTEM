@@ -5,47 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NMC Personal Finance System v20.17.20260401</title>
 
-<!-- PWA — manifest inline para funcionamento single-file -->
-<meta name="theme-color" content="#080b10">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="NMC Finance">
-<meta name="application-name" content="NMC Finance">
-<meta name="msapplication-TileColor" content="#080b10">
-<script>
-(function(){
-  const manifest = {
-    "name": "NMC Personal Finance System",
-    "short_name": "NMC Finance",
-    "description": "Controle financeiro pessoal completo com criptografia AES-256",
-    "start_url": "./",
-    "display": "standalone",
-    "background_color": "#080b10",
-    "theme_color": "#080b10",
-    "orientation": "portrait-primary",
-    "lang": "pt-BR",
-    "categories": ["finance", "productivity"],
-    "icons": [
-      { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-      { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
-    ],
-    "screenshots": [
-      { "src": "icons/screenshot1.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow" }
-    ],
-    "shortcuts": [
-      { "name": "Novo Lançamento", "short_name": "Lançar", "url": "./#lancamentos", "description": "Registrar receita ou despesa" },
-      { "name": "Dashboard", "short_name": "Dashboard", "url": "./#dashboard", "description": "Ver resumo financeiro" }
-    ]
-  };
-  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
-  const url  = URL.createObjectURL(blob);
-  const link = document.createElement('link');
-  link.rel   = 'manifest';
-  link.href  = url;
-  document.head.appendChild(link);
-})();
-</script>
+<!-- PWA manifest externo — servido pelo Vercel/servidor como arquivo estático -->
+<link rel="manifest" href="/manifest.json">
 
 <!-- SEO / OG / Play Store -->
 <meta name="google-play-app" content="app-id=br.com.nobregamall.nmcfinance">
@@ -8871,9 +8832,9 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Tenta registrar SW externo (quando hospedado com sw.js)
     // Se não existir ou falhar (single-file/blob), ignora silenciosamente
-    fetch('./sw.js', {method:'HEAD'}).then(r => {
+    fetch('/sw.js', {method:'HEAD'}).then(r => {
       if (r.ok) {
-        navigator.serviceWorker.register('./sw.js', {scope: './'})
+        navigator.serviceWorker.register('/sw.js', {scope: '/'})
           .then(reg => console.log('SW registrado:', reg.scope))
           .catch(() => {}); // Falha silenciosa
       }
