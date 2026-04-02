@@ -2071,78 +2071,81 @@ initTema();
           </div>
 
           <!-- Ficha Técnica -->
-          <div class="card" style="background:linear-gradient(135deg,rgba(201,168,76,.06) 0%,var(--card) 100%);border-color:rgba(201,168,76,.25);grid-column:1/-1">
+          <div class="card" style="background:linear-gradient(135deg,rgba(201,168,76,.06) 0%,var(--card) 100%);border-color:rgba(201,168,76,.25)">
             <div class="card-title" style="color:var(--gold)"><i class="fa fa-award" style="color:var(--gold)"></i> Ficha Técnica</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px">
-              <div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Produto</span>
-                  <span style="font-size:12px;color:var(--text);font-weight:600">NMC Personal Finance System</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Versão</span>
-                  <span style="font-size:12px;color:var(--gold);font-family:var(--mono);font-weight:600" id="fichaVersao">v20.17.20260401</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Desenvolvedor</span>
-                  <span style="font-size:12px;color:var(--text)">Nobrega Mall Consultant</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Segmento</span>
-                  <span style="font-size:12px;color:var(--text)">Gestão Financeira Pessoal</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Plataforma</span>
-                  <span style="font-size:12px;color:var(--text)">Web PWA — Android · iOS · Desktop · Tablet</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Arquitetura</span>
-                  <span style="font-size:12px;color:var(--text);text-align:right;line-height:1.8">Single-File App · Zero-backend<br>Sem framework · Sem servidor</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Armazenamento</span>
-                  <span style="font-size:12px;color:var(--text)">localStorage criptografado · 100% offline</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Privacidade</span>
-                  <span style="font-size:12px;color:var(--teal)">Nenhum dado enviado a servidores</span>
-                </div>
+            <div style="display:flex;flex-direction:column;gap:0">
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Produto</span>
+                <span style="font-size:12px;color:var(--text);font-weight:600">NMC Personal Finance System</span>
               </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Tecnologias</span>
-                  <span style="font-size:12px;color:var(--text);text-align:right;line-height:1.9">HTML5 · CSS3 · ES6+ JavaScript<br>CryptoJS 4.2 · Chart.js 4.4<br>PDF.js · Hammer.js 2.0<br>Font Awesome 6 · PWA + SW</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Criptografia</span>
-                  <span style="font-size:12px;color:var(--text);text-align:right">AES-256-CBC<br>PBKDF2 (senha do usuário)</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Importação bancária</span>
-                  <span style="font-size:12px;color:var(--text);text-align:right;line-height:1.8">PDF: Itaú · Nubank · Bradesco · Caixa<br>OFX / QFX / CSV (todos os bancos)</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">IA / OCR</span>
-                  <span style="font-size:12px;color:var(--text)">Claude Sonnet (Anthropic)</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Módulos</span>
-                  <span style="font-size:12px;color:var(--text);text-align:right;line-height:1.9">Lançamentos · Cartões Cred/Deb<br>Recorrentes · Financiamentos<br>Investimentos · Metas · Orçamento<br>Dashboard · Conciliação · Relatórios</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Hospedagem</span>
-                  <span style="font-size:12px;color:var(--text)">Vercel · GitHub · PWA instalável</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:9px 0;flex-wrap:wrap;gap:4px">
-                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Período</span>
-                  <span style="font-size:12px;color:var(--text)">2025 — 2026</span>
-                </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Vers&#xe3;o</span>
+                <span style="font-size:12px;color:var(--gold);font-family:var(--mono);font-weight:600" id="fichaVersao">v20.17.20260401</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Desenvolvedor</span>
+                <span style="font-size:12px;color:var(--text)">Nobrega Mall Consultant</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Segmento</span>
+                <span style="font-size:12px;color:var(--text)">Consultoria Financeira e Tecnologia</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Plataforma</span>
+                <span style="font-size:12px;color:var(--text)">Web PWA — Android · iOS · Desktop</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">M&#xf3;dulos</span>
+                <span style="font-size:12px;color:var(--text);text-align:right;line-height:2">
+                  Dashboard · Lan&#xe7;amentos · Cart&#xf5;es<br>
+                  Recorrentes · Financiamentos · Investimentos<br>
+                  Metas · Or&#xe7;amento · Concilia&#xe7;&#xe3;o<br>
+                  Relat&#xf3;rios · Configura&#xe7;&#xe3;o
+                </span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Tecnologias</span>
+                <span style="font-size:12px;color:var(--text);text-align:right;line-height:2">
+                  HTML5 · CSS3 · ES6+ JavaScript<br>
+                  AES-256-CBC (CryptoJS) · PBKDF2<br>
+                  Chart.js 4.4 · chartjs-plugin-zoom<br>
+                  PDF.js · Hammer.js · Font Awesome 6<br>
+                  PWA · Service Worker · LocalStorage
+                </span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Armazenamento</span>
+                <span style="font-size:12px;color:var(--text)">100% local (localStorage) — sem servidor</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Criptografia</span>
+                <span style="font-size:12px;color:var(--text)">AES-256-CBC + PBKDF2 (chave derivada da senha)</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Import. banc&#xe1;ria</span>
+                <span style="font-size:12px;color:var(--text)">PDF · OFX · QFX · CSV</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Bancos suportados</span>
+                <span style="font-size:12px;color:var(--text)">Nubank · Ita&#xfa; · Bradesco · Caixa Econ&#xf4;mica</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Gr&#xe1;ficos</span>
+                <span style="font-size:12px;color:var(--text)">Fluxo · Rec/Desp por CC · Investimentos · Or&#xe7;amento</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Exporta&#xe7;&#xe3;o</span>
+                <span style="font-size:12px;color:var(--text)">Backup JSON · Relat&#xf3;rios PDF</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;flex-wrap:wrap;gap:4px">
+                <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Ano</span>
+                <span style="font-size:12px;color:var(--text)">2025 – 2026</span>
               </div>
             </div>
             <div style="margin-top:18px;padding:14px 16px;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);border-radius:var(--r);font-size:11px;color:var(--text3);line-height:1.8;font-family:var(--mono)">
-              © 2025–2026 Nobrega Mall Consultant. Todos os direitos reservados.<br>
-              Software proprietário de uso exclusivo do cliente licenciado.<br>
-              Nenhum dado é enviado para servidores externos. Privacidade total.
+              &#xa9; 2025&#x2013;2026 Nobrega Mall Consultant. Todos os direitos reservados.<br>
+              Software propriet&#xe1;rio de uso exclusivo do cliente licenciado.<br>
+              Nenhum dado &#xe9; enviado para servidores externos. Privacidade total.
             </div>
           </div>
 
@@ -2154,495 +2157,463 @@ initTema();
         <div class="page-hd">
           <div>
             <div class="page-title">Manual do Sistema</div>
-            <div class="page-sub">Guia completo de uso — NMC Personal Finance v20</div>
+            <div class="page-sub">Guia completo de uso — NMC Personal Finance v20.17</div>
           </div>
+          <button class="btn btn-outline" onclick="imprimirManual()" style="display:flex;align-items:center;gap:8px;white-space:nowrap"><i class="fa fa-print"></i> Imprimir Manual</button>
         </div>
         <div class="card">
 
           <!-- INTRODUÇÃO -->
           <div class="manual-section">
             <h3>🏠 O que é o NMC Personal Finance System?</h3>
-            <p>O <strong>NMC Personal Finance System</strong> é um aplicativo completo de controle financeiro pessoal desenvolvido pela <strong>Nobrega Mall Consultant</strong>. Funciona 100% no navegador, sem necessidade de internet para operar no dia a dia. Todos os seus dados ficam salvos exclusivamente no seu dispositivo, protegidos por criptografia militar <strong>AES-256</strong>.</p>
-            <p style="margin-top:10px">O sistema cobre todo o ciclo financeiro: registro de receitas e despesas, cartões de crédito e débito, importação automática de faturas PDF, financiamentos com tabela Price, investimentos, metas financeiras, orçamento por categoria, conciliação bancária, relatórios em PDF e um dashboard interativo com gráficos e indicadores em tempo real.</p>
-            <p style="margin-top:10px">💡 <strong>Dica de início:</strong> Antes de lançar qualquer movimentação, configure primeiro seus <strong>Bancos/Contas</strong>, <strong>Centros de Custo</strong> e <strong>Formas de Pagamento</strong> no menu <strong>Cadastros</strong>.</p>
+            <p>O <strong>NMC Personal Finance System</strong> é um aplicativo completo de controle financeiro pessoal desenvolvido pela <strong>Nobrega Mall Consultant</strong>. Funciona 100% no navegador, sem precisar de internet para operar. Todos os seus dados ficam armazenados localmente no dispositivo, criptografados com <strong>AES-256-CBC</strong> — o mesmo padrão usado por bancos.</p>
+            <p style="margin-top:10px">O sistema cobre todo o ciclo financeiro pessoal: receitas e despesas, cartões de crédito e débito, transferências entre contas, financiamentos, investimentos, metas, orçamento mensal, conciliação bancária, relatórios em PDF e um dashboard completo com gráficos interativos.</p>
+            <p style="margin-top:10px"><strong>Filosofia do sistema:</strong> cada módulo foi pensado para refletir a realidade financeira do dia a dia. Por exemplo, uma compra no cartão de crédito é registrada no centro de custo no momento da compra (impacto real no orçamento), mas o débito na conta corrente só ocorre quando a fatura é paga — exatamente como funciona na vida real.</p>
           </div>
           <div class="hr"></div>
 
-          <!-- LOGIN -->
+          <!-- LOGIN E SEGURANÇA -->
           <div class="manual-section">
-            <h3>🔐 Login e Segurança · <span style="color:var(--text3);font-size:13px;font-weight:400">Tela inicial</span></h3>
-            <p>Na primeira abertura do sistema, defina seu <strong>nome de usuário</strong> e uma <strong>senha forte</strong>. Essa senha é usada para criptografar todos os seus dados com AES-256 — sem ela, os dados não podem ser recuperados nem lidos por ninguém.</p>
+            <h3>🔐 Login e Segurança</h3>
+            <p>Na primeira abertura do sistema, crie seu usuário e senha. A senha é usada para derivar a chave de criptografia via <strong>PBKDF2</strong> — sem ela, nenhum dado pode ser recuperado, nem mesmo pelo desenvolvedor.</p>
             <ul>
-              <li><strong>Primeiro acesso:</strong> clique em "Criar conta", informe usuário e senha. O sistema grava imediatamente um backup inicial criptografado</li>
-              <li><strong>Acessos seguintes:</strong> insira usuário e senha. Se a senha estiver errada, os dados não são descriptografados</li>
-              <li><strong>Botão Sair</strong> (barra superior): encerra a sessão com confirmação. Todos os dados em memória são limpos</li>
-              <li><strong>Botão Voltar do browser</strong> é interceptado para evitar saída acidental durante o uso</li>
-              <li>⚠️ <strong>Não há recuperação de senha.</strong> Guarde-a em local seguro. Se a perder, os dados não podem ser descriptografados</li>
+              <li><strong>Usuário padrão:</strong> <code>admin</code> — a senha é definida por você no primeiro acesso</li>
+              <li><strong>Múltiplos usuários:</strong> é possível criar perfis adicionais em Configuração → Usuários, cada um com sua própria senha e permissões (admin ou leitura)</li>
+              <li><strong>Alterar senha:</strong> disponível em Configuração → Usuários → Alterar Senha. A troca re-criptografa todos os dados</li>
+              <li><strong>Sair:</strong> botão no topo direito — encerra a sessão e limpa a chave da memória</li>
+              <li><strong>Botão Voltar do navegador:</strong> interceptado para evitar sair do app acidentalmente</li>
+              <li><strong>Backup automático de sessão:</strong> ao fazer login, o sistema baixa automaticamente um arquivo JSON de backup (ocorre apenas uma vez por sessão)</li>
             </ul>
+            <p style="margin-top:10px;padding:10px 14px;background:rgba(201,168,76,.08);border-left:3px solid var(--gold);border-radius:0 var(--r) var(--r) 0;font-size:13px">
+              ⚠️ <strong>Nunca esqueça a senha.</strong> Não existe recuperação. Faça backups regulares em Configuração → Backup.
+            </p>
           </div>
           <div class="hr"></div>
 
-          <!-- CADASTROS -->
+          <!-- CADASTROS INICIAIS -->
           <div class="manual-section">
-            <h3>⚙️ Cadastros · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Cadastros</span></h3>
-            <p>Configure o sistema antes de começar a lançar movimentações. Os cadastros são a base de tudo.</p>
+            <h3>⚙️ Cadastros Iniciais — Faça isso primeiro!</h3>
+            <p>Antes de lançar qualquer movimentação, configure os cadastros básicos. Acesse o menu <strong>Cadastros</strong>.</p>
 
-            <p style="margin-top:14px"><strong>🏦 Bancos / Contas</strong></p>
-            <p>Cada conta bancária que você possui. Exemplos: <em>Nubank Conta, Itaú Corrente, Caixa Poupança, Carteira Dinheiro.</em></p>
+            <p style="margin-top:12px"><strong>1. Bancos / Contas Correntes</strong></p>
+            <p>Cadastre cada conta bancária que você utiliza. Informe o <strong>saldo inicial real</strong> da conta na data em que começará a usar o sistema.</p>
             <ul>
-              <li><strong>Nome:</strong> nome livre para identificar a conta</li>
-              <li><strong>Saldo inicial:</strong> saldo real da conta no momento do cadastro. Use o extrato do banco para pegar o valor exato</li>
-              <li><strong>Limite cheque especial:</strong> se a conta tiver cheque especial, informe o valor. Um alerta aparece no dashboard quando estiver sendo usado</li>
-              <li>💡 Exemplo: cadastre "Nubank" com saldo R$ 1.250,00 · "Itaú Corrente" com R$ 3.800,00 · "Carteira" com R$ 150,00</li>
+              <li><strong>Exemplo:</strong> Nubank com saldo inicial R$ 1.500,00; Itaú com R$ 3.200,00</li>
+              <li><strong>Cheque especial:</strong> informe o limite disponível — o sistema alerta quando entrar no negativo</li>
+              <li>O saldo é calculado automaticamente: saldo inicial + receitas pagas − despesas pagas</li>
             </ul>
 
-            <p style="margin-top:14px"><strong>🏷️ Centros de Custo (CC)</strong></p>
-            <p>As categorias para classificar cada lançamento. Exemplos: <em>Alimentação, Moradia, Saúde, Salário, Lazer, Transporte, Educação.</em></p>
+            <p style="margin-top:12px"><strong>2. Centros de Custo (CC)</strong></p>
+            <p>São as categorias que classificam cada lançamento. Todo lançamento deve ter um CC para aparecer nos relatórios e gráficos.</p>
             <ul>
-              <li><strong>Tipo:</strong> Receita (ex: Salário), Despesa (ex: Alimentação) ou Ambos (ex: Outros)</li>
-              <li><strong>Limite mensal:</strong> teto de gasto para aquela categoria. Ao atingir 90%, um alerta aparece no dashboard</li>
-              <li><strong>Excluir de Rec/Desp:</strong> marque esta opção para CCs que não devem entrar nos totais de Receitas/Despesas do dashboard. Use em: Transferências entre contas, Investimentos, Financiamentos</li>
-              <li>💡 Exemplo de configuração: Alimentação (Despesa, limite R$ 800) · Salário (Receita) · Transferência (Ambos, Excluir de Rec/Desp marcado)</li>
+              <li><strong>Tipo:</strong> Receita, Despesa ou Ambos — controla onde o CC aparece nos selects</li>
+              <li><strong>Grupo / Subgrupo:</strong> organização hierárquica para relatórios (ex: Grupo "Moradia", Subgrupo "Aluguel")</li>
+              <li><strong>Excluir de Rec/Desp:</strong> marque para CCs que não devem entrar nos totais do dashboard (ex: "Investimentos", "Transferências Internas"). Útil quando você não quer que um aporte em investimento apareça como "despesa" do mês</li>
+              <li><strong>Exemplos de CCs de Receita:</strong> Salário, Freelance, Aluguel Recebido, Rendimento, Dividendos</li>
+              <li><strong>Exemplos de CCs de Despesa:</strong> Alimentação, Saúde, Transporte, Lazer, Moradia, Educação, Vestuário</li>
             </ul>
 
-            <p style="margin-top:14px"><strong>💳 Formas de Pagamento</strong></p>
-            <p>Os meios de pagamento utilizados nos lançamentos. Exemplos: <em>PIX, TED, Boleto, Débito Automático, Dinheiro, Cartão de Crédito Nubank, Cartão Débito Alelo.</em></p>
-            <ul>
-              <li>Formas vinculadas a cartão mostram o campo de seleção do cartão ao lançar</li>
-              <li>Crie formas distintas para cada cartão de crédito e débito que você usa</li>
-            </ul>
+            <p style="margin-top:12px"><strong>3. Formas de Pagamento</strong></p>
+            <p>PIX, Boleto, Cartão de Crédito, Cartão de Débito, Dinheiro, Débito Automático, Transferência etc. Crie as que usa no dia a dia. Quando a forma contém "cartão" ou "crédito", o sistema exibe automaticamente o select de cartões no modal de lançamento.</p>
           </div>
           <div class="hr"></div>
 
           <!-- LANÇAMENTOS -->
           <div class="manual-section">
-            <h3>📝 Lançamentos · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Lançamentos</span></h3>
-            <p>O módulo principal do sistema. Aqui você registra todas as movimentações financeiras: receitas, despesas, transferências, parcelamentos e mais.</p>
+            <h3>📝 Lançamentos — O coração do sistema</h3>
+            <p>Todo movimento financeiro é registrado aqui. Clique em <strong>+ Novo Lançamento</strong> e preencha o modal. Há cinco tipos de lançamento:</p>
 
-            <p style="margin-top:14px"><strong>📋 Campos do formulário</strong></p>
+            <p style="margin-top:16px"><strong>💰 Tipo: Receita</strong></p>
+            <p>Entradas de dinheiro na sua conta corrente.</p>
             <ul>
-              <li><strong>Descrição:</strong> texto livre. Ex: "Supermercado Extra", "Salário Março", "Netflix"</li>
-              <li><strong>Tipo:</strong> Receita · Despesa · Transferência</li>
-              <li><strong>Valor:</strong> valor total da movimentação (ou de cada parcela, no caso de parcelado)</li>
-              <li><strong>Centro de Custo:</strong> categoria do lançamento. Obrigatório</li>
-              <li><strong>Conta:</strong> conta bancária debitada/creditada (não aparece para cartão de crédito)</li>
-              <li><strong>Forma de pagamento:</strong> meio de pagamento usado</li>
-              <li><strong>Cartão:</strong> aparece quando a forma de pagamento é um cartão de crédito ou débito</li>
-              <li><strong>Data de vencimento:</strong> data da movimentação ou vencimento da parcela</li>
-              <li><strong>Data de criação:</strong> registrada automaticamente pelo sistema no momento do salvamento</li>
-              <li><strong>Data de pagamento:</strong> preenchida ao dar baixa. Pré-preenchida com hoje, mas editável</li>
-              <li><strong>Pago / Pendente:</strong> marque se já foi quitado. Afeta o saldo atual das contas</li>
-              <li><strong>Periodicidade:</strong> Único · Mensal · Semestral · Anual</li>
-              <li><strong>Parcelado:</strong> número de parcelas (para compras parceladas)</li>
-              <li><strong>Observações:</strong> campo livre para anotações adicionais</li>
+              <li><strong>Exemplo 1 — Salário:</strong> Tipo=Receita · Data=05/04/2026 · Banco=Nubank · CC=Salário · Forma=Transferência · Valor=R$5.000,00 · Descrição=Salário Abril · Status=Pago</li>
+              <li><strong>Exemplo 2 — Freelance:</strong> Tipo=Receita · Data=15/04/2026 · Banco=Itaú · CC=Freelance · Forma=PIX · Valor=R$800,00 · Descrição=Projeto XYZ</li>
+              <li><strong>Exemplo 3 — Aluguel a receber (não pago):</strong> cadastre como pendente e dê baixa quando receber — o sistema diferencia lançamentos pagos e pendentes</li>
             </ul>
 
-            <p style="margin-top:14px"><strong>💰 Tipos de Lançamento</strong></p>
-
-            <p style="margin-top:10px"><strong>→ Receita simples</strong></p>
-            <p>Use para salário, freelances, rendimentos, reembolsos etc.</p>
-            <p style="margin-top:4px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> Descrição: "Salário Abril" · Tipo: Receita · Valor: R$ 5.800,00 · CC: Salário · Conta: Nubank · Forma: TED/PIX · Data: 05/04 · Pago: ✓
-            </p>
-
-            <p style="margin-top:10px"><strong>→ Despesa simples à vista</strong></p>
-            <p>Para pagamentos únicos já realizados ou a realizar.</p>
-            <p style="margin-top:4px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> Descrição: "Aluguel Abril" · Tipo: Despesa · Valor: R$ 1.200,00 · CC: Moradia · Conta: Itaú · Forma: Boleto · Data: 10/04 · Pendente
-            </p>
-
-            <p style="margin-top:10px"><strong>→ Despesa parcelada no débito/dinheiro</strong></p>
-            <p>Para compras parceladas pagas diretamente na conta, sem cartão de crédito.</p>
-            <p style="margin-top:4px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> Geladeira em 6x R$ 250,00 · Tipo: Despesa · CC: Casa · Conta: Nubank · Parcelado: 6 · Data: 01/04<br>
-              → Sistema cria 6 lançamentos automáticos: 01/04, 01/05, 01/06, 01/07, 01/08, 01/09
-            </p>
-
-            <p style="margin-top:10px"><strong>→ Despesa recorrente (mensal/anual)</strong></p>
-            <p>Para contas fixas como Netflix, plano de saúde, IPTU. Configure a periodicidade e o sistema agenda as próximas ocorrências.</p>
-            <p style="margin-top:4px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo Netflix:</strong> Despesa · R$ 37,90 · CC: Lazer · Forma: Débito Automático · Periodicidade: Mensal · Data: 15/04<br>
-              → Sistema agenda automaticamente a próxima parcela após dar baixa
-            </p>
-
-            <p style="margin-top:10px"><strong>→ Dar baixa em um lançamento</strong></p>
-            <p>Clique no botão <code>✓</code> na tabela de lançamentos. Um modal abrirá com a data de hoje pré-preenchida. Você pode editar a data real do pagamento antes de confirmar. Para semestral/anual, a próxima parcela é criada automaticamente.</p>
-
-            <p style="margin-top:14px"><strong>🔍 Filtros da tabela de lançamentos</strong></p>
+            <p style="margin-top:16px"><strong>💸 Tipo: Despesa — Sem cartão (boleto, PIX, débito automático)</strong></p>
+            <p>Saídas diretas da conta corrente.</p>
             <ul>
-              <li><strong>Busca livre:</strong> filtra por qualquer texto da descrição</li>
-              <li><strong>Tipo:</strong> Receita · Despesa · Transferência (ou todos)</li>
-              <li><strong>Conta:</strong> exibe apenas lançamentos de uma conta específica</li>
-              <li><strong>Cartão:</strong> exibe apenas lançamentos de um cartão de crédito</li>
+              <li><strong>Exemplo 1 — Conta de luz:</strong> Tipo=Despesa · Data=10/04/2026 · Banco=Nubank · CC=Energia/Água · Forma=Boleto · Valor=R$180,00 · Descrição=CELPE Abril</li>
+              <li><strong>Exemplo 2 — Academia:</strong> Tipo=Despesa · Data=05/04/2026 · Banco=Itaú · CC=Saúde · Forma=Débito Automático · Valor=R$99,90 · Descrição=Academia Smart Fit</li>
+              <li>Lançamentos pendentes (não pagos) aparecem em amarelo na lista. Quando vencer sem pagamento, ficam em vermelho</li>
+              <li>Para dar baixa: clique no botão <strong>✓</strong> ao lado do lançamento — abre modal para confirmar a data de pagamento</li>
+            </ul>
+
+            <p style="margin-top:16px"><strong>💳 Tipo: Despesa — Com cartão de crédito</strong></p>
+            <p>Este é o fluxo mais importante do sistema. Entenda bem:</p>
+            <ul>
+              <li>Selecione <strong>Forma = Cartão de Crédito</strong> → o campo "Cartão" aparece automaticamente</li>
+              <li>Ao selecionar o cartão, o sistema exibe o <strong>dia de fechamento</strong> e o <strong>vencimento da fatura</strong> e preenche a data automaticamente com o fechamento do mês</li>
+              <li>O lançamento é salvo como <strong>pago=true</strong> — a despesa já ocorreu, impacta o centro de custo e o dashboard no mês correto</li>
+              <li>Automaticamente, um <strong>lançamento de fatura</strong> é criado (ou acumulado) com a data de vencimento do cartão — é esse valor que aparece em "Contas a Pagar" no dashboard</li>
+              <li><strong>Exemplo:</strong> Compra de R$200 no Nubank (fecha dia 3, vence dia 10) em 01/04:<br>
+                → Despesa R$200 salva com data=03/04 e pago=true (CC=Alimentação, ex.)<br>
+                → Fatura Nubank R$200 criada com data=10/04 e pago=false (aparece no alerta de contas a pagar)
+              </li>
+              <li><strong>Compra após o fechamento:</strong> se você comprar em 05/04 (depois do fechamento dia 3), o sistema coloca na fatura do mês seguinte automaticamente → fatura vence em 10/05</li>
+              <li><strong>O saldo utilizado do cartão</strong> mostra todas as compras (pagas e não pagas no sistema) menos as faturas já quitadas — reflete exatamente quanto você deve ao cartão</li>
+            </ul>
+
+            <p style="margin-top:16px"><strong>🔢 Compras parceladas no cartão</strong></p>
+            <ul>
+              <li>Informe o número de parcelas (2x a 24x) ao lançar. O sistema cria automaticamente um lançamento para cada parcela com a data correta</li>
+              <li><strong>Exemplo:</strong> TV R$1.200 em 3x no cartão (fecha dia 3, vence dia 10) em 20/03:<br>
+                → Parcela 1/3: R$400 · data=03/04 · fatura vence 10/04<br>
+                → Parcela 2/3: R$400 · data=03/05 · fatura vence 10/05<br>
+                → Parcela 3/3: R$400 · data=03/06 · fatura vence 10/06
+              </li>
+              <li>Cada parcela aparece na aba Lançamentos com o sufixo <code>(1/3)</code>, <code>(2/3)</code>, <code>(3/3)</code></li>
+              <li>A projeção de faturas futuras (aba Cartões) mostra os valores de cada mês automaticamente</li>
+            </ul>
+
+            <p style="margin-top:16px"><strong>🔄 Tipo: Transferência entre Contas</strong></p>
+            <p>Move dinheiro entre suas contas bancárias ou carrega um cartão débito.</p>
+            <ul>
+              <li>Selecione <strong>Tipo = Transferência entre Contas</strong> → aparece o campo "Conta de Destino"</li>
+              <li>O sistema cria automaticamente dois lançamentos vinculados: <strong>saída</strong> na origem e <strong>entrada</strong> no destino, ambos marcados como pagos</li>
+              <li><strong>Exemplo 1 — Entre contas:</strong> Transferência R$1.000 do Itaú para o Nubank → saldo Itaú −1.000, saldo Nubank +1.000</li>
+              <li><strong>Exemplo 2 — Carga de cartão débito (VR, Alelo):</strong> Tipo=Transferência · Origem=Nubank · Destino=Cartão VR · Valor=R$500 → crédito no saldo do cartão VR</li>
+              <li>Transferências <strong>não aparecem</strong> nos totais de Receitas/Despesas do dashboard — são movimentações internas</li>
+            </ul>
+
+            <p style="margin-top:16px"><strong>🏗️ Tipo: Financiamento</strong></p>
+            <p>Para parcelas de empréstimos, financiamentos de carro, casa etc. Veja a seção dedicada abaixo.</p>
+
+            <p style="margin-top:16px"><strong>📈 Tipo: Investimento</strong></p>
+            <p>Aportes, resgates e rendimentos. Veja a seção dedicada abaixo.</p>
+
+            <p style="margin-top:16px"><strong>📅 Periodicidade dos lançamentos</strong></p>
+            <ul>
+              <li><strong>Único:</strong> ocorre uma só vez</li>
+              <li><strong>Mensal:</strong> use a aba Recorrentes para gerenciar contas fixas mensais</li>
+              <li><strong>Semestral / Anual com parcelas:</strong> informe número de parcelas — ao dar baixa em cada uma, a próxima é agendada automaticamente</li>
+              <li><strong>Exemplo — IPTU parcelado em 6x (anual):</strong> Tipo=Despesa · Periodicidade=Semestral · Parcelas=6 → ao pagar a 1ª, a 2ª é criada automaticamente</li>
+            </ul>
+
+            <p style="margin-top:16px"><strong>🔍 Filtros da tela de Lançamentos</strong></p>
+            <ul>
+              <li><strong>Buscar:</strong> pesquisa em descrição, valor, banco e cartão simultaneamente</li>
+              <li><strong>Tipo:</strong> Receita, Despesa, Transferência, Financiamento, Investimento</li>
+              <li><strong>Conta:</strong> filtra por banco/conta corrente específica</li>
+              <li><strong>Cartão:</strong> filtra lançamentos de um cartão específico</li>
               <li><strong>Centro de Custo:</strong> filtra por categoria</li>
-              <li><strong>Tipo de data:</strong> define qual data usar no filtro de período — Vencimento, Criação ou Pagamento</li>
-              <li><strong>Data De / Até:</strong> intervalo de datas do filtro</li>
-              <li><strong>Status:</strong> Todos · Pendente · Pago · Vencido</li>
-            </ul>
-            <p style="margin-top:8px">💡 As colunas da tabela são clicáveis para ordenação. A tabela exibe as três datas (Vencimento, Criação, Pagamento) para rastreabilidade completa.</p>
-          </div>
-          <div class="hr"></div>
-
-          <!-- TRANSFERÊNCIAS -->
-          <div class="manual-section">
-            <h3>🔄 Transferências · <span style="color:var(--text3);font-size:13px;font-weight:400">Tipo = Transferência no modal de Lançamento</span></h3>
-            <p>Use o tipo <strong>Transferência</strong> para mover dinheiro entre suas contas — por exemplo, de Itaú para Nubank, ou da conta corrente para um cartão débito pré-pago. O sistema cria automaticamente dois lançamentos: uma <strong>saída</strong> na conta de origem e uma <strong>entrada</strong> na conta de destino, com o mesmo valor e data.</p>
-
-            <ul>
-              <li><strong>Conta Origem:</strong> de onde o dinheiro sai</li>
-              <li><strong>Conta Destino:</strong> para onde o dinheiro vai (pode ser outra conta ou um cartão débito)</li>
-              <li><strong>Centro de Custo:</strong> use um CC marcado como "Excluir de Rec/Desp" para que a transferência não distorça os totais do dashboard</li>
-            </ul>
-
-            <p style="margin-top:10px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo 1 — Transferência entre contas:</strong> Itaú → Nubank · R$ 2.000,00 · CC: Transferência · Data: 05/04<br>
-              → Cria: Saída R$ 2.000 no Itaú + Entrada R$ 2.000 no Nubank
-            </p>
-            <p style="margin-top:6px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo 2 — Carga de cartão débito (Alelo/VR):</strong> Conta: Nubank → Destino: Alelo Alimentação · R$ 500,00 · CC: Alimentação · Data: 01/04<br>
-              → Carrega o saldo do cartão Alelo com R$ 500,00
-            </p>
-
-            <p style="margin-top:10px">⚠️ <strong>Atenção:</strong> nunca use tipo Despesa para transferências entre suas próprias contas — isso inflaria incorretamente o total de despesas do mês no dashboard.</p>
-          </div>
-          <div class="hr"></div>
-
-          <!-- CARTÕES DE CRÉDITO -->
-          <div class="manual-section">
-            <h3>💳 Cartões de Crédito · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Cartões</span></h3>
-            <p>O módulo de cartões de crédito é um dos mais completos do sistema. Ele gerencia o ciclo completo: compra → fechamento → fatura → pagamento.</p>
-
-            <p style="margin-top:14px"><strong>📋 Cadastro do cartão</strong></p>
-            <ul>
-              <li><strong>Nome:</strong> ex: "Nubank Roxo", "Itaú Visa Platinum"</li>
-              <li><strong>Limite total:</strong> limite de crédito concedido pelo banco. Ex: R$ 8.000,00</li>
-              <li><strong>Dia de fechamento:</strong> dia do mês em que a fatura fecha. Ex: dia 3</li>
-              <li><strong>Dia de vencimento:</strong> dia do mês em que a fatura vence. Ex: dia 10</li>
-              <li><strong>Conta para pagamento:</strong> conta bancária usada para pagar a fatura</li>
-            </ul>
-
-            <p style="margin-top:14px"><strong>🛒 Como registrar uma compra no cartão de crédito</strong></p>
-            <p>Vá em Lançamentos → clique em <strong>"+ Novo Lançamento"</strong>. No modal:</p>
-            <ul>
-              <li>Tipo: <strong>Despesa</strong></li>
-              <li>Forma de pagamento: selecione a forma vinculada ao cartão (ex: "Crédito Nubank")</li>
-              <li>Cartão: o select do cartão aparece automaticamente — selecione o cartão</li>
-              <li>Data: o sistema preenche automaticamente com o <strong>dia de fechamento</strong> do mês correto</li>
-              <li>O sistema exibe: <em>"Fechamento: dia 3 · Lançado em: 03/04 · Fatura vence em: 10/04"</em></li>
-            </ul>
-
-            <p style="margin-top:10px"><strong>Como funciona o ciclo de fatura:</strong></p>
-            <ul>
-              <li>A compra é marcada como <code>pago: true</code> com a data de fechamento — ela já "saiu" do seu limite</li>
-              <li>O sistema cria automaticamente um lançamento de <strong>fatura</strong> com a data de vencimento do cartão</li>
-              <li>Esse lançamento de fatura aparece no dashboard em "Contas a Pagar" e na aba Cartões</li>
-              <li>Quando você paga a fatura (botão "Dar baixa" na fatura), o valor é debitado da sua conta corrente e o limite é liberado</li>
-            </ul>
-
-            <p style="margin-top:10px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo à vista:</strong> Compra de R$ 350,00 no Nubank (fechamento dia 3, vencimento dia 10)<br>
-              → Compra registrada em 03/04 (fechamento de abril) · Fatura de R$ 350,00 gerada para 10/04<br>
-              → Em 10/04: dar baixa na fatura → R$ 350,00 debitado do Nubank Conta
-            </p>
-
-            <p style="margin-top:14px"><strong>🗓️ Compra parcelada no cartão de crédito</strong></p>
-            <p>No modal de novo lançamento com cartão selecionado, marque <strong>Parcelado</strong> e informe o número de parcelas. O sistema cria automaticamente uma parcela para cada mês, cada uma com seu respectivo fechamento e vencimento.</p>
-
-            <p style="margin-top:6px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo parcelado:</strong> TV R$ 1.800,00 em 6x no Nubank (fechamento dia 3)<br>
-              → Parcela 1: R$ 300,00 · fecha 03/04 · vence 10/04<br>
-              → Parcela 2: R$ 300,00 · fecha 03/05 · vence 10/05<br>
-              → ... até Parcela 6: R$ 300,00 · fecha 03/09 · vence 10/09<br>
-              → Cada fatura mensal acumula todas as parcelas daquele mês
-            </p>
-
-            <p style="margin-top:14px"><strong>📊 Cards visuais do cartão</strong></p>
-            <ul>
-              <li><strong>Limite disponível:</strong> limite total menos saldo utilizado (compras pendentes de pagamento)</li>
-              <li><strong>Saldo utilizado:</strong> soma de todas as compras ainda não quitadas via pagamento de fatura</li>
-              <li><strong>Barra de uso:</strong> percentual visual do limite. Fica vermelha acima de 80%</li>
-              <li><strong>Fatura atual:</strong> total da fatura do mês corrente com badge ⚠ VENCIDA / ⏳ AGENDADO / ✓ PAGO</li>
-              <li><strong>Fatura próxima:</strong> previsão da fatura do próximo mês</li>
-              <li><strong>Botão "Pagar fatura":</strong> registra o pagamento debitando da conta vinculada</li>
-            </ul>
-
-            <p style="margin-top:14px"><strong>📅 Projeção de Faturas Futuras</strong></p>
-            <p>Grade com 12 meses à frente, mostrando o total previsto de fatura para cada mês e cartão, incluindo parcelas já lançadas. Útil para planejamento de longo prazo.</p>
-
-            <p style="margin-top:14px"><strong>📄 Importar Fatura PDF</strong></p>
-            <p>Em vez de lançar compra por compra manualmente, importe o PDF da fatura direto do banco:</p>
-            <ul>
-              <li>Vá em <strong>Cartões → "Importar Fatura de Cartão"</strong></li>
-              <li>Selecione o cartão e faça upload do PDF da fatura</li>
-              <li>O sistema lê o PDF e lista todos os itens com valor e data</li>
-              <li>Atribua o Centro de Custo para cada item (ou use "Aplicar CC a todos")</li>
-              <li>Clique em <strong>"Lançar selecionados"</strong> para importar em lote</li>
-              <li>Na próxima importação, itens já lançados aparecem como <strong>"JÁ IMPORTADO"</strong> automaticamente</li>
-              <li>Bancos suportados por PDF: <strong>Itaú</strong> (Visa Azul, Visa Black) e <strong>Nubank</strong></li>
+              <li><strong>Tipo de data:</strong> Vencimento (data do lancamento), Criação (quando foi inserido) ou Pagamento (quando foi baixado)</li>
+              <li><strong>De / Até:</strong> intervalo de datas</li>
+              <li><strong>Status:</strong> Todos, Pendente, Pago, Vencido</li>
+              <li>Clique nos cabeçalhos da tabela para ordenar por qualquer coluna</li>
             </ul>
           </div>
           <div class="hr"></div>
 
-          <!-- CARTÕES DE DÉBITO -->
+          <!-- CARTÕES -->
           <div class="manual-section">
-            <h3>💳 Cartões de Débito / Pré-pagos · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Cartões</span></h3>
-            <p>Controle cartões de débito pré-pagos como <strong>Alelo, VR, Ticket, Sodexo</strong> ou qualquer cartão com saldo pré-carregado. O fluxo é diferente do crédito: você carrega o saldo e vai usando.</p>
+            <h3>💳 Cartões de Crédito e Débito</h3>
+            <p>A aba <strong>Cartões</strong> concentra todo o controle das suas faturas e saldos de cartões.</p>
 
-            <p style="margin-top:10px"><strong>1. Cadastrar o cartão débito</strong></p>
+            <p style="margin-top:12px"><strong>Cadastro do cartão</strong></p>
             <ul>
-              <li>Vá em Cartões → <strong>"+ Novo Cartão"</strong> → Tipo: <strong>Débito</strong></li>
-              <li>Informe o nome (ex: "Alelo Alimentação") e o saldo inicial atual</li>
+              <li><strong>Nome:</strong> ex. "Nubank Visa Gold"</li>
+              <li><strong>Tipo:</strong> Crédito ou Débito</li>
+              <li><strong>Banco vinculado:</strong> conta corrente que paga a fatura</li>
+              <li><strong>Limite total</strong> (crédito): ex. R$8.000,00</li>
+              <li><strong>Dia de fechamento</strong> (crédito): ex. dia 3 — compras após esse dia vão para a próxima fatura</li>
+              <li><strong>Dia de vencimento</strong> (crédito): ex. dia 10 — data para pagar a fatura</li>
             </ul>
 
-            <p style="margin-top:10px"><strong>2. Carregar saldo no cartão</strong></p>
-            <p>Use uma <strong>Transferência</strong> da sua conta corrente para o cartão débito:</p>
-            <p style="margin-top:4px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> Tipo: Transferência · Conta Origem: Itaú · Destino: Alelo Alimentação · R$ 500,00 · Data: 01/04<br>
-              → O saldo do Alelo aumenta R$ 500,00 e o Itaú é debitado
-            </p>
+            <p style="margin-top:12px"><strong>Card visual do cartão de crédito — o que cada informação significa:</strong></p>
+            <ul>
+              <li><strong>Limite Total:</strong> limite contratado com o banco</li>
+              <li><strong>Utilizado:</strong> soma de todas as compras feitas (pagas e não pagas no sistema) menos faturas já quitadas. Representa exatamente o quanto você deve ao banco do cartão</li>
+              <li><strong>Disponível:</strong> Limite Total − Utilizado</li>
+              <li><strong>Barra de progresso:</strong> verde (até 60%), amarelo (60-80%), vermelho (acima de 80%)</li>
+              <li><strong>Fatura Atual:</strong> total das compras com vencimento até o próximo vencimento do cartão</li>
+              <li><strong>Próxima fatura:</strong> compras que já estão na fatura do mês seguinte</li>
+              <li><strong>Botão "Agendar pagamento":</strong> cria um lançamento de despesa na sua conta corrente na data de vencimento, para você não esquecer</li>
+            </ul>
 
-            <p style="margin-top:10px"><strong>3. Registrar gasto com o cartão débito</strong></p>
-            <p>No Lançamento, selecione a <strong>forma de pagamento</strong> vinculada ao cartão débito. O gasto é debitado diretamente do saldo do cartão.</p>
-            <p style="margin-top:4px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> Almoço R$ 32,00 · Tipo: Despesa · CC: Alimentação · Forma: "Débito Alelo" · Pago: ✓<br>
-              → Saldo do Alelo: R$ 500,00 − R$ 32,00 = R$ 468,00
-            </p>
+            <p style="margin-top:12px"><strong>Cartão de débito (pré-pago / alimentação / refeição):</strong></p>
+            <ul>
+              <li>Funciona como uma "carteira separada" — você carrega saldo via Transferência e usa para pagar despesas</li>
+              <li><strong>Carregar saldo:</strong> Lançamentos → Tipo=Transferência · Destino=Cartão VR/Alelo</li>
+              <li><strong>Usar:</strong> Lançamentos → Tipo=Despesa · Forma=Cartão de Débito · Cartão=VR</li>
+              <li>O card mostra: Total carregado, Total gasto, Saldo disponível</li>
+            </ul>
+
+            <p style="margin-top:12px"><strong>Importar fatura PDF</strong></p>
+            <ul>
+              <li>Clique em <strong>"Importar Fatura de Cartão"</strong> na aba Cartões</li>
+              <li>Selecione o cartão, faça upload do PDF da fatura</li>
+              <li>O sistema lê automaticamente (suporta Nubank e Itaú)</li>
+              <li>Revise cada item: edite a descrição, selecione o Centro de Custo</li>
+              <li>Use <strong>"Aplicar CC a todos"</strong> para aplicar uma categoria em lote</li>
+              <li>Compras parceladas são detectadas e agendadas automaticamente</li>
+              <li>Itens já importados aparecem como <strong>"JÁ IMPORTADO"</strong> — evita duplicação</li>
+              <li>Ao final, clique <strong>"Lançar itens selecionados"</strong></li>
+            </ul>
+
+            <p style="margin-top:12px"><strong>Projeção de faturas futuras</strong></p>
+            <p>A grade na parte inferior da aba Cartões mostra os próximos 12 meses de faturas, com todas as compras já lançadas (incluindo parceladas). Útil para planejamento financeiro.</p>
+            <ul>
+              <li>Itens já quitados aparecem riscados</li>
+              <li>Faturas pagas (via "Pagar fatura" no dashboard) aparecem como crédito em verde</li>
+            </ul>
+          </div>
+          <div class="hr"></div>
+
+          <!-- DASHBOARD -->
+          <div class="manual-section">
+            <h3>📊 Dashboard — Sua visão financeira completa</h3>
+            <p>A tela principal com todos os indicadores do período. Use os filtros no topo para selecionar <strong>mês, ano, 6 meses ou conta específica</strong>.</p>
+
+            <p style="margin-top:12px"><strong>Cards de resumo (clicáveis):</strong></p>
+            <ul>
+              <li><strong>Total Receitas:</strong> soma de todas as receitas do período (exclui transferências, investimentos, financiamentos e CCs marcados como "Excluir"). Clique para ver os lançamentos detalhados</li>
+              <li><strong>Total Despesas:</strong> soma de todas as despesas do período (mesmas exclusões). Despesas de cartão entram no mês da compra, não no mês do pagamento da fatura</li>
+              <li><strong>Saldo do Período:</strong> Receitas − Despesas do período selecionado</li>
+              <li><strong>Saldo Total Hoje:</strong> soma dos saldos reais de todas as contas (só lançamentos pagos até hoje). Reflete o dinheiro disponível agora</li>
+              <li><strong>Patrimônio em Investimentos:</strong> clique para ver o detalhamento por investimento com percentual de participação</li>
+            </ul>
+
+            <p style="margin-top:12px"><strong>Comparativo Mês a Mês:</strong></p>
+            <p>Compara o mês atual com o anterior — receitas, despesas e saldo — com variação percentual em verde (melhora) ou vermelho (piora).</p>
+
+            <p style="margin-top:12px"><strong>Previsão 3 Meses:</strong></p>
+            <p>Projeção dos próximos 3 meses com base em lançamentos já registrados (inclusive recorrentes ativos). Mostra Receita prevista, Despesa prevista e Saldo projetado por mês.</p>
+
+            <p style="margin-top:12px"><strong>Acompanhamento de Orçamento:</strong></p>
+            <p>Mostra o percentual do orçamento mensal consumido por centro de custo. A barra fica vermelha ao atingir 90% do limite definido. Configure os limites em <strong>Metas → Orçamento</strong>.</p>
+
+            <p style="margin-top:12px"><strong>Contas a Pagar (próximos 7 dias):</strong></p>
+            <ul>
+              <li>Despesas sem cartão: aparecem individualmente com botão <strong>"Dar baixa"</strong></li>
+              <li>Faturas de cartão: aparecem agrupadas por cartão (ex: "Fatura Nubank R$850,00 · Venc. 10/04") com botão <strong>"Pagar fatura"</strong></li>
+              <li>Ao pagar a fatura: selecione a data de pagamento e confirme — todos os lançamentos da fatura são baixados de uma vez</li>
+            </ul>
+
+            <p style="margin-top:12px"><strong>Alertas Ativos:</strong></p>
+            <ul>
+              <li>Contas vencendo em até 3 dias</li>
+              <li>Cheque especial em uso</li>
+              <li>Centro de custo com orçamento ≥ 90%</li>
+            </ul>
+
+            <p style="margin-top:12px"><strong>Gráficos interativos:</strong></p>
+            <ul>
+              <li><strong>Fluxo de Caixa:</strong> evolução do saldo por conta ao longo do período</li>
+              <li><strong>Receitas por CC / Despesas por CC:</strong> gráficos de pizza mostrando distribuição por categoria</li>
+              <li>Use scroll ou pinch para zoom · Clique em ↺ para resetar o zoom</li>
+            </ul>
           </div>
           <div class="hr"></div>
 
           <!-- RECORRENTES -->
           <div class="manual-section">
-            <h3>🔄 Recorrentes · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Recorrentes</span></h3>
-            <p>Contas fixas que se repetem todo mês: aluguel, salário, plano de saúde, assinaturas, água, luz, internet. Cadastre uma vez e lance com um único clique todo mês — sem redigitar nada.</p>
+            <h3>🔄 Recorrentes — Contas fixas mensais</h3>
+            <p>Gerencie aqui todas as receitas e despesas que se repetem todo mês — sem precisar lançar manualmente cada vez.</p>
+
+            <p style="margin-top:10px"><strong>Como funciona:</strong></p>
             <ul>
-              <li><strong>Cadastro:</strong> informe descrição, valor, CC, conta, forma de pagamento e dia habitual de vencimento</li>
-              <li><strong>Lançar:</strong> no mês corrente, clique em <strong>"Lançar agora"</strong> — o sistema cria o lançamento com a data do mês atual</li>
-              <li><strong>Alerta no dashboard:</strong> se houver recorrentes não lançados no mês, um aviso aparece automaticamente</li>
-              <li><strong>Histórico:</strong> cada lançamento realizado fica no histórico do recorrente para acompanhamento</li>
+              <li>Cadastre uma vez: nome, tipo (Receita/Despesa), valor, CC, forma, dia do mês</li>
+              <li>Todo mês, clique em <strong>"Lançar este mês"</strong> para criar o lançamento — ou use <strong>"Lançar todos pendentes"</strong> para fazer todos de uma vez</li>
+              <li>O dashboard exibe alerta quando há recorrentes pendentes no mês atual</li>
+              <li><strong>Ajustar valor futuro:</strong> quando o valor muda (ex: reajuste de aluguel), use o botão "Ajustar Valor Futuro" — atualiza todos os lançamentos pendentes sem afetar os já pagos</li>
             </ul>
-            <p style="margin-top:8px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> Aluguel · R$ 1.500,00 · CC: Moradia · Conta: Itaú · Dia 5<br>
-              No início de abril: clique "Lançar agora" → cria "Aluguel Abril" com vencimento 05/04
-            </p>
+
+            <p style="margin-top:10px"><strong>Exemplos de recorrentes típicos:</strong></p>
+            <ul>
+              <li><strong>Salário</strong> — Receita · Dia 5 · CC=Salário · R$5.000</li>
+              <li><strong>Aluguel</strong> — Despesa · Dia 10 · CC=Moradia · R$1.200</li>
+              <li><strong>Netflix</strong> — Despesa · Dia 15 · CC=Lazer · R$39,90</li>
+              <li><strong>Plano de saúde</strong> — Despesa · Dia 20 · CC=Saúde · R$320</li>
+              <li><strong>Condomínio</strong> — Despesa · Dia 10 · CC=Moradia · R$450</li>
+            </ul>
           </div>
           <div class="hr"></div>
 
           <!-- FINANCIAMENTOS -->
           <div class="manual-section">
-            <h3>🏦 Financiamentos · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Financiamentos</span></h3>
-            <p>Controle de dívidas parceladas com juros: financiamento de veículo, imóvel, empréstimo pessoal, crediário. O sistema usa a <strong>Tabela Price</strong> (parcelas iguais) para calcular automaticamente cada prestação.</p>
+            <h3>🏦 Financiamentos — Dívidas de longo prazo</h3>
+            <p>Controle empréstimos, financiamento de carro, imóvel, crédito pessoal etc.</p>
 
-            <p style="margin-top:10px"><strong>Fórmula Price:</strong> <code>PMT = PV × [i × (1+i)^n] / [(1+i)^n − 1]</code></p>
-            <p style="font-size:12px;color:var(--text3)">Onde: PV = valor financiado · i = taxa mensal · n = número de parcelas · PMT = parcela mensal</p>
-
-            <ul style="margin-top:10px">
-              <li><strong>Valor financiado:</strong> total do bem ou empréstimo (ex: R$ 24.000,00)</li>
-              <li><strong>Taxa de juros:</strong> taxa mensal em % (ex: 1,5% ao mês)</li>
-              <li><strong>Número de parcelas:</strong> ex: 48 meses</li>
-              <li><strong>Data da 1ª parcela:</strong> quando começa o pagamento</li>
-              <li><strong>Conta débito:</strong> conta de onde saem as parcelas</li>
+            <p style="margin-top:10px"><strong>Cadastrando um financiamento:</strong></p>
+            <ul>
+              <li><strong>Descrição:</strong> ex. "Financiamento Fiat Strada"</li>
+              <li><strong>Valor financiado:</strong> ex. R$45.000,00</li>
+              <li><strong>Taxa de juros mensal:</strong> ex. 1,2% a.m.</li>
+              <li><strong>Número de parcelas:</strong> ex. 48</li>
+              <li><strong>Data da 1ª parcela:</strong> ex. 15/03/2026</li>
+              <li>O sistema calcula automaticamente a parcela mensal usando a <strong>Tabela Price</strong></li>
             </ul>
 
-            <p style="margin-top:10px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> Carro · R$ 30.000,00 · 1,2% a.m. · 60 parcelas · 1ª parcela: 01/04/2026<br>
-              → Parcela calculada: ~R$ 672,00/mês · Total pago: ~R$ 40.320,00 · Juros: ~R$ 10.320,00
-            </p>
+            <p style="margin-top:10px"><strong>Gerenciando parcelas:</strong></p>
+            <ul>
+              <li>Clique em <strong>"Parcelas"</strong> para ver todas as parcelas com status (Paga, Próxima, Futura)</li>
+              <li><strong>"Lançar próxima":</strong> cria o lançamento da próxima parcela como Previsto (não pago) em Lançamentos</li>
+              <li><strong>"Lançar todas":</strong> cria lançamentos de todas as parcelas restantes</li>
+              <li><strong>"Ajustar valor futuro":</strong> use quando houver revisão de taxa — atualiza parcelas futuras sem mexer nas já pagas</li>
+              <li><strong>"Simular quitação":</strong> calcula o valor de quitação antecipada com desconto dos juros futuros</li>
+            </ul>
 
-            <ul style="margin-top:10px">
-              <li><strong>Botão "Parcelas":</strong> lista todas as 60 parcelas com status (paga / pendente / vencida) e valor de amortização vs juros</li>
-              <li><strong>Lançar parcela:</strong> registra individualmente na conta, com data e valor exatos</li>
-              <li><strong>Ajuste de valor:</strong> se o banco alterar a prestação (ex: revisão de taxa), ajuste o valor futuro das parcelas sem afetar as já pagas</li>
-              <li><strong>Simulação de quitação:</strong> calcule o saldo devedor para quitação antecipada em qualquer data</li>
+            <p style="margin-top:10px"><strong>Exemplo prático — Carro financiado:</strong></p>
+            <ul>
+              <li>Valor: R$40.000 · Taxa: 1,1% a.m. · 60 parcelas · 1ª parcela: 01/04/2026</li>
+              <li>Parcela calculada: ≈ R$886/mês</li>
+              <li>No mês 6 houve reajuste: use "Ajustar valor futuro" → parcelas 7 a 60 são atualizadas, parcelas 1-6 mantidas</li>
             </ul>
           </div>
           <div class="hr"></div>
 
           <!-- INVESTIMENTOS -->
           <div class="manual-section">
-            <h3>📈 Investimentos · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Investimentos</span></h3>
-            <p>Controle de todos os seus ativos financeiros: CDB, Tesouro Direto, LCI, LCA, fundos de investimento, ações, previdência privada etc.</p>
+            <h3>📈 Investimentos — Controle de patrimônio</h3>
+            <p>Registre e acompanhe todos os seus ativos financeiros.</p>
 
+            <p style="margin-top:10px"><strong>Cadastrando um investimento:</strong></p>
             <ul>
-              <li><strong>Cadastrar ativo:</strong> nome, tipo, banco/corretora, data de início, valor inicial</li>
-              <li><strong>Movimentações:</strong> botão <strong>"+ Movimentação"</strong> para registrar Aporte, Resgate ou Rendimento</li>
-              <li><strong>Aporte:</strong> depósito feito no investimento — reduz a conta corrente e aumenta o patrimônio</li>
-              <li><strong>Resgate:</strong> retirada do investimento — aumenta a conta corrente e reduz o patrimônio</li>
-              <li><strong>Rendimento:</strong> valorização do ativo — aumenta o patrimônio sem movimentar a conta corrente</li>
+              <li><strong>Nome:</strong> ex. "Tesouro IPCA+ 2029"</li>
+              <li><strong>Tipo:</strong> Renda Fixa, Renda Variável, Fundos, Previdência, Criptomoeda, Imóvel etc.</li>
+              <li><strong>Banco/Corretora</strong> onde está aplicado</li>
             </ul>
 
-            <p style="margin-top:10px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> CDB Nubank · Aporte inicial R$ 5.000,00 em 01/01<br>
-              → Mês seguinte: + Rendimento R$ 45,00 (CDI 0,9% a.m.)<br>
-              → Março: + Aporte R$ 1.000,00<br>
-              → Dashboard: Patrimônio total R$ 6.045,00 vs Aportado R$ 6.000,00 · Rendimento: +R$ 45,00
-            </p>
-
-            <ul style="margin-top:10px">
-              <li><strong>Dashboard de investimentos:</strong> total aportado vs patrimônio atual, variação em R$ e %, distribuição por tipo de ativo</li>
-              <li><strong>Filtro por ativo:</strong> veja o histórico detalhado de cada investimento separadamente</li>
+            <p style="margin-top:10px"><strong>Registrando movimentações:</strong></p>
+            <ul>
+              <li><strong>Aporte:</strong> dinheiro que você investiu (sai da sua conta corrente)</li>
+              <li><strong>Resgate:</strong> dinheiro que você retirou (entra na sua conta corrente)</li>
+              <li><strong>Rendimento:</strong> juros, dividendos, valorização — não movimenta a conta corrente, só atualiza o saldo do investimento</li>
             </ul>
+
+            <p style="margin-top:10px"><strong>Exemplos:</strong></p>
+            <ul>
+              <li>CDB Nubank: Aporte R$5.000 em jan → Rendimento R$120 em fev → Patrimônio atual: R$5.120</li>
+              <li>Ações PETR4: Aporte R$2.000 → Rendimento R$300 (dividendos) → Resgate R$500 → Patrimônio: R$1.800</li>
+            </ul>
+
+            <p style="margin-top:10px">O <strong>card Patrimônio</strong> no dashboard mostra o total de todos os investimentos. Clique nele para ver o detalhamento com percentual de cada ativo.</p>
           </div>
           <div class="hr"></div>
 
           <!-- METAS E ORÇAMENTO -->
           <div class="manual-section">
-            <h3>🎯 Metas e Orçamento · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Metas</span></h3>
-            <p>Defina objetivos financeiros e controle seus gastos por categoria com alertas automáticos.</p>
+            <h3>🎯 Metas e Orçamento</h3>
+            <p>Defina objetivos financeiros e limite de gastos por categoria.</p>
 
-            <p style="margin-top:14px"><strong>🎯 Metas financeiras</strong></p>
-            <p>Sonhos e objetivos com prazo e valor definido: reserva de emergência, viagem, entrada de imóvel, troca de carro.</p>
+            <p style="margin-top:12px"><strong>Metas financeiras:</strong></p>
             <ul>
-              <li><strong>Nome da meta:</strong> ex: "Fundo de Emergência"</li>
-              <li><strong>Valor alvo:</strong> quanto você quer acumular. Ex: R$ 20.000,00</li>
-              <li><strong>Valor atual:</strong> quanto já foi poupado. Atualize manualmente conforme poupa</li>
-              <li><strong>Prazo:</strong> data limite desejada</li>
-              <li><strong>Progresso:</strong> barra visual de percentual concluído</li>
-              <li><strong>Valor mensal necessário:</strong> calculado automaticamente pelo sistema. Ex: faltam R$ 15.000 em 18 meses = R$ 833/mês</li>
+              <li><strong>Nome:</strong> ex. "Reserva de Emergência", "Viagem Europa", "Entrada Apartamento"</li>
+              <li><strong>Valor alvo:</strong> quanto você quer acumular. Ex: R$30.000</li>
+              <li><strong>Valor acumulado:</strong> quanto já tem separado. Ex: R$8.500</li>
+              <li><strong>Prazo:</strong> data limite. Ex: 31/12/2027</li>
+              <li>O sistema calcula automaticamente: <strong>% de progresso</strong>, <strong>valor mensal necessário</strong> e exibe badges de status (Em andamento, Atrasado, Concluído)</li>
             </ul>
+            <p style="margin-top:8px"><strong>Exemplo:</strong> Meta "Viagem Europa" R$15.000, prazo dez/2026, acumulado R$4.000 → progresso 26,7% · necessário R$917/mês</p>
 
-            <p style="margin-top:10px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> Meta "Viagem Europa" · Valor alvo: R$ 12.000 · Já guardado: R$ 3.200 · Prazo: dez/2026<br>
-              → Faltam R$ 8.800 em 9 meses → Precisa poupar R$ 978/mês<br>
-              → Progresso: ████░░░░░ 27%
-            </p>
-
-            <p style="margin-top:14px"><strong>📊 Orçamento por Centro de Custo</strong></p>
-            <p>Defina um teto de gasto mensal para cada categoria e receba alertas quando estiver se aproximando do limite.</p>
+            <p style="margin-top:16px"><strong>Orçamento por Centro de Custo:</strong></p>
             <ul>
-              <li>Configure o limite no cadastro de cada Centro de Custo (campo <strong>"Limite mensal"</strong>)</li>
-              <li>O dashboard monitora automaticamente o gasto real vs o limite definido</li>
-              <li><strong>Alerta ≥ 90%:</strong> aparece um aviso no dashboard quando o gasto atingir 90% do limite</li>
-              <li><strong>Alerta 100%:</strong> indicador vermelho quando o limite for ultrapassado</li>
+              <li>Defina um limite mensal para cada CC de despesa. Ex: Alimentação = R$800/mês</li>
+              <li>O dashboard mostra barras de progresso: <strong>orçado vs realizado</strong></li>
+              <li>Ao atingir 90% do limite, um alerta é exibido no dashboard</li>
+              <li>Útil para controlar gastos em categorias que costumam ultrapassar o planejado</li>
             </ul>
-
-            <p style="margin-top:10px;padding:8px 12px;background:rgba(80,200,120,.07);border-left:3px solid var(--teal);border-radius:4px;font-size:12px">
-              <strong>Exemplo:</strong> CC "Alimentação" com limite R$ 800/mês<br>
-              → Gasto até dia 20: R$ 650 (81%) → sem alerta ainda<br>
-              → Gasto até dia 25: R$ 740 (92%) → ⚠️ alerta no dashboard: "Alimentação: 92% do limite"<br>
-              → Gasto até dia 30: R$ 850 (106%) → 🔴 limite ultrapassado
-            </p>
-          </div>
-          <div class="hr"></div>
-
-          <!-- DASHBOARD -->
-          <div class="manual-section">
-            <h3>📊 Dashboard · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Dashboard</span></h3>
-            <p>A tela central do sistema, com todos os indicadores financeiros em um único lugar. Filtre por período e conta para analisar cenários específicos.</p>
-
-            <p style="margin-top:14px"><strong>💰 Cards de resumo (clicáveis)</strong></p>
+            <p style="margin-top:8px"><strong>Exemplos de orçamento:</strong></p>
             <ul>
-              <li><strong>Total Receitas:</strong> soma de todas as receitas do período filtrado. Clique para ver os lançamentos que compõem o total</li>
-              <li><strong>Total Despesas:</strong> soma de todas as despesas (exceto transferências, investimentos e CCs marcados como "Excluir"). Clique para detalhe</li>
-              <li><strong>Saldo do Período:</strong> Receitas − Despesas do período</li>
-              <li><strong>Saldo Total Hoje:</strong> soma dos saldos reais de todas as contas — considera apenas lançamentos já pagos</li>
-            </ul>
-
-            <p style="margin-top:14px"><strong>📈 Indicadores comparativos</strong></p>
-            <ul>
-              <li><strong>Mês atual vs anterior:</strong> variação percentual de receitas e despesas em relação ao mês anterior</li>
-              <li><strong>Previsão 3 meses:</strong> projeção de Receitas, Despesas e Saldo para os próximos 3 meses com base em lançamentos já agendados</li>
-            </ul>
-
-            <p style="margin-top:14px"><strong>📉 Gráficos interativos</strong></p>
-            <ul>
-              <li><strong>Receitas vs Despesas:</strong> gráfico de barras mensais com comparativo</li>
-              <li><strong>Despesas por categoria:</strong> pizza com distribuição por Centro de Custo</li>
-              <li><strong>Evolução do saldo:</strong> linha temporal do saldo das contas</li>
-              <li><strong>Zoom:</strong> use scroll do mouse ou pinch (tela touch) para ampliar qualquer gráfico. Botão ↺ para resetar</li>
-            </ul>
-
-            <p style="margin-top:14px"><strong>⚠️ Alertas automáticos</strong></p>
-            <ul>
-              <li><strong>Contas a pagar (7 dias):</strong> lista despesas e faturas de cartão com vencimento nos próximos 7 dias</li>
-              <li><strong>Faturas de cartão:</strong> faturas abertas com valor total e data de vencimento</li>
-              <li><strong>Recorrentes pendentes:</strong> contas fixas ainda não lançadas no mês atual</li>
-              <li><strong>Orçamento estourado:</strong> CCs que ultrapassaram 90% do limite</li>
-              <li><strong>Cheque especial em uso:</strong> aviso quando o saldo de alguma conta estiver negativo (usando o especial)</li>
-            </ul>
-
-            <p style="margin-top:14px"><strong>🔍 Filtros do dashboard</strong></p>
-            <ul>
-              <li><strong>Período:</strong> selecione mês/ano para análise. Padrão: mês atual</li>
-              <li><strong>Conta:</strong> filtre por uma conta específica ou veja todas juntas</li>
+              <li>Alimentação: R$800 · Saúde: R$400 · Lazer: R$300 · Transporte: R$500</li>
+              <li>Se Alimentação gastar R$720 → barra em 90% → alerta ativado</li>
             </ul>
           </div>
           <div class="hr"></div>
 
           <!-- CONCILIAÇÃO -->
           <div class="manual-section">
-            <h3>⚖️ Conciliação Bancária · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Conciliação</span></h3>
-            <p>Compare o extrato real do banco com seus lançamentos no sistema. Identifique lançamentos faltando, duplicidades ou divergências de valor — mantendo seu saldo sempre correto.</p>
+            <h3>⚖️ Conciliação Bancária</h3>
+            <p>Compare seu extrato bancário real com os lançamentos do sistema. Detecta divergências e importa transações não registradas.</p>
 
-            <p style="margin-top:10px"><strong>Modalidade 1 — OFX / QFX / CSV</strong></p>
+            <p style="margin-top:10px"><strong>Modalidade 1 — OFX / QFX / CSV:</strong></p>
             <ul>
-              <li>Exporte o extrato no internet banking do seu banco no formato OFX ou CSV</li>
-              <li>Faça upload no sistema</li>
-              <li>Para cada item novo (não conciliado): um modal abre para confirmar descrição e CC</li>
-              <li>Itens já lançados no sistema são reconhecidos automaticamente e marcados como conciliados</li>
+              <li>Exporte o extrato no internet banking do seu banco (formato OFX ou CSV)</li>
+              <li>Faça upload na aba Conciliação</li>
+              <li>O sistema compara com seus lançamentos (tolerância de ±3 dias na data)</li>
+              <li>Itens não encontrados abrem modal para confirmar descrição e CC → lançados automaticamente como pagos</li>
             </ul>
 
-            <p style="margin-top:10px"><strong>Modalidade 2 — PDF / Texto (Itaú, Bradesco, Caixa, Nubank)</strong></p>
+            <p style="margin-top:10px"><strong>Modalidade 2 — PDF de extrato:</strong></p>
             <ul>
-              <li>Faça upload do PDF do extrato ou cole o texto extraído</li>
-              <li>O sistema processa cada linha e identifica novas movimentações</li>
-              <li>Para cada item novo: edite descrição, selecione CC e marque <strong>"Aplicar este CC a todos os próximos itens similares"</strong> para lançamento em lote</li>
-              <li>Tolerância de ±3 dias na comparação de datas (cobre fins de semana e feriados)</li>
+              <li>Suporta PDFs do Nubank, Itaú, Bradesco e Caixa</li>
+              <li>Selecione o banco, faça upload do PDF</li>
+              <li>Para cada item: edite a descrição, selecione o CC</li>
+              <li>Use <strong>"Aplicar este CC a todos os próximos"</strong> para categorizar lançamentos repetidos em lote</li>
+              <li>Lançamentos já conciliados ficam no histórico da aba e não são reimportados</li>
             </ul>
-
-            <p style="margin-top:8px">O histórico de conciliações fica registrado na aba para auditoria posterior.</p>
           </div>
           <div class="hr"></div>
 
           <!-- RELATÓRIOS -->
           <div class="manual-section">
-            <h3>📋 Relatórios · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Relatórios</span></h3>
-            <p>Gere relatórios detalhados e exporte em PDF para arquivar, enviar ou analisar offline. Disponíveis:</p>
+            <h3>📋 Relatórios</h3>
+            <p>Gere relatórios detalhados por período. Todos podem ser exportados em <strong>PDF</strong>.</p>
             <ul>
-              <li><strong>Fluxo de Caixa:</strong> todas as entradas e saídas do período com saldo progressivo</li>
-              <li><strong>Movimentação por Conta:</strong> extrato detalhado de uma conta específica</li>
-              <li><strong>Movimentação por Cartão:</strong> todas as compras de um cartão de crédito no período</li>
-              <li><strong>Despesas por Categoria:</strong> ranking de gastos por Centro de Custo com percentuais</li>
-              <li><strong>Receitas vs Despesas:</strong> comparativo mensal do período selecionado</li>
-              <li><strong>Contas a Vencer / Em Atraso:</strong> lista de pendências com dias de vencimento</li>
-              <li><strong>Posição de Investimentos:</strong> patrimônio atual vs aportado por ativo</li>
+              <li><strong>Fluxo de Caixa:</strong> todas as movimentações do período com totais por tipo</li>
+              <li><strong>Movimentação por Conta:</strong> extrato de cada banco com saldo inicial, movimentos e saldo final</li>
+              <li><strong>Movimentação por Cartão:</strong> lançamentos agrupados por cartão com total de cada fatura</li>
+              <li><strong>Despesas por Categoria:</strong> quanto foi gasto em cada centro de custo, com % do total e gráfico</li>
+              <li><strong>Receitas vs Despesas:</strong> comparativo mensal de entrada e saída</li>
+              <li><strong>Contas a Vencer / Atraso:</strong> lista de pendências ordenadas por data</li>
+              <li><strong>Posição de Investimentos:</strong> patrimônio atual, aportado, rendimentos e rentabilidade por ativo</li>
             </ul>
-            <p style="margin-top:8px">💡 Todos os relatórios usam o período e filtros selecionados. O PDF gerado inclui cabeçalho com logotipo NMC, data de emissão e rodapé com totais.</p>
           </div>
           <div class="hr"></div>
 
           <!-- BACKUP -->
           <div class="manual-section">
-            <h3>💾 Backup e Segurança · <span style="color:var(--text3);font-size:13px;font-weight:400">Menu → Configuração</span></h3>
+            <h3>💾 Backup e Restauração</h3>
+            <p><strong>Nunca perca seus dados.</strong> O sistema oferece três camadas de proteção:</p>
             <ul>
-              <li><strong>Backup Manual:</strong> clique em "Exportar Backup" — salva um arquivo JSON criptografado com todos os seus dados. Faça isso regularmente e guarde em local seguro (nuvem, e-mail, HD externo)</li>
-              <li><strong>Backup Automático:</strong> configure intervalo Diário, Semanal ou Mensal. O arquivo é baixado automaticamente no intervalo configurado</li>
-              <li><strong>Restaurar:</strong> clique em "Importar Backup" e selecione o arquivo JSON exportado anteriormente</li>
-              <li><strong>Apagar tudo:</strong> em Zona de Perigo — um backup automático é gerado antes da limpeza. A ação é irreversível</li>
+              <li><strong>Backup automático de sessão:</strong> ao fazer login, um JSON é baixado automaticamente (uma vez por sessão)</li>
+              <li><strong>Backup manual:</strong> Configuração → Exportar Backup → salva um arquivo JSON com todos os dados</li>
+              <li><strong>Backup automático agendado:</strong> configure o intervalo (diário, semanal ou mensal) — o arquivo é baixado automaticamente</li>
             </ul>
-            <p style="margin-top:8px">⚠️ <strong>Recomendação:</strong> faça backup manual antes de qualquer alteração importante ou atualização do sistema. O arquivo exportado só pode ser restaurado com a mesma senha usada no momento do backup.</p>
+            <p style="margin-top:10px"><strong>Para restaurar:</strong> Configuração → Importar Backup → selecione o arquivo JSON salvo anteriormente. <em>Atenção: isso substitui todos os dados atuais.</em></p>
+            <p style="margin-top:10px"><strong>Limpar tudo:</strong> Configuração → Zona de Perigo → Limpar Todos os Dados. Um backup automático é gerado antes da limpeza.</p>
+            <p style="margin-top:10px;padding:10px 14px;background:rgba(224,82,82,.08);border-left:3px solid var(--red);border-radius:0 var(--r) var(--r) 0;font-size:13px">
+              🔴 <strong>Recomendação:</strong> salve o backup em pelo menos dois lugares — nuvem (Google Drive, Dropbox) e armazenamento local. Dados armazenados no navegador podem ser perdidos se o cache for limpo.
+            </p>
+          </div>
+          <div class="hr"></div>
+
+          <!-- DICAS E BOAS PRÁTICAS -->
+          <div class="manual-section">
+            <h3>💡 Dicas e Boas Práticas</h3>
+            <ul>
+              <li><strong>Comece pelos cadastros:</strong> cadastre bancos, CCs e formas de pagamento antes do primeiro lançamento — evita retrabalho</li>
+              <li><strong>Use Recorrentes:</strong> contas fixas como aluguel, salário e assinaturas devem estar em Recorrentes. No início de cada mês, clique "Lançar todos" com um clique</li>
+              <li><strong>Importe a fatura do cartão:</strong> em vez de lançar compra por compra, importe o PDF da fatura — mais rápido e sem erro de valor</li>
+              <li><strong>Concilie mensalmente:</strong> compare o extrato bancário com os lançamentos uma vez por mês para garantir que nada ficou faltando</li>
+              <li><strong>Configure o orçamento:</strong> defina limites por CC — o dashboard avisa quando você está se aproximando do limite</li>
+              <li><strong>Atualize os investimentos:</strong> registre rendimentos mensalmente para manter o patrimônio atual correto</li>
+              <li><strong>Faça backup antes de grandes lançamentos:</strong> antes de importar uma fatura grande ou fazer limpeza de dados, exporte um backup</li>
+              <li><strong>Modo offline:</strong> o app pode ser instalado como PWA no celular (Android/iOS) e funciona sem internet — os dados ficam no dispositivo</li>
+            </ul>
           </div>
           <div class="hr"></div>
 
           <!-- TECNOLOGIAS -->
           <div class="manual-section">
-            <h3>🛠️ Tecnologias utilizadas</h3>
+            <h3>🛠️ Tecnologias Utilizadas</h3>
             <ul>
-              <li><strong>HTML5 · CSS3 · JavaScript ES6+</strong> — single-file, sem framework, sem dependências de servidor. Todo o código em um único arquivo</li>
-              <li><strong>CryptoJS 4.2 — AES-256-CBC + PBKDF2</strong> — todos os dados do usuário são criptografados antes de serem salvos no dispositivo</li>
-              <li><strong>Chart.js 4.4 + chartjs-plugin-zoom + Hammer.js</strong> — gráficos interativos com suporte a zoom via scroll e pinch em telas touch</li>
-              <li><strong>PDF.js (Mozilla)</strong> — leitura e extração de texto de faturas PDF diretamente no browser, sem envio de dados a servidores</li>
-              <li><strong>Font Awesome 6</strong> — biblioteca de ícones vetoriais</li>
-              <li><strong>LocalStorage</strong> — armazenamento local criptografado. Dados ficam no dispositivo, nunca saem para a internet</li>
-              <li><strong>PWA + Service Worker</strong> — instalável no celular como app nativo, funciona offline após primeira carga, publicável no Google Play via TWA</li>
-              <li><strong>Claude Sonnet (Anthropic)</strong> — inteligência artificial para OCR e processamento de PDFs escaneados de baixa qualidade</li>
-              <li><strong>Vercel</strong> — hospedagem e deploy automático via GitHub, com HTTPS e CDN global</li>
+              <li><strong>HTML5 · CSS3 · JavaScript ES6+</strong> — aplicação single-file, sem framework, sem dependências de servidor</li>
+              <li><strong>AES-256-CBC (CryptoJS) + PBKDF2</strong> — criptografia local de todos os dados com chave derivada da senha do usuário</li>
+              <li><strong>Chart.js 4.4 + chartjs-plugin-zoom + Hammer.js</strong> — gráficos interativos com zoom (scroll/pinch) e pan</li>
+              <li><strong>PDF.js</strong> — leitura e extração de texto de faturas PDF diretamente no browser, sem envio de dados</li>
+              <li><strong>Font Awesome 6</strong> — biblioteca de ícones</li>
+              <li><strong>LocalStorage</strong> — armazenamento local criptografado, sem banco de dados, sem servidor</li>
+              <li><strong>PWA + Service Worker</strong> — instalável no celular como app nativo, funciona offline, publicável no Google Play Store via TWA</li>
             </ul>
           </div>
 
         </div>
       </section>
 
-            <!-- ──────────── INVESTIMENTOS ──────────── -->
+      <!-- ──────────── INVESTIMENTOS ──────────── -->
       <section class="section" id="tab-investimentos">
         <div class="page-hd">
           <div style="display:flex;align-items:center;gap:12px">
@@ -11287,18 +11258,68 @@ function toggleImpFat() {
 
 
 
+function imprimirManual() {
+  var sec = document.getElementById("tab-manual");
+  if (!sec) return;
+  var card = sec.querySelector(".card");
+  if (!card) return;
+  var html = card.innerHTML;
+  var mes = new Date().toLocaleDateString("pt-BR", {year:"numeric",month:"long"});
+  var css = "@page{margin:18mm 14mm}"
+    + "*{box-sizing:border-box;margin:0;padding:0}"
+    + "body{font-family:Arial,sans-serif;font-size:12.5px;color:#1a1a2e;background:#fff}"
+    + ".capa{display:flex;flex-direction:column;align-items:center;justify-content:center;"
+    + "min-height:190px;background:#080b10;color:#c9a84c;padding:30px 20px;margin-bottom:22px}"
+    + ".capa h1{font-size:19px;font-weight:700;letter-spacing:1px;margin-bottom:5px}"
+    + ".capa p{font-size:11px;color:#8a9bb5;letter-spacing:2px;text-transform:uppercase}"
+    + ".capa .ver{font-family:monospace;font-size:11px;color:#c9a84c;margin-top:8px;opacity:.8}"
+    + ".manual-section{margin-bottom:20px;page-break-inside:avoid}"
+    + ".manual-section h3{font-size:13.5px;font-weight:700;color:#0f1623;margin-bottom:8px;"
+    + "padding-bottom:4px;border-bottom:2px solid #c9a84c}"
+    + ".manual-section p{font-size:12px;color:#2d3748;line-height:1.7;margin-bottom:4px}"
+    + ".manual-section ul{padding-left:15px;margin-bottom:4px}"
+    + ".manual-section li{font-size:12px;color:#2d3748;line-height:1.7;margin-bottom:2px}"
+    + ".manual-section code{background:#f0f3f9;color:#0f1623;padding:1px 4px;border-radius:3px;font-family:monospace;font-size:11px}"
+    + ".manual-section strong{color:#0f1623}"
+    + ".hr{border:none;border-top:1px solid #e2e8f0;margin:14px 0}"
+    + "button,input,select{display:none!important}"
+    + "@media print{.capa{-webkit-print-color-adjust:exact;print-color-adjust:exact}}";
+  var capa = "<div class=\"capa\"><h1>NMC Personal Finance System</h1>"
+    + "<p>Nobrega Mall Consultant</p>"
+    + "<div class=\"ver\">Manual do Usu&#225;rio &middot; v20.17 &middot; " + mes + "</div></div>";
+  var pg = "<!DOCTYPE html><html lang=\"pt-BR\"><head><meta charset=\"UTF-8\">"
+    + "<title>Manual NMC</title><style>" + css + "</style></head><body>"
+    + capa + "<div style=\"padding:0 18px 40px\">" + html + "</div></body></html>";
+  var win = window.open("", "_blank", "width=860,height=700");
+  if (!win) { toast("Permita popups para imprimir.", "err"); return; }
+  win.document.write(pg);
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 500);
+}
+
 function instalarPWA() {
-  const e = window._pwaInstallEvent;
-  if (!e) { toast('Use o menu do browser para instalar.', 'inf'); return; }
-  e.prompt();
-  e.userChoice.then(r => {
-    if (r.outcome === 'accepted') {
-      toast('✓ App instalado!', 'ok');
-      const btn = document.getElementById('btnInstalarPWA');
-      if (btn) btn.style.display = 'none';
+  if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone) {
+    toast("O app ja esta instalado.", "ok"); return;
+  }
+  var e = window._pwaInstallEvent;
+  if (e) {
+    e.prompt();
+    e.userChoice.then(function(r) {
+      if (r.outcome === "accepted") {
+        toast("App instalado com sucesso!", "ok");
+        var btn = document.getElementById("btnInstalarPWA");
+        if (btn) btn.style.display = "none";
+      } else { toast("Instalacao cancelada.", "inf"); }
+      window._pwaInstallEvent = null;
+    });
+  } else {
+    var ua = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(ua)) {
+      toast("No Safari: toque em Compartilhar e selecione Adicionar a Tela de Inicio", "inf");
+    } else {
+      toast("Use o menu do browser para instalar o aplicativo.", "inf");
     }
-    window._pwaInstallEvent = null;
-  });
+  }
 }
 
 /* ══════════════════════════════════════════
