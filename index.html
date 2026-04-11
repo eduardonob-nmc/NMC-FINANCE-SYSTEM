@@ -4238,335 +4238,292 @@ window._applySelectOptions = function() {
         </div>
         <div class="card">
 
-<!-- ════════════════════════════════════════════════════════
-     MANUAL DO SISTEMA — NMC Finanças Pessoais · Edição Profissional
-════════════════════════════════════════════════════════ -->
-
-<!-- ── 1. INTRODUÇÃO ── -->
 <div class="manual-section">
-<h3>🏠 1. O que é o NMC Finanças Pessoais — Edição Profissional?</h3>
-<p>O <strong>NMC Finanças Pessoais — Edição Profissional</strong> é um aplicativo completo de controle financeiro pessoal desenvolvido pela <strong>Nobrega Mall Consultant</strong>. Funciona 100% no navegador — sem instalar nada, sem precisar de internet para operar. Todos os seus dados ficam <strong>armazenados localmente no seu dispositivo</strong>, criptografados com <strong>AES-256-CBC</strong> — o mesmo padrão usado por bancos.</p>
-<p style="margin-top:10px">O sistema cobre todo o ciclo financeiro pessoal: receitas e despesas, cartões de crédito e débito, transferências entre contas, financiamentos, investimentos, metas, orçamento mensal, conciliação bancária, relatórios em PDF e um dashboard completo com gráficos interativos.</p>
-<ul style="margin-top:10px">
-  <li><strong>Privacidade total:</strong> nenhum dado é enviado a servidores externos — tudo fica no seu dispositivo.</li>
-  <li><strong>Criptografia forte:</strong> sua senha deriva a chave AES-256 via PBKDF2. Sem a senha correta, os dados são ilegíveis.</li>
-  <li><strong>Funciona offline:</strong> depois de aberto no browser, o sistema funciona sem internet (PWA).</li>
-  <li><strong>Multi-usuário:</strong> cada usuário tem sua própria senha e acesso controlado.</li>
-</ul>
+
+<!-- ══ FICHA TÉCNICA + MANUAL NMC v20.17 ══════════════════════════════════ -->
+
+<!-- CABEÇALHO IDENTIDADE -->
+<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:20px;background:linear-gradient(135deg,rgba(201,168,76,.08) 0%,rgba(62,184,154,.05) 100%);border:1px solid rgba(201,168,76,.2);border-radius:var(--r2)">
+  <div>
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Nobrega Mall Consultant</div>
+    <div style="font-size:20px;font-weight:700;color:var(--text)">NMC Finanças Pessoais</div>
+    <div style="font-size:13px;color:var(--text2)">Edição Profissional · Versão 20.17 · Abril 2026</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:6px;font-family:var(--mono)">PWA · AES-256-CBC · Chart.js 4.4 · PDF.js · Offline-first</div>
+  </div>
 </div>
 
-<!-- ── 2. PRIMEIRO ACESSO ── -->
-<div class="manual-section">
-<h3>🚀 2. Primeiro Acesso e Termos de Uso</h3>
-<p>Na <strong>primeira utilização</strong>, o sistema exibe obrigatoriamente os <strong>Termos e Condições de Uso</strong>. Você deve:</p>
-<ol style="padding-left:20px;line-height:2">
-  <li>Ler todo o conteúdo do termo (role para baixo).</li>
-  <li>Marcar o checkbox confirmando que leu e aceita os termos e que se compromete a ler o Manual.</li>
-  <li>Clicar em <strong>"Aceitar e Continuar"</strong>.</li>
+<!-- ÍNDICE -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:24px;font-size:12px;line-height:2">
+  <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px">Índice — 21 Seções</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px">
+    <div>01 · O que é o NMC Finanças</div><div>12 · Investimentos</div>
+    <div>02 · Ficha Técnica do Sistema</div><div>13 · Financiamentos</div>
+    <div>03 · Primeiro Acesso</div><div>14 · Metas Financeiras</div>
+    <div>04 · Interface e Navegação</div><div>15 · Orçamento Mensal</div>
+    <div>05 · Dashboard</div><div>16 · Relatórios em PDF</div>
+    <div>06 · Cadastros</div><div>17 · Conciliação Bancária</div>
+    <div>07 · Lançamentos</div><div>18 · Usuários e Segurança</div>
+    <div>08 · Dar Baixa</div><div>19 · Backup e Configuração</div>
+    <div>09 · Lançamentos Recorrentes</div><div>20 · Planejamento do Futuro</div>
+    <div>10 · Cartões de Crédito</div><div>21 · Boas Práticas</div>
+    <div>11 · Cartões de Débito</div><div></div>
+  </div>
+</div>
+
+<!-- ══ 01 O QUE É ══ -->
+<h2><span class="manual-num">01</span> O que é o NMC Finanças Pessoais</h2>
+<p><em style="color:var(--gold)">"A riqueza não vem do acaso — é fruto de disciplina, planejamento e do correto registro de cada centavo que entra e sai."</em><br><span style="font-size:11px;color:var(--text3)">— George S. Clason, O Homem Mais Rico da Babilônia (1926)</span></p>
+<p>O <strong>NMC Finanças Pessoais — Edição Profissional</strong> é um sistema completo de gestão financeira pessoal desenvolvido pela <strong>Nobrega Mall Consultant</strong>. Inspirado nos princípios de controle e consciência financeira defendidos por Gustavo Cerbasi, David Bach e George Clason, o sistema oferece ao usuário uma visão clara e em tempo real de toda a sua vida financeira — sem enviar dados a servidores externos, sem assinaturas e sem propagandas.</p>
+<p><strong>O sistema cobre:</strong> Receitas e despesas · Cartões de crédito e débito (faturas completas) · Lançamentos recorrentes automatizados · Investimentos e patrimônio · Financiamentos (Price e SAC) · Metas financeiras · Orçamento mensal · Conciliação bancária · 11 tipos de relatório em PDF · Dashboard interativo com gráficos.</p>
+
+<!-- ══ 02 FICHA TÉCNICA ══ -->
+<h2><span class="manual-num">02</span> Ficha Técnica do Sistema</h2>
+<p><em style="color:var(--gold)">"Você não pode gerenciar o que não mede."</em><br><span style="font-size:11px;color:var(--text3)">— Peter Drucker, The Practice of Management (1954)</span></p>
+<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px">
+  <tr><td style="padding:5px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border);width:35%">Nome completo</td><td style="padding:5px 10px;border:1px solid var(--border)">NMC Finanças Pessoais — Edição Profissional</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;border:1px solid var(--border)">Versão / Data</td><td style="padding:5px 10px;border:1px solid var(--border)">20.17 · Abril de 2026</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Desenvolvedor</td><td style="padding:5px 10px;border:1px solid var(--border)">Nobrega Mall Consultant — Caruaru, PE, Brasil</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;border:1px solid var(--border)">Plataforma</td><td style="padding:5px 10px;border:1px solid var(--border)">PWA (Progressive Web App) — funciona como app instalável offline</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Tecnologias</td><td style="padding:5px 10px;border:1px solid var(--border)">HTML5 · CSS3 · JavaScript ES6+ · Chart.js 4.4 · PDF.js · CryptoJS</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;border:1px solid var(--border)">Criptografia</td><td style="padding:5px 10px;border:1px solid var(--border)">AES-256-CBC com chave derivada via PBKDF2 da senha do usuário</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Armazenamento</td><td style="padding:5px 10px;border:1px solid var(--border)">localStorage do navegador — local, sem servidores externos</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;border:1px solid var(--border)">Compatibilidade</td><td style="padding:5px 10px;border:1px solid var(--border)">Chrome, Edge, Firefox, Safari — Windows, Android, iOS</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Idiomas</td><td style="padding:5px 10px;border:1px solid var(--border)">Português (BR), English (US), Español</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;border:1px solid var(--border)">Relatórios</td><td style="padding:5px 10px;border:1px solid var(--border)">11 tipos exportáveis em PDF gerados internamente</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Bancos (importação PDF)</td><td style="padding:5px 10px;border:1px solid var(--border)">Nubank, Itaú Visa Azul, Bradesco</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;border:1px solid var(--border)">Segurança</td><td style="padding:5px 10px;border:1px solid var(--border)">Privacy by design · LGPD conforme · Sem telemetria · Sem anúncios</td></tr>
+</table>
+<p style="background:rgba(224,82,82,.07);border:1px solid rgba(224,82,82,.3);border-radius:var(--r);padding:10px 14px;font-size:11px;color:var(--red)">⚠️ <strong>Segurança crítica:</strong> não existe recuperação de senha. Se esquecida, os dados são irrecuperáveis. Mantenha backups regulares e guarde a senha em gerenciador seguro (Bitwarden, 1Password).</p>
+
+<!-- ══ 03 PRIMEIRO ACESSO ══ -->
+<h2><span class="manual-num">03</span> Primeiro Acesso e Configuração Inicial</h2>
+<p><em style="color:var(--gold)">"Comece com o que você tem. O início perfeito nunca chega — mas o início imperfeito leva à perfeição."</em><br><span style="font-size:11px;color:var(--text3)">— Dave Ramsey, Transformação Total do Seu Dinheiro (2003)</span></p>
+<p><strong>Login padrão inicial:</strong> usuário <code>admin</code> / senha <code>1234</code>. Altere imediatamente em <em>Configuração → Alterar Senha</em>.</p>
+<p><strong>Passos obrigatórios:</strong></p>
+<ol style="line-height:2;padding-left:20px">
+  <li>Role os Termos de Uso até o final, marque o checkbox e clique em "Aceitar e Continuar".</li>
+  <li>Altere a senha padrão (use senha forte com letras, números e símbolos).</li>
+  <li>Cadastre seus bancos/contas com o saldo inicial real de cada uma.</li>
+  <li>Cadastre seus cartões de crédito e débito (fechamento e vencimento).</li>
+  <li>Revise as formas de pagamento (Boleto, PIX, Cartão etc.).</li>
+  <li>Cadastre os centros de custo alinhados à sua realidade financeira.</li>
+  <li>Configure lançamentos recorrentes para automatizar despesas e receitas fixas.</li>
+  <li>Ative o Backup Automático em <em>Configuração → Backup</em>.</li>
 </ol>
-<p style="margin-top:10px">O aceite é <strong>gravado com data e hora</strong> no armazenamento local. Sem aceitar os termos, o sistema não abre. Você pode rever os termos a qualquer momento em <em>Menu → Manual → Botão "Ver Termos de Uso"</em>.</p>
-<p style="margin-top:8px"><strong>Login padrão inicial:</strong> usuário <code>admin</code> / senha <code>1234</code>. Altere a senha imediatamente em <em>Configuração → Alterar Senha</em>.</p>
-</div>
+<p><strong>Instalar como App (PWA):</strong> no Chrome/Edge, clique no ícone de instalação na barra de endereços ou use o botão "Instalar App" dentro do sistema. Funciona offline com ícone na área de trabalho.</p>
 
-<!-- ── 3. NAVEGAÇÃO E INTERFACE ── -->
-<div class="manual-section">
-<h3>🧭 3. Navegação e Interface</h3>
-<p>A interface é dividida em três áreas principais:</p>
+<!-- ══ 04 INTERFACE ══ -->
+<h2><span class="manual-num">04</span> Interface e Navegação</h2>
+<p>Interface projetada segundo os princípios de Don Norman (<em>O Design do Dia a Dia</em>, 1988): visibilidade, feedback imediato e mapeamento natural entre ação e resultado.</p>
 <ul>
-  <li><strong>Barra lateral (Sidebar):</strong> menu de navegação à esquerda com todas as seções do sistema.</li>
-  <li><strong>Topbar (mobile):</strong> barra superior com ícone de menu hamburguer para abrir/fechar a sidebar em telas pequenas.</li>
-  <li><strong>Área de conteúdo:</strong> área principal à direita onde cada seção é exibida.</li>
+  <li><strong>Sidebar:</strong> menu à esquerda. Botão <code>«</code> recolhe para modo ícones (ideal em tablets). Preferência salva.</li>
+  <li><strong>Topbar mobile:</strong> ícone hamburguer para abrir/fechar a sidebar em telas pequenas.</li>
+  <li><strong>Tema claro/escuro:</strong> ícone ☀️/🌙 no topo do Dashboard. Salvo por usuário.</li>
+  <li><strong>Idioma:</strong> Português, English ou Español — toda a interface se adapta.</li>
 </ul>
-<p style="margin-top:10px"><strong>🔲 Minimizar a Sidebar:</strong> clique no botão <code>«</code> no topo da barra lateral para recolhê-la e mostrar apenas os ícones. Clique em <code>»</code> para expandir novamente. A preferência é salva automaticamente.</p>
-<p style="margin-top:8px"><strong>Temas:</strong> alterne entre tema escuro e claro clicando no ícone de sol/lua no canto superior direito do Dashboard.</p>
-<p style="margin-top:8px"><strong>Tecla Enter:</strong> na tela de login, pressione Enter para autenticar sem clicar no botão.</p>
-</div>
 
-<!-- ── 4. DASHBOARD ── -->
-<div class="manual-section">
-<h3>📊 4. Dashboard — Visão Geral Financeira</h3>
-<p>O Dashboard é a tela inicial após o login. Apresenta um resumo completo da sua situação financeira no período selecionado.</p>
-<p style="margin-top:10px"><strong>Filtros disponíveis:</strong> selecione mês e ano no topo para filtrar todos os indicadores.</p>
-<ul style="margin-top:8px">
-  <li><strong>Cards de resumo (clicáveis):</strong> Receitas, Despesas, Saldo do Período e Saldo Acumulado. Clique em qualquer card para ver a lista detalhada dos lançamentos que compõem aquele valor.</li>
-  <li><strong>Gráfico de Fluxo de Caixa:</strong> evolução mensal de receitas e despesas nos últimos meses. Valores negativos são exibidos abaixo da linha zero.</li>
-  <li><strong>Gráfico de Despesas por Categoria:</strong> pizza com distribuição das despesas por centro de custo.</li>
-  <li><strong>Gráfico de Receitas vs Despesas:</strong> barras comparativas mês a mês.</li>
-  <li><strong>Alertas e Notificações:</strong> avisos de contas a pagar vencidas, metas próximas do prazo e financiamentos com parcelas em atraso.</li>
-</ul>
-<p style="margin-top:10px"><strong>Exemplo prático:</strong> em março, você registrou R$ 8.500 em receitas e R$ 6.200 em despesas. O card "Saldo do Período" mostra R$ 2.300 positivo. Clique nele para ver exatamente quais lançamentos formam esse saldo.</p>
-<p style="margin-top:8px"><strong>Atenção:</strong> transferências entre contas próprias e lançamentos vinculados a investimentos/financiamentos são <em>excluídos automaticamente</em> dos cálculos de receita e despesa para evitar dupla contagem.</p>
-</div>
+<!-- ══ 05 DASHBOARD ══ -->
+<h2><span class="manual-num">05</span> Dashboard — Central de Controle</h2>
+<p><em style="color:var(--gold)">"Você não pode gerenciar o que não mede."</em><br><span style="font-size:11px;color:var(--text3)">— Peter Drucker (1954)</span></p>
+<p>Tela inicial após o login. Filtros: mês específico, ano completo, próximos 6 meses, ou por banco/conta.</p>
+<p><strong>Cards (clicáveis):</strong> ↑ Total Receitas · ↓ Total Despesas (inclui compras no CC por categoria) · = Saldo do Período · Saldo Total Hoje (por banco) · Patrimônio (investimentos).</p>
+<p><strong>Gráficos:</strong> Fluxo de Caixa Diário (com zoom) · Despesas por Categoria · Receitas por Categoria · Comparativo Mês a Mês.</p>
+<p><strong>Painéis auxiliares:</strong> Contas a Pagar (próximos 7 dias + vencidas, com botão "Pagar Fatura") · Alertas Ativos · Metas (barras de progresso) · Próximas Faturas CC (3 meses) · Saldo Cartões Débito.</p>
+<p><strong>Regra de exclusão:</strong> transferências internas, cargas de cartão débito, investimentos/financiamentos e CCs marcados como "excluir de Rec/Desp" são excluídos dos totais automaticamente — evitando dupla contagem, como orienta Gustavo Cerbasi (<em>Dinheiro: os Segredos de Quem Tem</em>, 2007).</p>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Exemplo:</strong> Em abril, Eduardo registrou Salário R$ 6.200, Supermercado R$ 380 no cartão Nubank (CC: Alimentação), Conta de Luz R$ 145, Transferência R$ 500. Dashboard: Receitas R$ 6.200 | Despesas R$ 525 | Saldo R$ 5.675. A compra do supermercado aparece na pizza de Alimentação mesmo sendo via cartão.</p>
 
-<!-- ── 5. CADASTROS ── -->
-<div class="manual-section">
-<h3>🗂️ 5. Cadastros — Base do Sistema</h3>
-<p>Antes de lançar qualquer transação, configure os cadastros básicos. Acesse em <em>Menu → Cadastros</em>.</p>
+<!-- ══ 06 CADASTROS ══ -->
+<h2><span class="manual-num">06</span> Cadastros — Base do Sistema</h2>
+<p><em style="color:var(--gold)">"Organização não é um talento natural — é um sistema que qualquer pessoa pode aprender."</em><br><span style="font-size:11px;color:var(--text3)">— David Allen, A Arte de Fazer Acontecer (2001)</span></p>
+<p>Configure em <em>Menu → Cadastros</em> antes de registrar qualquer transação.</p>
+<p><strong>Bancos / Contas:</strong> nome, tipo, banco, saldo inicial e cheque especial. O saldo atual é calculado automaticamente pelos lançamentos.</p>
+<p><strong>Centros de Custo:</strong> grupos e subgrupos hierárquicos. Robert Kiyosaki (<em>Pai Rico, Pai Pobre</em>, 1997) ensina que a riqueza começa pela clareza sobre onde o dinheiro é gasto. Marque "Excluir de Rec/Desp" para CCs que não devem somar no dashboard.</p>
+<p><strong>Formas de Pagamento:</strong> lista padrão — Boleto · PIX · Cartão de Crédito · Cartão de Débito · Débito em Conta · Transferência · Dinheiro em Espécie. Configure <strong>taxa administrativa (%)</strong> para formas com custo de recebimento — o sistema lança automaticamente a despesa de taxa ao registrar receitas.</p>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Exemplo de taxa:</strong> Recebimento de R$ 1.000 via cartão com taxa 2,99% → sistema registra R$ 1.000 de receita + R$ 29,90 de despesa automática em "Taxas Administradora".</p>
 
-<p style="margin-top:12px"><strong>5.1 Identificação do Usuário/Empresa</strong></p>
-<p>Informe seu nome, profissão e descrição. Esses dados aparecem nos cabeçalhos dos relatórios PDF gerados.</p>
+<!-- ══ 07 LANÇAMENTOS ══ -->
+<h2><span class="manual-num">07</span> Lançamentos — Registro de Transações</h2>
+<p><em style="color:var(--gold)">"Registrar cada centavo é o hábito mais poderoso para a saúde financeira."</em><br><span style="font-size:11px;color:var(--text3)">— David Bach, O Milionário Automático (2004)</span></p>
+<p>Acesse em <em>Menu → Lançamentos</em> → <strong>"+ Novo Lançamento"</strong>.</p>
+<p><strong>Tipos:</strong> Receita · Despesa · Transferência entre Contas · Investimento · Financiamento.</p>
+<p><strong>Campos:</strong> Tipo → Data → Forma de Pagamento (padrão: Boleto; Cartão de Crédito exibe o campo Cartão) → Banco/Conta → CC → Parcelas → Periodicidade → Valor → Descrição.</p>
+<p><strong>Regra Parcelas × Periodicidade:</strong> ao selecionar parcelas &gt; 1× sem cartão de crédito, a periodicidade "Único" é inválida. O sistema pré-seleciona "Mensal" e destaca o campo. O salvamento é bloqueado se a combinação for inválida.</p>
+<p><strong>Parcelamento sem cartão:</strong> 3× Mensal em 10/04/2026 gera 3 lançamentos: (1/3) R$ X em 10/04 · (2/3) R$ X em 10/05 · (3/3) R$ X em 10/06.</p>
+<p><strong>Parcelamento com cartão:</strong> o sistema calcula automaticamente em qual fatura cada parcela cai, pelo dia de fechamento do cartão.</p>
+<p><strong>Filtros:</strong> período (vencimento/pagamento/criação) · tipo · banco · cartão · CC · status (pago/pendente/vencido) · busca textual.</p>
 
-<p style="margin-top:12px"><strong>5.2 Bancos / Contas</strong></p>
-<p>Cadastre suas contas bancárias, carteiras e caixas. Campos: Nome, Tipo (Conta Corrente, Poupança, Carteira, etc.), Banco e Saldo Inicial.</p>
-<p><strong>Exemplo:</strong> "Nubank CC" / Conta Corrente / Saldo inicial R$ 2.000,00</p>
+<!-- ══ 08 DAR BAIXA ══ -->
+<h2><span class="manual-num">08</span> Dar Baixa em Lançamentos</h2>
+<p>Clique em ✅ ao lado do lançamento para registrar pagamento/recebimento efetivo.</p>
+<p><strong>Baixa antecipada (antes do vencimento):</strong> campo Desconto (R$) aparece automaticamente. O sistema cria receita em "Financeiro/Descontos".</p>
+<p><strong>Baixa em atraso (após o vencimento):</strong> campos Multa, Juros e Correção Monetária aparecem. O sistema cria despesas em "Financeiro/Multa", "Financeiro/Juros" e "Financeiro/Correção".</p>
+<p><strong>Desfazer:</strong> botão ↩️ reverte o lançamento para pendente e remove a data de pagamento.</p>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Exemplo de antecipação:</strong> Boleto R$ 500 com vencimento 15/04, pago em 10/04 com desconto R$ 25. Sistema registra: baixa de R$ 500 + receita de R$ 25 em Financeiro/Descontos.</p>
+
+<!-- ══ 09 RECORRENTES ══ -->
+<h2><span class="manual-num">09</span> Lançamentos Recorrentes</h2>
+<p><em style="color:var(--gold)">"O segredo do orçamento bem-sucedido é automatizar o que é previsível."</em><br><span style="font-size:11px;color:var(--text3)">— David Bach, O Milionário Automático (2004)</span></p>
+<p>Automatize despesas e receitas mensais em <em>Menu → Recorrentes</em>. Ao criar, o sistema gera os <strong>12 lançamentos do ciclo</strong> automaticamente.</p>
+<p><strong>Campos:</strong> Tipo · Descrição · Valor · Banco · CC · Forma · Dia do mês · Mês de início · Cartão (opcional).</p>
+<p><strong>Botão Renovar 🔄:</strong> visível sempre. Dourado no último mês ou quando o ciclo encerra. Ao renovar, inicia novo ciclo de 12 meses.</p>
+<p><strong>Ajustar valor futuro 💲:</strong> altera o valor apenas dos lançamentos futuros não pagos, preservando o histórico.</p>
+<p><strong>Cancelar 🚫:</strong> remove o recorrente e os lançamentos futuros não pagos. Histórico preservado.</p>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Exemplos:</strong> Aluguel R$ 1.500 · dia 10 / Salário R$ 6.200 · dia 5 / Plano de saúde R$ 380 · dia 20 / Netflix R$ 49,90 · dia 15 via Cartão Nubank.</p>
+
+<!-- ══ 10 CARTÕES DE CRÉDITO ══ -->
+<h2><span class="manual-num">10</span> Cartões de Crédito — Fluxo Completo</h2>
+<p><em style="color:var(--gold)">"O cartão de crédito não é mal — o problema é não saber exatamente quanto você deve."</em><br><span style="font-size:11px;color:var(--text3)">— Gustavo Cerbasi, Dinheiro: os Segredos de Quem Tem (2007)</span></p>
+<p><strong>Lógica de fatura:</strong> compra antes/no dia do fechamento → fatura do mês corrente. Após o fechamento → fatura do próximo mês.</p>
+<p><strong>Na tela de Lançamentos:</strong> despesas do cartão aparecem agrupadas em uma linha <em>"Fatura CC — Nubank"</em>. Clique para expandir e ver cada despesa com:</p>
 <ul>
-  <li>O saldo atual de cada conta é calculado automaticamente com base nos lançamentos.</li>
-  <li>Use o saldo inicial para refletir o saldo real na data de início do uso do sistema.</li>
+  <li>Descrição, CC (categoria real), data da compra e valor</li>
+  <li>✅ <strong>Baixa parcial</strong> por item — adiantar pagamento de uma despesa específica</li>
+  <li>↩️ Desfazer baixa parcial · ✏️ Editar · 🗑️ Excluir</li>
 </ul>
-
-<p style="margin-top:12px"><strong>5.3 Centros de Custo / Categorias</strong></p>
-<p>Organize suas finanças em categorias. Exemplos: Alimentação, Moradia, Transporte, Saúde, Lazer, Salário, Freelance.</p>
-<p>Cada lançamento deve ser vinculado a um centro de custo — isso alimenta os gráficos e relatórios de categorias.</p>
-
-<p style="margin-top:12px"><strong>5.4 Formas de Pagamento</strong></p>
-<p>Cadastre: Dinheiro, PIX, Transferência, Boleto, Débito Automático, Cartão de Débito, etc.</p>
-<p><strong>Taxa administrativa (%):</strong> ao cadastrar uma forma de pagamento, você pode informar uma taxa percentual (ex: 2,5% para cartão de crédito). Ao receber via essa forma, o sistema cria automaticamente um lançamento de despesa no centro de custo "Taxas Administradora" referente à taxa cobrada.</p>
-<p><strong>Exemplo:</strong> você recebe R$ 1.000,00 via cartão com taxa de 3%. O sistema registra R$ 1.000,00 de receita e R$ 30,00 de despesa (taxa) automaticamente.</p>
-
-<p style="margin-top:12px"><strong>5.5 Cartões de Crédito</strong></p>
-<p>Veja a seção 9 (Cartões) para detalhes completos.</p>
-</div>
-
-<!-- ── 6. LANÇAMENTOS ── -->
-<div class="manual-section">
-<h3>💰 6. Lançamentos — Registro de Transações</h3>
-<p>A espinha dorsal do sistema. Acesse em <em>Menu → Lançamentos</em>.</p>
-
-<p style="margin-top:10px"><strong>Tipos de lançamento:</strong></p>
+<p><strong>Pagar a fatura toda:</strong> coluna Ações (botão ✅) ou botão dourado "Pagar fatura toda" no rodapé do detalhamento → abre modal com data e <strong>conta a debitar</strong> (pré-selecionada se cartão tiver banco vinculado). Ao confirmar:</p>
 <ul>
-  <li><strong>Receita:</strong> entrada de dinheiro (salário, freelance, aluguel recebido, etc.).</li>
-  <li><strong>Despesa:</strong> saída de dinheiro (conta de luz, mercado, combustível, etc.).</li>
-  <li><strong>Transferência:</strong> movimentação entre suas próprias contas. Não afeta saldo total.</li>
-  <li><strong>Investimento:</strong> aporte em investimento cadastrado. Integra com o módulo de Investimentos.</li>
-  <li><strong>Financiamento:</strong> pagamento de parcela de financiamento. Integra com o módulo de Financiamentos.</li>
+  <li>Todas as despesas da fatura ficam marcadas como pagas</li>
+  <li>Um único débito é criado na conta bancária: "Pagamento fatura Nubank 04/2026"</li>
+  <li>Esse débito aparece no Fluxo de Caixa e debita o saldo bancário</li>
+  <li><strong>Não aparece como linha duplicada</strong> na tela de Lançamentos</li>
 </ul>
+<p><strong>Desfazer pagamento:</strong> botão ↩️ na linha da fatura paga → remove o débito bancário e reverte todas as despesas para pendente.</p>
+<p><strong>Excluir o pagamento:</strong> ao excluir o lançamento "Pagamento fatura" em Lançamentos → sistema reverte as despesas para pendente automaticamente, permitindo novo pagamento.</p>
+<p><strong>Onde aparece o quê:</strong></p>
+<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px">
+  <tr><td style="padding:5px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Tela de Lançamentos</td><td style="padding:5px 10px;border:1px solid var(--border)">Linha de fatura agrupada por cartão/mês com sub-itens expandíveis</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;border:1px solid var(--border)">Dashboard — Despesas por CC</td><td style="padding:5px 10px;border:1px solid var(--border)">Cada compra com seu CC real (Alimentação, Lazer etc.)</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Fluxo de Caixa / Saldo Bancário</td><td style="padding:5px 10px;border:1px solid var(--border)">Débito único do total da fatura na conta no dia do pagamento</td></tr>
+  <tr><td style="padding:5px 10px;font-weight:600;border:1px solid var(--border)">Contas a Pagar (Dashboard)</td><td style="padding:5px 10px;border:1px solid var(--border)">Uma linha por fatura com total e vencimento</td></tr>
+</table>
+<p><strong>Importar fatura em PDF:</strong> Nubank e Itaú Visa Azul suportados — o sistema lê os lançamentos automaticamente.</p>
 
-<p style="margin-top:10px"><strong>Campos obrigatórios:</strong> Data, Descrição, Valor, Centro de Custo, Forma de Pagamento e Conta Bancária. Campos adicionais aparecem conforme o tipo selecionado.</p>
+<!-- ══ 11 CARTÕES DE DÉBITO ══ -->
+<h2><span class="manual-num">11</span> Cartões de Débito e Pré-pagos</h2>
+<p>Cadastre em <em>Menu → Cartões</em> com tipo <strong>"Débito / Pré-pago"</strong>.</p>
+<p><strong>Carregar saldo:</strong> botão "Carregar Saldo" → informe valor, data, banco e CC. O sistema registra saída do banco e entrada no cartão. <strong>Cargas não contam como Receita</strong> — são movimentação interna.</p>
+<p><strong>Gastar:</strong> Despesa com Forma = Cartão de Débito, selecione o cartão. Saldo descontado imediatamente.</p>
+<p><strong>Saldo no Dashboard:</strong> painel mostra saldo atual com despesas agendadas (em amarelo) já descontadas.</p>
 
-<p style="margin-top:10px"><strong>Filtros disponíveis:</strong> filtre lançamentos por período (data de criação ou data de pagamento), tipo, centro de custo, conta, forma de pagamento, descrição e status (pago/pendente).</p>
-
-<p style="margin-top:10px"><strong>Ordenação:</strong> clique nos cabeçalhos das colunas para ordenar. Padrão: mais recentes primeiro.</p>
-
-<p style="margin-top:10px"><strong>Exemplo prático:</strong></p>
+<!-- ══ 12 INVESTIMENTOS ══ -->
+<h2><span class="manual-num">12</span> Investimentos — Construindo Patrimônio</h2>
+<p><em style="color:var(--gold)">"Não pague a si mesmo por último — pague-se primeiro."</em><br><span style="font-size:11px;color:var(--text3)">— George S. Clason, O Homem Mais Rico da Babilônia (1926)</span></p>
+<p>Acompanhe toda a carteira em <em>Menu → Investimentos</em>.</p>
+<p><strong>Tipos suportados:</strong> Renda Fixa (CDB, LCI, LCA, Tesouro Direto, Poupança) · Renda Variável (Ações, FIIs, ETFs, BDRs) · Criptomoedas · Previdência (PGBL, VGBL) · Outros.</p>
+<p><strong>Movimentações:</strong> Aporte (débita conta bancária) · Resgate (credita conta bancária) · Rendimento (juros, dividendos).</p>
+<p><strong>Estratégia de diversificação — Pirâmide de Risco:</strong></p>
 <ul>
-  <li>Data: 05/04/2026 · Tipo: Receita · Descrição: "Salário Abril" · Valor: R$ 5.500,00 · CC: Salário · Forma: Transferência · Conta: Nubank CC</li>
-  <li>Data: 07/04/2026 · Tipo: Despesa · Descrição: "Mercado" · Valor: R$ 320,00 · CC: Alimentação · Forma: Cartão Débito · Conta: Nubank CC</li>
+  <li><strong>Base — Reserva de emergência (3-6 meses):</strong> CDB liquidez diária ou Tesouro Selic — acesso imediato.</li>
+  <li><strong>Médio prazo (1-5 anos):</strong> LCI/LCA isentos de IR, CDB médio prazo, Tesouro Prefixado.</li>
+  <li><strong>Longo prazo (5+ anos):</strong> FIIs para renda passiva, Ações/ETFs para crescimento, Previdência Privada.</li>
+</ul>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Exemplo de carteira:</strong> CDB Nubank 12% a.a. R$ 15.000 (emergência) · Tesouro IPCA+ 2029 R$ 10.000 (inflação) · FII HGLG11 R$ 5.000 (renda ~R$37,50/mês) · ETF BOVA11 R$ 3.000 (crescimento).</p>
+
+<!-- ══ 13 FINANCIAMENTOS ══ -->
+<h2><span class="manual-num">13</span> Financiamentos — Controle de Dívidas</h2>
+<p><em style="color:var(--gold)">"A dívida é uma escravidão voluntária. Entenda os juros que você paga."</em><br><span style="font-size:11px;color:var(--text3)">— Robert Kiyosaki, Pai Rico, Pai Pobre (1997)</span></p>
+<p>Gerencie em <em>Menu → Financiamentos</em>. O sistema gera a tabela completa de amortização (Price ou SAC) com parcela, juros, amortização e saldo devedor mês a mês.</p>
+<p><strong>Campos:</strong> nome · valor total financiado · número de parcelas · taxa de juros (% a.m.) · data da 1ª parcela · conta de débito · sistema (Price ou SAC).</p>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Exemplo:</strong> Veículo R$ 50.000 · 60× · 1,2% a.m. → parcela Price ≈ R$ 1.118/mês · Total pago R$ 67.080 · Juros R$ 17.080 (34,2%).</p>
+<p>Segundo Gustavo Cerbasi, a quitação antecipada de dívidas acima de 1% a.m. é o investimento com melhor retorno líquido disponível. Use o módulo de Metas para planejar a quitação.</p>
+
+<!-- ══ 14 METAS ══ -->
+<h2><span class="manual-num">14</span> Metas Financeiras — Objetivos de Vida</h2>
+<p><em style="color:var(--gold)">"Uma meta é um sonho com prazo e plano de ação."</em><br><span style="font-size:11px;color:var(--text3)">— Gustavo Cerbasi, Casais Inteligentes Enriquecem Juntos (2004)</span></p>
+<p>Defina objetivos em <em>Menu → Metas</em>. O sistema calcula automaticamente o <strong>aporte mensal necessário</strong> com base no valor atual, valor alvo e meses restantes.</p>
+<p><strong>Tipos:</strong> Poupança (acumular valor até data) · Limite de Gasto (não ultrapassar mensalmente) · Receita (atingir faturamento).</p>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Exemplos:</strong> 🏖 Viagem Europa R$ 18.000 · dez/2026 → aporte R$ 2.000/mês / 🛡 Reserva R$ 24.000 · jun/2027 / 🏠 Entrada apartamento R$ 80.000 · dez/2028 → aporte R$ 2.424/mês.</p>
+
+<!-- ══ 15 ORÇAMENTO ══ -->
+<h2><span class="manual-num">15</span> Orçamento Mensal — Controle Proativo</h2>
+<p><em style="color:var(--gold)">"O orçamento é dizer ao seu dinheiro para onde ir, em vez de se perguntar onde ele foi."</em><br><span style="font-size:11px;color:var(--text3)">— Dave Ramsey, Transformação Total do Seu Dinheiro (2003)</span></p>
+<p>Defina limites por categoria em <em>Menu → Orçamento</em>. Barras de progresso mostram o consumo em tempo real, incluindo compras no cartão de crédito.</p>
+<p>Acima de 80%: <span style="color:#f59e0b">amarelo</span> · Acima de 100%: <span style="color:var(--red)">vermelho</span>.</p>
+<p><strong>Regra 50-30-20 (Elizabeth Warren, All Your Worth, 2005):</strong> 50% necessidades · 30% desejos · 20% poupança e investimentos.</p>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Com renda de R$ 6.000:</strong> Necessidades R$ 3.000 (aluguel R$ 1.500 + alimentação R$ 600 + transporte R$ 400 + saúde R$ 500) · Desejos R$ 1.800 · Poupança R$ 1.200.</p>
+
+<!-- ══ 16 RELATÓRIOS ══ -->
+<h2><span class="manual-num">16</span> Relatórios em PDF</h2>
+<p>11 tipos de relatório profissionais em <em>Menu → Relatórios</em>:</p>
+<ul style="line-height:1.9">
+  <li><strong>Extrato de Lançamentos</strong> — lista completa com totais por tipo</li>
+  <li><strong>Resumo por Categoria</strong> — totais por CC com percentuais</li>
+  <li><strong>Fluxo de Caixa</strong> — entradas e saídas diárias do mês</li>
+  <li><strong>Receitas vs Despesas</strong> — comparativo mensal dos últimos 12 meses</li>
+  <li><strong>Movimentação Bancária</strong> — extrato de cada conta com saldo final</li>
+  <li><strong>Movimentação por Cartão</strong> — despesas por cartão e fatura</li>
+  <li><strong>Posição de Investimentos</strong> — carteira com valor e rendimento estimado</li>
+  <li><strong>Extrato de Financiamentos</strong> — tabela de parcelas com amortização e juros</li>
+  <li><strong>Recebimentos por Forma</strong> — ideal para autônomos e MEIs</li>
+  <li><strong>Inadimplência</strong> — despesas vencidas e pendentes</li>
+  <li><strong>Resumo de Recorrentes</strong> — projeção anual de despesas e receitas fixas</li>
 </ul>
 
-<p style="margin-top:10px"><strong>Lançamentos com cartão de crédito:</strong> ao selecionar um cartão de crédito como forma de pagamento, o lançamento é vinculado à fatura do cartão (não debita a conta diretamente). O débito ocorre quando a fatura é paga.</p>
+<!-- ══ 17 CONCILIAÇÃO ══ -->
+<h2><span class="manual-num">17</span> Conciliação Bancária</h2>
+<p>Compare os lançamentos do sistema com o extrato real do banco em <em>Menu → Conciliação Bancária</em>.</p>
+<p><strong>Importação automática de PDF:</strong> Nubank · Itaú · Bradesco. Processo: importe o PDF → sistema extrai as transações → compare lado a lado → marque as conciliadas → transações sem par ficam destacadas.</p>
+<p>Concilie ao fim de cada mês para identificar cobranças indevidas, lançamentos esquecidos e divergências de valores.</p>
 
-<p style="margin-top:10px"><strong>Data de Criação vs Data de Pagamento:</strong> o sistema registra automaticamente a data de criação. Você pode informar uma data de pagamento diferente (útil para lançamentos futuros ou parcelamentos).</p>
-</div>
+<!-- ══ 18 USUÁRIOS ══ -->
+<h2><span class="manual-num">18</span> Usuários e Segurança</h2>
+<p>Múltiplos usuários com perfis independentes em <em>Menu → Usuários</em>.</p>
+<p><strong>Admin:</strong> acesso completo. <strong>Usuário:</strong> acesso às funcionalidades financeiras. Deve existir sempre pelo menos 1 Admin.</p>
+<p>AES-256-CBC · PBKDF2 · dados 100% locais · sem recuperação de senha · LGPD conforme.</p>
+<p><strong>Boas práticas:</strong> altere <code>admin/1234</code> imediatamente · senha forte · não compartilhe · crie usuários individuais · faça logout em dispositivos compartilhados.</p>
 
-<!-- ── 7. RECORRENTES ── -->
-<div class="manual-section">
-<h3>🔄 7. Lançamentos Recorrentes</h3>
-<p>Automatize despesas e receitas que se repetem periodicamente. Acesse em <em>Menu → Recorrentes</em>.</p>
-<p style="margin-top:8px">Configure: descrição, valor, tipo (receita/despesa), periodicidade (mensal, semanal, anual), data de início e data de término (opcional).</p>
-<p style="margin-top:8px"><strong>Geração automática ao login:</strong> ao fazer login, o sistema verifica quais recorrentes estão pendentes no período atual e os gera automaticamente como lançamentos.</p>
-<p style="margin-top:8px"><strong>Exemplos de uso:</strong></p>
-<ul>
-  <li>Aluguel — R$ 1.200,00 / mensal / todo dia 10.</li>
-  <li>Salário — R$ 5.500,00 / mensal / todo dia 5.</li>
-  <li>Academia — R$ 89,90 / mensal / todo dia 15.</li>
-  <li>IPTU — R$ 450,00 / anual / todo dia 20 de janeiro.</li>
-</ul>
-<p style="margin-top:8px"><strong>Exclusão inteligente:</strong> ao excluir um recorrente, o sistema remove apenas os lançamentos <em>futuros não pagos</em>. Lançamentos já pagos e lançamentos passados não pagos são preservados no histórico.</p>
-</div>
+<!-- ══ 19 BACKUP ══ -->
+<h2><span class="manual-num">19</span> Backup e Configuração</h2>
+<p>Acesse em <em>Menu → Configuração</em>.</p>
+<p><strong>Backup Manual:</strong> arquivo .json com todos os dados. <strong>Backup Automático:</strong> diário, semanal ou mensal — gerado também ao fazer login. <strong>Restauração:</strong> importa o .json (substitui dados atuais).</p>
+<p style="background:rgba(224,82,82,.07);border:1px solid rgba(224,82,82,.3);border-radius:var(--r);padding:10px 14px;font-size:11px">⚠️ <strong>CRÍTICO:</strong> configure o Backup Automático Semanal AGORA. Dados apenas no seu dispositivo — perda = irrecuperável.</p>
+<p><strong>Alterar Senha:</strong> re-criptografa tudo automaticamente. Faça backup antes. <strong>Zona de Perigo:</strong> excluir tudo (backup automático gerado antes). <strong>PWA:</strong> botão "Instalar App" para uso nativo offline.</p>
 
-<!-- ── 8. CONCILIAÇÃO BANCÁRIA ── -->
-<div class="manual-section">
-<h3>⚖️ 8. Conciliação Bancária</h3>
-<p>Compare o extrato do seu banco com os lançamentos registrados no sistema. Acesse em <em>Menu → Conciliação Bancária</em>.</p>
-<p style="margin-top:8px"><strong>Como funciona:</strong></p>
-<ol style="padding-left:20px;line-height:2">
-  <li>Importe o extrato do banco (arquivo PDF do Nubank, Itaú ou Bradesco — o sistema lê e interpreta automaticamente).</li>
-  <li>O sistema lista as transações do extrato ao lado dos lançamentos registrados.</li>
-  <li>Marque as transações conciliadas. Diferenças são destacadas para sua atenção.</li>
-</ol>
-<p style="margin-top:8px"><strong>Bancos suportados para importação automática:</strong> Nubank, Itaú e Bradesco (PDF). Outros bancos podem ser conciliados manualmente.</p>
-<p style="margin-top:8px"><strong>Benefício:</strong> identifique rapidamente cobranças indevidas, lançamentos esquecidos ou divergências de valores.</p>
-</div>
+<!-- ══ 20 PLANEJAMENTO ══ -->
+<h2><span class="manual-num">20</span> Planejamento Financeiro do Futuro</h2>
+<p><em style="color:var(--gold)">"Alguém está sentado à sombra hoje porque alguém plantou uma árvore há muito tempo atrás."</em><br><span style="font-size:11px;color:var(--text3)">— Warren Buffett (2012)</span></p>
+<p><strong>🛡 Passo 1 — Reserva de emergência:</strong> 3 a 6 meses de despesas em CDB liquidez diária ou Tesouro Selic. Crie uma Meta + Recorrente de aporte + Investimento "Reserva".</p>
+<p><strong>💸 Passo 2 — Elimine dívidas caras:</strong> cadastre todos os financiamentos e visualize o total de juros. Priorize os com maior taxa. A economia de juros é o melhor "investimento" segundo Gustavo Cerbasi.</p>
+<p><strong>📊 Passo 3 — Controle o orçamento:</strong> registre tudo (use Recorrentes para os fixos), configure o Orçamento Mensal, monitore semanalmente, concilie mensalmente.</p>
+<p><strong>📈 Passo 4 — Invista com regularidade:</strong> Recorrente mensal de aporte para cada investimento. Diversifique: Renda Fixa + FIIs + Ações. Revise e rebalanceie semestralmente. Como ensina Albert Einstein sobre juros compostos — a consistência mensal ao longo dos anos faz a magia.</p>
+<p><strong>🎯 Passo 5 — Metas de vida com prazo:</strong> curto prazo (até 2 anos) · médio prazo (2-5 anos) · longo prazo (5+ anos). O sistema calcula o aporte mensal necessário para cada uma.</p>
+<p><strong>Fórmula da Independência Financeira — Regra dos 4% (Bengen, 1994):</strong></p>
+<p style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:var(--r);padding:12px 16px;font-size:12px;font-family:var(--mono)">Patrimônio Necessário = Despesas Mensais × 12 ÷ 0,04</p>
+<p style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;font-size:11px"><strong>💡 Exemplo:</strong> Despesas mensais R$ 5.000 → Patrimônio necessário R$ 1.500.000. Com esse montante investido em portfólio diversificado, você pode resgatar R$ 60.000/ano (R$ 5.000/mês) indefinidamente, com baixíssimo risco histórico de esgotamento (Trinity Study, 1998).</p>
 
-<!-- ── 9. CARTÕES ── -->
-<div class="manual-section">
-<h3>💳 9. Cartões de Crédito</h3>
-<p>Gerencie seus cartões de crédito com controle completo de faturas. Acesse em <em>Menu → Cartões</em>.</p>
-<p style="margin-top:8px"><strong>Cadastro de cartão:</strong> nome, bandeira, limite, dia de fechamento da fatura e dia de vencimento da fatura.</p>
-<p style="margin-top:8px"><strong>Como funciona:</strong> lançamentos do tipo "Despesa" vinculados a um cartão de crédito ficam em aberto na fatura atual. Quando você paga a fatura, o valor total é debitado da conta bancária selecionada.</p>
-<p style="margin-top:8px"><strong>Importação de fatura:</strong> importe o PDF da fatura do cartão. O sistema lê automaticamente os itens e os adiciona como lançamentos.</p>
-<p style="margin-top:8px"><strong>Faturas projetadas:</strong> o dashboard exibe as próximas faturas previstas com base nos gastos atuais.</p>
-<p style="margin-top:8px"><strong>Exemplo:</strong></p>
-<ul>
-  <li>Cartão Nubank · Limite R$ 5.000 · Fecha dia 3 · Vence dia 10.</li>
-  <li>Durante o mês: R$ 800 em compras vinculadas ao cartão Nubank.</li>
-  <li>No dia 10: registre o pagamento da fatura — cria um lançamento de despesa de R$ 800 debitado da sua conta.</li>
-</ul>
-</div>
-
-<!-- ── 10. FINANCIAMENTOS ── -->
-<div class="manual-section">
-<h3>🏦 10. Financiamentos</h3>
-<p>Controle de financiamentos (imóvel, veículo, crédito pessoal, etc.). Acesse em <em>Menu → Financiamentos</em>.</p>
-<p style="margin-top:8px"><strong>Cadastro:</strong> nome do financiamento, valor total, taxa de juros (% a.m.), número de parcelas, data da primeira parcela e conta de débito.</p>
-<p style="margin-top:8px">O sistema calcula automaticamente a tabela de amortização (Price ou SAC, conforme configuração) e gera todas as parcelas com valores de juros e amortização discriminados.</p>
-<p style="margin-top:8px"><strong>Parcelas:</strong> cada parcela pode ser marcada como paga individualmente. O sistema cria automaticamente o lançamento de despesa na conta configurada.</p>
-<p style="margin-top:8px"><strong>Exemplo:</strong> Financiamento de veículo · R$ 40.000 · 48 parcelas · 1,2% a.m. → parcela mensal de aprox. R$ 1.116. O sistema mostra o total de juros pago e o saldo devedor atual.</p>
-</div>
-
-<!-- ── 11. INVESTIMENTOS ── -->
-<div class="manual-section">
-<h3>📈 11. Investimentos</h3>
-<p>Acompanhe sua carteira de investimentos. Acesse em <em>Menu → Investimentos</em>.</p>
-<p style="margin-top:8px"><strong>Tipos suportados:</strong> Renda Fixa (CDB, LCI, LCA, Tesouro), Renda Variável (ações, FIIs), Criptomoedas, Previdência e outros.</p>
-<p style="margin-top:8px"><strong>Cadastro:</strong> nome, tipo, instituição, data de início, valor inicial e rentabilidade esperada (% a.a. ou % a.m.).</p>
-<p style="margin-top:8px"><strong>Aportes e Resgates:</strong> registre aportes adicionais (vinculados como lançamentos do tipo "Investimento") e resgates parciais ou totais.</p>
-<p style="margin-top:8px"><strong>Acompanhamento:</strong> o sistema calcula o valor atual estimado com base na rentabilidade informada e nos aportes realizados.</p>
-<p style="margin-top:8px"><strong>Exemplo:</strong> CDB Nubank · R$ 10.000 investidos · 12% a.a. → após 12 meses, valor estimado R$ 11.200.</p>
-</div>
-
-<!-- ── 12. METAS ── -->
-<div class="manual-section">
-<h3>🎯 12. Metas Financeiras</h3>
-<p>Defina objetivos financeiros e acompanhe seu progresso. Acesse em <em>Menu → Metas</em>.</p>
-<p style="margin-top:8px"><strong>Cadastro:</strong> nome da meta, valor alvo, valor atual, prazo e descrição.</p>
-<p style="margin-top:8px">O sistema exibe barras de progresso e alerta quando metas estão próximas do prazo com baixo percentual de conclusão.</p>
-<p style="margin-top:8px"><strong>Exemplos de metas:</strong></p>
-<ul>
-  <li>Viagem para Europa · Meta: R$ 15.000 · Prazo: dezembro/2026</li>
-  <li>Reserva de emergência · Meta: R$ 20.000 · Prazo: junho/2026</li>
-  <li>Entrada do apartamento · Meta: R$ 60.000 · Prazo: dezembro/2027</li>
-</ul>
-<p style="margin-top:8px"><strong>Acompanhamento no Dashboard:</strong> o card de metas no Dashboard mostra o percentual de conclusão de cada meta ativa.</p>
-</div>
-
-<!-- ── 13. ORÇAMENTO ── -->
-<div class="manual-section">
-<h3>📋 13. Orçamento Mensal</h3>
-<p>Defina limites de gastos por categoria e acompanhe o consumo em tempo real. Acesse em <em>Menu → Orçamento</em>.</p>
-<p style="margin-top:8px"><strong>Como usar:</strong></p>
-<ol style="padding-left:20px;line-height:2">
-  <li>Para cada centro de custo, defina um valor limite mensal.</li>
-  <li>O sistema compara automaticamente os gastos reais do mês com o limite definido.</li>
-  <li>Barras de progresso mostram o percentual utilizado em cada categoria.</li>
-  <li>Categorias acima de 80% do limite ficam em amarelo; acima de 100% ficam em vermelho.</li>
-</ol>
-<p style="margin-top:8px"><strong>Exemplo:</strong> Limite de Alimentação: R$ 1.200/mês. No dia 20, você gastou R$ 980 (82%). O sistema alerta que você está próximo do limite.</p>
-</div>
-
-<!-- ── 14. RELATÓRIOS ── -->
-<div class="manual-section">
-<h3>📄 14. Relatórios em PDF</h3>
-<p>Gere relatórios profissionais com os dados do sistema. Acesse em <em>Menu → Relatórios</em>.</p>
-<p style="margin-top:8px"><strong>Relatórios disponíveis:</strong></p>
-<ul>
-  <li><strong>Extrato de Lançamentos:</strong> lista completa de transações no período, com totais.</li>
-  <li><strong>Resumo por Categoria:</strong> totais de receitas e despesas agrupados por centro de custo.</li>
-  <li><strong>Fluxo de Caixa:</strong> evolução de entradas e saídas por mês.</li>
-  <li><strong>Extrato por Conta:</strong> movimentações de uma conta específica.</li>
-  <li><strong>Posição de Investimentos:</strong> carteira atual com rentabilidade estimada.</li>
-  <li><strong>Extrato de Financiamentos:</strong> tabela de parcelas com amortização e juros.</li>
-  <li><strong>Recebimentos por Forma de Pagamento:</strong> totais recebidos por forma (útil para autônomos e MEIs).</li>
-</ul>
-<p style="margin-top:8px">Todos os relatórios incluem: cabeçalho com nome do usuário/empresa, período filtrado, data de geração e rodapé com marca do sistema.</p>
-<p style="margin-top:8px"><strong>Filtros:</strong> todos os relatórios permitem filtrar por período (mês/ano ou data personalizada), conta, categoria e tipo de transação.</p>
-</div>
-
-<!-- ── 15. USUÁRIOS ── -->
-<div class="manual-section">
-<h3>👥 15. Usuários</h3>
-<p>O sistema suporta múltiplos usuários com perfis diferentes. Acesse em <em>Menu → Usuários</em>.</p>
-<p style="margin-top:8px"><strong>Perfis:</strong></p>
-<ul>
-  <li><strong>Admin:</strong> acesso completo a todas as funcionalidades, incluindo gerenciamento de usuários e exclusão de dados.</li>
-  <li><strong>Usuário:</strong> acesso às funcionalidades financeiras, sem acesso a configurações avançadas.</li>
-</ul>
-<p style="margin-top:8px"><strong>Adicionar usuário:</strong> informe nome de usuário e senha. O perfil Admin pode ser atribuído a múltiplos usuários, mas deve sempre existir pelo menos um Admin.</p>
-<p style="margin-top:8px"><strong>Segurança:</strong> cada usuário tem sua própria senha. A chave de criptografia é derivada das credenciais do usuário logado.</p>
-</div>
-
-<!-- ── 16. CONFIGURAÇÕES ── -->
-<div class="manual-section">
-<h3>⚙️ 16. Configurações</h3>
-<p>Central de configurações do sistema. Acesse em <em>Menu → Configuração</em>.</p>
-
-<p style="margin-top:10px"><strong>16.1 Backup e Restauração</strong></p>
-<ul>
-  <li><strong>Backup Manual:</strong> clique em "Gerar Backup" para baixar um arquivo JSON com todos os seus dados.</li>
-  <li><strong>Backup Automático:</strong> ative para gerar backups periodicamente (diário, semanal ou mensal). Quando ativado, um backup também é feito <em>automaticamente ao fazer login</em> (uma vez por sessão), garantindo que você nunca perca dados recentes.</li>
-  <li><strong>Quando desativado:</strong> nenhum backup é gerado automaticamente no login. Apenas backups manuais.</li>
-  <li><strong>Restauração:</strong> importe um arquivo JSON de backup para restaurar todos os dados.</li>
-</ul>
-<p style="margin-top:8px">⚠️ <strong>Faça backups regularmente!</strong> Seus dados estão apenas no seu dispositivo. Se o navegador for limpo, o dispositivo for perdido ou formatado sem backup, os dados são perdidos permanentemente.</p>
-
-<p style="margin-top:12px"><strong>16.2 Alterar Senha</strong></p>
-<p>Altere sua senha de acesso. <strong>Importante:</strong> a chave AES é derivada da senha — ao alterar, todos os dados são re-criptografados automaticamente com a nova chave. <strong>Faça um backup antes de alterar a senha!</strong></p>
-
-<p style="margin-top:12px"><strong>16.3 Importação de Dados</strong></p>
-<p>Importe extratos bancários (Nubank, Itaú, Bradesco em PDF) diretamente no sistema para agilizar o cadastro de lançamentos.</p>
-
-<p style="margin-top:12px"><strong>16.4 Aparência</strong></p>
-<p>Alterne entre tema escuro (padrão) e tema claro. A preferência é salva automaticamente.</p>
-
-<p style="margin-top:12px"><strong>16.5 Zona de Perigo</strong></p>
-<p>Opção para excluir <em>todos</em> os dados do sistema. Esta ação é <strong>irreversível</strong>. Um backup automático é gerado imediatamente antes da exclusão para evitar perda acidental.</p>
-</div>
-
-<!-- ── 17. TERMOS E ACEITE ── -->
-<div class="manual-section">
-<h3>📜 17. Termos de Uso e Aceite</h3>
-<p>O aceite dos Termos de Uso é obrigatório para usar o sistema. O registro do aceite contém:</p>
-<ul>
-  <li>Data e hora exata do aceite (ex: <em>02/04/2026, 15:32:11</em>).</li>
-  <li>Versão dos termos aceita.</li>
-  <li>Versão do sistema no momento do aceite.</li>
-</ul>
-<p style="margin-top:8px">Para rever os termos aceitos e ver a data/hora do aceite, clique em <strong>"Ver Termos de Uso"</strong> no cabeçalho desta aba. As informações do aceite serão exibidas em destaque verde no rodapé do modal.</p>
-<p style="margin-top:8px">Se os termos forem atualizados (nova versão), o sistema pedirá novo aceite automaticamente na próxima abertura.</p>
-<p style="margin-top:8px"><strong>Compromisso de leitura do Manual:</strong> ao aceitar os termos, o usuário se compromete a ler este manual para compreensão plena das funcionalidades. O sistema pode ser usado sem ter lido o manual, mas a leitura é fortemente recomendada para aproveitamento completo.</p>
-</div>
-
-<!-- ── 18. BOAS PRÁTICAS ── -->
-<div class="manual-section">
-<h3>✅ 18. Boas Práticas e Dicas</h3>
-<ul style="line-height:2.1">
-  <li><strong>Configure os cadastros primeiro:</strong> antes de lançar transações, cadastre bancos, centros de custo e formas de pagamento.</li>
-  <li><strong>Faça backup regularmente:</strong> ative o backup automático em <em>Configuração → Backup</em> e defina o intervalo adequado.</li>
-  <li><strong>Use recorrentes:</strong> economize tempo configurando lançamentos que se repetem mensalmente.</li>
-  <li><strong>Concilie mensalmente:</strong> importe o extrato bancário e concilie ao final de cada mês para garantir consistência.</li>
-  <li><strong>Não compartilhe senhas:</strong> crie usuários individuais para cada pessoa que usa o sistema.</li>
-  <li><strong>Altere a senha padrão:</strong> o login padrão <code>admin/1234</code> deve ser alterado imediatamente no primeiro acesso.</li>
-  <li><strong>Use o Orçamento:</strong> defina limites mensais por categoria para controlar gastos excessivos.</li>
-  <li><strong>Mini Sidebar:</strong> em tablets, minimize a barra lateral (botão <code>«</code>) para ter mais espaço de trabalho.</li>
-</ul>
-</div>
-
-<!-- ── 19. SEGURANÇA E PRIVACIDADE ── -->
-<div class="manual-section">
-<h3>🔒 19. Segurança e Privacidade</h3>
+<!-- ══ 21 BOAS PRÁTICAS ══ -->
+<h2><span class="manual-num">21</span> Boas Práticas e Rotina Recomendada</h2>
+<p><em style="color:var(--gold)">"São os pequenos hábitos diários que determinam o destino financeiro."</em><br><span style="font-size:11px;color:var(--text3)">— David Bach, O Milionário Automático (2004)</span></p>
+<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px">
+  <tr><td style="padding:6px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border);width:25%">Diária (5 min)</td><td style="padding:6px 10px;border:1px solid var(--border)">Registre os lançamentos do dia antes de dormir. Não deixe acumular.</td></tr>
+  <tr><td style="padding:6px 10px;font-weight:600;border:1px solid var(--border)">Semanal (15 min)</td><td style="padding:6px 10px;border:1px solid var(--border)">Verifique o Dashboard: está no orçamento? As metas estão no caminho?</td></tr>
+  <tr><td style="padding:6px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Mensal (30 min)</td><td style="padding:6px 10px;border:1px solid var(--border)">Importe extrato, concilie, renove recorrentes no último mês, revise metas.</td></tr>
+  <tr><td style="padding:6px 10px;font-weight:600;border:1px solid var(--border)">Semestral (1h)</td><td style="padding:6px 10px;border:1px solid var(--border)">Revise a carteira de investimentos, ajuste aportes conforme variação de renda.</td></tr>
+  <tr><td style="padding:6px 10px;font-weight:600;background:var(--surface);border:1px solid var(--border)">Anual (2h)</td><td style="padding:6px 10px;border:1px solid var(--border)">Planejamento do próximo ano: metas, orçamento e estratégia de investimentos.</td></tr>
+</table>
 <ul style="line-height:2">
-  <li><strong>Armazenamento local:</strong> todos os dados ficam no <code>localStorage</code> do seu navegador, no seu dispositivo.</li>
-  <li><strong>Criptografia AES-256-CBC:</strong> os dados são criptografados com chave derivada da sua senha via PBKDF2. Sem a senha correta, os dados são ilegíveis mesmo para quem tiver acesso ao dispositivo.</li>
-  <li><strong>Sem servidores externos:</strong> nenhum dado é enviado à internet. O sistema é 100% local.</li>
-  <li><strong>Perda de senha:</strong> não existe recuperação de senha. Se esquecer a senha, os dados criptografados são irrecuperáveis. <strong>Mantenha backups!</strong></li>
-  <li><strong>LGPD:</strong> como os dados ficam apenas no seu dispositivo, você é o controlador dos seus próprios dados.</li>
-  <li><strong>Limpeza do navegador:</strong> limpar dados/cache do navegador apaga todos os dados do sistema. Sempre tenha um backup atualizado.</li>
+  <li>Configure gastos fixos como <strong>Recorrentes</strong> — 12 meses gerados automaticamente</li>
+  <li>Use <strong>Mini Sidebar</strong> (<code>«</code>) em tablets para mais espaço</li>
+  <li>Filtro <em>"Próximos 6 meses"</em> no Dashboard para antecipar despesas grandes</li>
+  <li>Ative o <strong>Backup Automático Semanal</strong> em Configuração</li>
+  <li>Clique nos cards do Dashboard para ver o detalhamento de cada total</li>
+  <li>Use o comparativo mês a mês para identificar categorias com crescimento consistente</li>
+  <li>Ao parcelar sem cartão, selecione a periodicidade correta (obrigatório quando parcelas &gt; 1×)</li>
 </ul>
+
+<div style="margin-top:24px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:10px;color:var(--text3)">
+  <strong style="color:var(--gold);font-size:11px">Referências Bibliográficas</strong><br>
+  BACH, David. O Milionário Automático. Sextante, 2004. · BENGEN, William P. Determining Withdrawal Rates Using Historical Data. Journal of Financial Planning, 1994. · CERBASI, Gustavo. Casais Inteligentes Enriquecem Juntos. Gente, 2004; Dinheiro: os Segredos de Quem Tem. Gente, 2007. · CLASON, George S. O Homem Mais Rico da Babilônia. Cedro, 1926. · DRUCKER, Peter F. The Practice of Management. Harper &amp; Row, 1954. · GRAHAM, Benjamin. O Investidor Inteligente. HarperCollins, 1949. · KIYOSAKI, Robert T. Pai Rico, Pai Pobre. Alta Books, 1997. · MALKIEL, Burton G. Um Passeio Aleatório por Wall Street. Saraiva, 1973. · RAMSEY, Dave. Transformação Total do Seu Dinheiro. Thomas Nelson, 2003. · WARREN, Elizabeth; TYAGI, Amelia W. All Your Worth. Free Press, 2005.
 </div>
 
-<!-- ── 20. SUPORTE ── -->
-<div class="manual-section">
-<h3>📞 20. Suporte</h3>
-<p>O NMC Finanças Pessoais — Edição Profissional é desenvolvido e mantido pela <strong>Nobrega Mall Consultant</strong>.</p>
-<p style="margin-top:8px">Para dúvidas, sugestões ou suporte técnico, entre em contato através dos canais oficiais da Nobrega Mall Consultant.</p>
-<p style="margin-top:8px">Este manual é atualizado a cada nova versão do sistema. Verifique regularmente se há atualizações disponíveis.</p>
-<p style="margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--text3)">© 2025–2026 Nobrega Mall Consultant · NMC Finanças Pessoais — Edição Profissional · Todos os direitos reservados.</p>
+<p style="margin-top:16px;font-size:11px;color:var(--text3);text-align:center">© 2025–2026 Nobrega Mall Consultant · NMC Finanças Pessoais — Edição Profissional v20.17 · Caruaru, PE · Todos os direitos reservados.<br>Desenvolvido com dedicação para ajudar você a conquistar sua liberdade financeira.</p>
+
 </div>
 
         </div>
       </section>
 
-      <!-- ──────────── INVESTIMENTOS ──────────── -->
+            <!-- ──────────── INVESTIMENTOS ──────────── -->
       <section class="section" id="tab-investimentos">
         <div class="page-hd">
           <div style="display:flex;align-items:center;gap:12px">
@@ -5236,7 +5193,7 @@ window._applySelectOptions = function() {
     <div class="input-row cols3">
       <div class="field">
         <label>Parcelas</label>
-        <select id="mLancParcelas">
+        <select id="mLancParcelas" onchange="_onParcelasChange()">
           <option value="1">1× (à vista)</option>
           <option value="2">2×</option>
           <option value="3">3×</option>
@@ -5253,9 +5210,9 @@ window._applySelectOptions = function() {
           <option value="24">24×</option>
         </select>
       </div>
-      <div class="field">
-        <label>Periodicidade</label>
-        <select id="mLancPeriod">
+      <div class="field" id="fieldPeriod">
+        <label>Periodicidade <span id="periodObrig" style="display:none;color:var(--red);font-size:10px;font-family:var(--mono)">* obrigatório</span></label>
+        <select id="mLancPeriod" onchange="_onPeriodChange()">
           <option value="Único">Único</option>
           <option value="Diário" data-i18n-key="opt.diario">Diário</option>
           <option value="Semanal" data-i18n-key="opt.semanal">Semanal</option>
@@ -6033,21 +5990,23 @@ if (!usuarios.length) {
 }
 
 function _migrateCartaoFaturas() {
-  // Migração: lançamentos antigos de cartão sem pago:true e sem cartaoFatura
-  // → marca como pago:true e gera lançamento de fatura
+  // Migração: lançamentos antigos de cartão com pago:true e dataPagamento=data (gerado pelo sistema antigo)
+  // → reseta para pago:false se não tem evidência de pagamento real da fatura pelo usuário
+  // Detectamos isso se: cartaoId preenchido + banco='' + pago:true + dataPagamento=data (eram marcados automaticamente)
   let migrados = 0;
   lancamentos.forEach(l => {
-    if (l.tipo === 'Despesa' && l.cartaoId && !l.cartaoFatura && !l.pago) {
-      // Lançamento antigo: marca como pago (despesa já realizada)
-      l.pago = true;
-      l.dataPagamento = l.data;
-      migrados++;
+    if (l.tipo === 'Despesa' && l.cartaoId && !l.banco && !l.cartaoFatura && l._fatura !== true) {
+      // Se pago:true mas dataPagamento === data (foi gerado automaticamente pelo sistema antigo)
+      // e não tem dataFatura definida, reseta para pago:false para o novo fluxo
+      if (l.pago === true && l.dataPagamento && l.dataPagamento === l.data && !l.dataFatura) {
+        l.pago = false;
+        delete l.dataPagamento;
+        migrados++;
+      }
     }
   });
   if (migrados > 0) {
-    // Reconstrói faturas a partir dos lançamentos migrados
-    _recalcFaturasCartao();
-    console.log('[NMC] Migração cartão: ' + migrados + ' lançamentos migrados, faturas recalculadas.');
+    console.log('[NMC] Migração cartão v2: ' + migrados + ' lançamentos resetados para pago:false.');
   }
 }
 
@@ -6107,6 +6066,7 @@ function _loadAllData() {
 
   // seeds de dados financeiros (só se vazios)
   if (!formas.length)  formas  = [
+    {nome:'Boleto'},
     {nome:'Cartão de Crédito'},
     {nome:'Cartão de Débito'},
     {nome:'PIX'},
@@ -6120,11 +6080,10 @@ function _loadAllData() {
     if (idx >= 0 && !formas.find(f => f.nome === newNome)) formas[idx].nome = newNome;
   };
   _migForma('Cartão',             'Cartão de Crédito');
-  _migForma('Boleto',             'Débito em Conta');
   _migForma('Débito Automático',  'Débito em Conta');
   _migForma('Dinheiro',           'Dinheiro em Espécie');
-  // Garante que as novas formas padrão existam mesmo para usuários com dados antigos
-  ['Cartão de Crédito','Cartão de Débito','PIX','Débito em Conta','Transferência','Dinheiro em Espécie'].forEach(nome => {
+  // Garante que as formas padrão existam para usuários com dados antigos
+  ['Boleto','Cartão de Crédito','Cartão de Débito','PIX','Débito em Conta','Transferência','Dinheiro em Espécie'].forEach(nome => {
     if (!formas.find(f => f.nome === nome)) formas.push({nome});
   });
   if (!bancos.length)  bancos  = [{nome:'Banco do Brasil',saldoInicial:0,chequeEspecial:0},{nome:'Nubank',saldoInicial:0,chequeEspecial:0},{nome:'Bradesco',saldoInicial:0,chequeEspecial:0}];
@@ -7304,35 +7263,23 @@ function renderCartoes() {
             l.cartaoId===c.id && l.tipo==='Despesa' && !l._fatura &&
             (l.data||'').slice(0,7)===ymProx
           ).reduce((s,l)=>s+parseMoney(l.valor),0);
-          const pagAtualPago   = lancamentos.some(l=> l.pago&&l.banco&&(l.desc||'').includes('Pagamento fatura '+c.nome)&&(l.data||'').slice(0,7)===ymAtual);
-          const pagAtualExiste = lancamentos.some(l=>!l.pago&&l.banco&&(l.desc||'').includes('Pagamento fatura '+c.nome)&&(l.data||'').slice(0,7)===ymAtual);
-          const pagProxExiste  = lancamentos.some(l=>!l.pago&&l.banco&&(l.desc||'').includes('Pagamento fatura '+c.nome)&&(l.data||'').slice(0,7)===ymProx);
+          const pagAtualPago   = lancamentos.some(l => l.pagamentoFaturaCartao===c.id && l.faturaYMPago===ymAtual && l.pago);
+          const pagProxPago    = lancamentos.some(l => l.pagamentoFaturaCartao===c.id && l.faturaYMPago===ymProx  && l.pago);
           const mkRow = (ym, fat, jaExiste, jaPago, vencida) => {
             if (!fat) return '';
             const label = ym.split('-').reverse().join('/');
             const badge = jaPago   ? '<span style="font-size:9px;color:var(--teal);font-family:var(--mono)">✓ PAGO</span>'
                         : jaExiste ? '<span style="font-size:9px;color:#f59e0b;font-family:var(--mono)">⏳ AGENDADO</span>' : '';
             const valCor = vencida&&!jaPago ? 'var(--red)' : 'var(--text2)';
-            const btnStyle = jaPago||jaExiste
-              ? 'background:var(--surface);color:var(--text3);border:1px solid var(--border)'
-              : vencida
-              ? 'background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.5);color:var(--red)'
-              : 'background:rgba(201,168,76,.12);border:1px solid var(--gold);color:var(--gold)';
-            const btnIcon  = jaPago ? 'fa-check-circle' : jaExiste ? 'fa-check' : 'fa-file-invoice-dollar';
-            const btnLabel = jaPago ? 'Fatura paga' : jaExiste ? 'Pagamento agendado' : vencida ? '⚠ Agendar (VENCIDA)' : 'Agendar pagamento';
-            return '<div style="margin-bottom:10px">'
-              +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
+            return '<div style="margin-bottom:8px">'
+              +'<div style="display:flex;justify-content:space-between;align-items:center">'
               +'<span style="font-size:10px;font-family:var(--mono);color:'+(vencida&&!jaPago?'var(--red)':'var(--text3)')+'">'+( vencida&&!jaPago?'⚠ ':'')+'FATURA '+label+'</span>'
               +'<div style="display:flex;align-items:center;gap:6px">'+badge+'<span style="font-size:13px;font-family:var(--mono);font-weight:600;color:'+valCor+'">'+fmtBRL(fat)+'</span></div>'
-              +'</div>'
-              +'<button onclick="pagarFaturaCartao(\'' +c.id+ '\',\'' +c.nome+ '\',' +fat+ ',\'' +ym+ '\')" '
-              +'class="btn btn-sm" style="width:100%;font-size:11px;'+btnStyle+'" '+(jaPago||jaExiste?'disabled':'')+'>'
-              +'<i class="fa '+btnIcon+'"></i> '+btnLabel
-              +'</button></div>';
+              +'</div></div>';
           };
           return (fatAtualLiquida||fatProx)
-            ? mkRow(ymAtual,fatAtualLiquida,pagAtualExiste,pagAtualPago,faturaVencida)
-             +mkRow(ymProx, fatProx, pagProxExiste, false, false)
+            ? mkRow(ymAtual,fatAtualLiquida,false,pagAtualPago,faturaVencida)
+             +mkRow(ymProx, fatProx, false, pagProxPago, false)
             : '<div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-align:center">Sem lançamentos</div>';
         })()}
       </div>`:''}
@@ -7398,6 +7345,50 @@ function delCartao(id) {
 /* ══════════════════════════════════════════
    LANÇAMENTOS
 ══════════════════════════════════════════ */
+// ── Controle de Parcelas × Periodicidade ──────────────────────────────────
+function _onParcelasChange() {
+  const parcSel  = document.getElementById('mLancParcelas');
+  const periodSel = document.getElementById('mLancPeriod');
+  const obrigEl  = document.getElementById('periodObrig');
+  const fieldEl  = document.getElementById('fieldPeriod');
+  const nParc = parseInt(parcSel?.value||'1');
+
+  if (nParc > 1) {
+    // Parcelas > 1 com periodicidade Único → obriga escolha
+    if (periodSel.value === 'Único') {
+      // Pré-seleciona Mensal como sugestão mais comum
+      periodSel.value = 'Mensal';
+      if (obrigEl) obrigEl.style.display = '';
+      if (fieldEl) fieldEl.style.outline = '2px solid var(--gold)';
+      periodSel.focus();
+      toast('Selecione a periodicidade das parcelas.', 'inf');
+    }
+  } else {
+    // Voltou para 1× (à vista) → reseta periodicidade
+    periodSel.value = 'Único';
+    if (obrigEl) obrigEl.style.display = 'none';
+    if (fieldEl) fieldEl.style.outline = '';
+  }
+}
+
+function _onPeriodChange() {
+  const parcSel   = document.getElementById('mLancParcelas');
+  const periodSel = document.getElementById('mLancPeriod');
+  const obrigEl   = document.getElementById('periodObrig');
+  const fieldEl   = document.getElementById('fieldPeriod');
+  const nParc = parseInt(parcSel?.value||'1');
+
+  if (nParc > 1 && periodSel.value !== 'Único') {
+    // Periodicidade escolhida corretamente
+    if (obrigEl) obrigEl.style.display = 'none';
+    if (fieldEl) fieldEl.style.outline = '';
+  } else if (nParc > 1 && periodSel.value === 'Único') {
+    // Voltou para Único com parcelas > 1 — alerta
+    if (obrigEl) obrigEl.style.display = '';
+    if (fieldEl) fieldEl.style.outline = '2px solid var(--red)';
+  }
+}
+
 function openModalLanc(id) {
   refreshSelects();
   document.getElementById('lancEditId').value = id||'';
@@ -7436,6 +7427,11 @@ function openModalLanc(id) {
     document.getElementById('mLancDesc').value     = '';
     document.getElementById('mLancParcelas').value = '1';
     document.getElementById('mLancPeriod').value   = 'Único';
+    // Reseta visual de periodicidade
+    const _obr = document.getElementById('periodObrig');
+    const _fld = document.getElementById('fieldPeriod');
+    if (_obr) _obr.style.display = 'none';
+    if (_fld) _fld.style.outline = '';
     refreshSelects(); // popula selects ANTES de chamar onFormaChange
     // Define Boleto como padrão se existir
     const mf = document.getElementById('mLancForma');
@@ -7478,6 +7474,18 @@ function saveLanc() {
   if (!desc)  { toast(t('toast.informe_descricao'),'err'); document.getElementById('mLancDesc').focus(); return; }
   if (!cc)    { toast(t('toast.centro_selecione_global'),'err'); document.getElementById('mLancCC').focus(); return; }
   if (!forma) { toast(t('toast.forma_selecione'),'err'); document.getElementById('mLancForma').focus(); return; }
+
+  // Periodicidade obrigatória quando parcelas > 1 sem cartão de crédito
+  if (parseInt(parcelas) > 1 && !cartaoId && period === 'Único') {
+    toast('Selecione a periodicidade para parcelamento sem cartão.', 'err');
+    const periodSel = document.getElementById('mLancPeriod');
+    const fieldEl   = document.getElementById('fieldPeriod');
+    const obrigEl   = document.getElementById('periodObrig');
+    if (obrigEl) obrigEl.style.display = '';
+    if (fieldEl) fieldEl.style.outline = '2px solid var(--red)';
+    periodSel?.focus();
+    return;
+  }
 
   // Conta obrigatória (exceto quando há cartão selecionado — crédito ou débito)
   const fieldBancoVisible = document.getElementById('fieldBanco')?.style.display !== 'none';
@@ -7709,19 +7717,16 @@ function saveLanc() {
       ...(financId ? {financId} : {}),
       ...(isPeriod ? {parcelaNum:1, groupId:gid} : {}),
       // Cartão débito: pago imediatamente, sem dataFatura
-      // Cartão crédito: pago na data de fechamento, com dataFatura
+      // Cartão crédito: pendente até o pagamento da fatura
       ...(isCartaoDebitoDesp
         ? {pago:true, dataPagamento:data}
         : isCartaoDesp
-          ? {pago:true, dataPagamento:fechDataSingle, dataFatura:fatDataSingle}
+          ? {pago:false, dataFatura:fatDataSingle}
           : {})
     };
     lancamentos.push(obj);
-
-    // Cria fatura APENAS para cartão de CRÉDITO
-    if (isCartaoDesp && !isCartaoDebitoDesp) {
-      _criarOuAcumularFatura(cartaoId, fatDataSingle, valor, cartSel2);
-    }
+    // Nota: não criamos _fatura aqui — o agrupamento em renderLancamentos e renderContasPagarDash
+    // já funciona com dataFatura de cada lançamento individual, sem necessidade de _fatura sintético
   }
 
   saveAll(); renderLancamentos(); renderCartoes(); renderDashboard(); renderFaturasProjetadas();
@@ -7894,13 +7899,18 @@ function isReceitaReal(l) {
   return true;
 }
 
-// Helper: verifica se lançamento é uma Despesa real (exclui transferências, _fatura)
+// Helper: verifica se lançamento é uma Despesa real (exclui transferências, _fatura, pagamento de fatura CC)
 function isDespesaReal(l) {
   if (!l) return false;
   if (l.tipo !== 'Despesa') return false;
   if (isTransferencia(l)) return false;
   if (l._fatura) return false;
   if (l.cartaoFatura) return false;
+  // Exclui lançamentos de pagamento de fatura (gerados ao confirmar baixa do cartão)
+  // Esses lançamentos representam o débito bancário — não uma despesa nova por CC
+  if (l.pagamentoFaturaCartao) return false;
+  // Exclui o lançamento de "Pagamento fatura XPTO" gerado pelo módulo de importação
+  if (l.banco && (l.desc||'').startsWith('Pagamento fatura ')) return false;
   return true;
 }
 
@@ -7922,6 +7932,7 @@ function renderLancamentos() {
   let rawData = lancamentos.filter(l => {
     if (l.cartaoFatura) return false;
     if (l._fatura)      return false; // lançamento sintético _fatura → tratado no agrupamento
+    if (l._ocultarLanc) return false; // pagamento de fatura CC — visível apenas no fluxo de caixa bancário
     if (tipo === 'Transferência') {
       if (!isTransferencia(l)) return false;
     } else if (tipo) {
@@ -7979,11 +7990,19 @@ function renderLancamentos() {
 
         const key = l.cartaoId + '|' + vencYM;
         if (!grpFaturas[key]) {
-          // Verifica lançamento _fatura existente (status de pagamento)
+          // Verifica lançamento _fatura existente (modelo antigo)
           const fatLanc = lancamentos.find(fl =>
             fl._fatura && fl.cartaoId === l.cartaoId &&
             (fl.dataFatura || fl.data || '').slice(0, 7) === vencYM
           );
+          // Verifica lançamento de pagamento da fatura (modelo novo: pagamentoFaturaCartao)
+          const pagLanc = lancamentos.find(fl =>
+            fl.pagamentoFaturaCartao === l.cartaoId && fl.faturaYMPago === vencYM
+          );
+          const fatPago = !!(fatLanc && (fatLanc.pago===true||fatLanc.pago==='true')) ||
+                          !!(pagLanc && (pagLanc.pago===true||pagLanc.pago==='true'));
+          const fatDataPag = pagLanc ? (pagLanc.dataPagamento||null) : fatLanc ? (fatLanc.dataPagamento||null) : null;
+          const fatBanco   = pagLanc ? (pagLanc.banco||'') : '';
           grpFaturas[key] = {
             _isFatGrp : true,
             cartaoId  : l.cartaoId,
@@ -7992,11 +8011,12 @@ function renderLancamentos() {
             vencData,
             total     : 0,
             items     : [],
-            // pago será recalculado após popular items
-            pago      : !!(fatLanc && (fatLanc.pago === true || fatLanc.pago === 'true')),
-            dataPag   : fatLanc ? (fatLanc.dataPagamento || null) : null,
+            pago      : fatPago,
+            dataPag   : fatDataPag,
+            fatBanco,
             fatLancId : fatLanc ? fatLanc.id : null,
-            _hasFatLanc: !!fatLanc
+            pagLancId : pagLanc ? pagLanc.id : null,
+            _hasFatLanc: !!(fatLanc || pagLanc)
           };
         }
         grpFaturas[key].total += parseMoney(l.valor);
@@ -8008,15 +8028,22 @@ function renderLancamentos() {
   });
 
   // ── 3. Aplica filtros aos grupos e adiciona ao dataFinal ─────────────────
-  // Para grupos sem _fatura: pago = todos os items pagos
+  // Para grupos sem _fatura/_ocultarLanc: recalcula pago a partir dos itens ou do pagLanc
   Object.values(grpFaturas).forEach(g => {
     if (!g._hasFatLanc && g.items.length > 0) {
-      const todosPagos = g.items.every(l => l.pago===true || l.pago==='true');
-      g.pago = todosPagos;
-      if (todosPagos) {
-        // pega a maior dataPagamento dos itens
-        const datas = g.items.map(l => l.dataPagamento||'').filter(Boolean).sort();
-        g.dataPag = datas.length ? datas[datas.length-1] : null;
+      // Se há pagLancId (pagamento via confirmarBaixaCartao), usa esse como sinal de pagamento
+      const pagLanc = g.pagLancId ? lancamentos.find(l=>l.id===g.pagLancId) : null;
+      if (pagLanc) {
+        g.pago = pagLanc.pago===true || pagLanc.pago==='true';
+        g.dataPag = pagLanc.dataPagamento || null;
+      } else {
+        // Sem pagamento registrado: verifica se todos os items foram pagos individualmente
+        const todosPagos = g.items.every(l => l.pago===true || l.pago==='true');
+        g.pago = todosPagos;
+        if (todosPagos) {
+          const datas = g.items.map(l => l.dataPagamento||'').filter(Boolean).sort();
+          g.dataPag = datas.length ? datas[datas.length-1] : null;
+        }
       }
     }
   });
@@ -8113,13 +8140,19 @@ function renderLancamentos() {
     if (chev) chev.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
   };
   window._fatGrpDesfazer = function(cartaoId, vencYM) {
+    // Reverte _fatura sintético se existir
     const fatLanc = lancamentos.find(l => l._fatura && l.cartaoId===cartaoId &&
       (l.dataFatura||l.data||'').slice(0,7)===vencYM);
     if (fatLanc) { fatLanc.pago=false; delete fatLanc.dataPagamento; }
+    // Reverte despesas individuais
     lancamentos.filter(l => l.cartaoId===cartaoId && l.tipo==='Despesa' &&
       !l._fatura && !l.cartaoFatura &&
       ((l.dataFatura||'').slice(0,7)===vencYM || l.faturaYM===vencYM)
     ).forEach(l => { l.pago=false; delete l.dataPagamento; });
+    // Remove lançamento de pagamento da fatura (débito no banco) se existir
+    lancamentos = lancamentos.filter(l =>
+      !(l.pagamentoFaturaCartao===cartaoId && l.faturaYMPago===vencYM)
+    );
     saveAll(); renderLancamentos(); renderDashboard(); renderContasPagarDash();
     toast('Pagamento da fatura desfeito.','inf');
   };
@@ -8144,16 +8177,30 @@ function renderLancamentos() {
           ? `<span class="badge-lanc vencido"><i class="fa fa-exclamation-circle"></i> Vencido</span>`
           : `<span class="badge-lanc pendente"><i class="fa fa-clock"></i> Pendente</span>`;
 
-      const idsJson = JSON.stringify(g.fatLancId ? [g.fatLancId] : g.items.map(x => x.id));
+      // Armazena dados da fatura num objeto global para evitar problemas de aspas no onclick
+      window._fatPayload = window._fatPayload || {};
+      window._fatPayload[key] = {
+        ids:      g.items.map(x => x.id),
+        cartNome: g.cartNome,
+        total:    g.total,
+        vencData: g.vencData,
+        cartaoId: g.cartaoId
+      };
+
       const btnAcao = g.pago
         ? `<button class="btn btn-ghost btn-icon" style="color:#f59e0b;padding:6px 8px" title="Desfazer pagamento"
              onclick="event.stopPropagation();_fatGrpDesfazer('${g.cartaoId}','${g.vencYM}')">
              <i class="fa fa-undo"></i></button>`
-        : `<button class="btn btn-ghost btn-icon" style="color:var(--teal);padding:6px 8px" title="Pagar fatura"
-             onclick="event.stopPropagation();abrirBaixaCartaoIds(${idsJson},'${g.cartNome}',${g.total},'${g.vencData}','${g.cartaoId}',${!!g.fatLancId})">
+        : `<button class="btn btn-ghost btn-icon" style="color:var(--teal);padding:6px 8px" title="Pagar fatura toda"
+             onclick="event.stopPropagation();_abrirPagarFatura('${key}')">
              <i class="fa fa-check"></i></button>`;
 
       // Sub-itens individuais (visíveis ao expandir)
+      // Calcula totais para mostrar progresso
+      const totalPago   = g.items.filter(l=>l.pago===true||l.pago==='true').reduce((s,l)=>s+parseMoney(l.valor),0);
+      const totalRestante = g.total - totalPago;
+      const todosPagesParcial = g.items.every(l=>l.pago===true||l.pago==='true');
+
       const subItems = g.items.map(l => {
         const pItem = l.pago===true || l.pago==='true';
         let pn=l.parcelaNum, pt=l.parcelas;
@@ -8163,8 +8210,14 @@ function renderLancamentos() {
           <span class="fat-sub-desc" title="${(l.desc||'').replace(/"/g,'&quot;')}">${l.desc||'—'}${parcStr}</span>
           <span class="fat-sub-cc">${l.cc||'—'}</span>
           <span class="fat-sub-dt">${fmtDate(l.data)}</span>
-          <span class="fat-sub-val" style="${pItem?'color:var(--text3);text-decoration:line-through':''}">${fmtBRL(parseMoney(l.valor))}</span>
+          <span class="fat-sub-val" style="${pItem?'color:var(--teal);text-decoration:line-through':''}">${fmtBRL(parseMoney(l.valor))}</span>
           <div class="fat-sub-btns">
+            ${pItem
+              ? `<button class="btn btn-ghost btn-icon btn-sm" style="padding:3px 7px;color:#f59e0b" title="Desfazer baixa parcial"
+                      onclick="event.stopPropagation();desfazerBaixaCC('${l.id}')"><i class="fa fa-undo"></i></button>`
+              : `<button class="btn btn-ghost btn-icon btn-sm" style="padding:3px 7px;color:var(--teal);border-color:rgba(62,184,154,.3)" title="Baixa parcial — adiantar este item"
+                      onclick="event.stopPropagation();baixaRapidaCC('${l.id}')"><i class="fa fa-check"></i></button>`
+            }
             <button class="btn btn-ghost btn-icon btn-edit" style="padding:3px 7px" title="Editar"
                     onclick="openModalLanc('${l.id}')"><i class="fa fa-pencil-alt"></i></button>
             ${!pItem ? `<button class="btn btn-ghost btn-icon btn-sm" style="padding:3px 7px;color:var(--gold);border-color:rgba(201,168,76,.3)" title="Cancelar agendamento"
@@ -8174,6 +8227,24 @@ function renderLancamentos() {
           </div>
         </div>`;
       }).join('');
+
+      // Rodapé do sub-painel
+      const subFooter = !g.pago && g.total > 0
+        ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--border);background:rgba(62,184,154,.04);border-radius:0 0 var(--r) var(--r)">
+            <div style="font-size:12px;color:var(--text2)">
+              ${totalPago>0
+                ? `<span style="color:var(--teal);font-family:var(--mono)">${fmtBRL(totalPago)}</span> já pago · Total: <strong style="color:var(--red);font-family:var(--mono)">${fmtBRL(g.total)}</strong>`
+                : `Total da fatura: <strong style="color:var(--red);font-family:var(--mono)">${fmtBRL(g.total)}</strong>`
+              }
+            </div>
+            <button class="btn btn-gold btn-sm" style="padding:5px 14px;font-size:12px"
+                onclick="event.stopPropagation();_abrirPagarFatura('${key}')">
+              <i class="fa fa-check"></i> Pagar fatura toda
+            </button>
+           </div>`
+        : g.pago
+          ? `<div style="padding:8px 14px;border-top:1px solid var(--border);background:rgba(62,184,154,.04);border-radius:0 0 var(--r) var(--r);font-size:12px;color:var(--teal)"><i class="fa fa-check-circle" style="margin-right:6px"></i>Fatura paga${g.dataPag?' em '+fmtDate(g.dataPag):''}</div>`
+          : '';
 
       rowsHtml += `
         <tr class="fat-grp-row" style="${vencido?'background:rgba(224,82,82,.03)':''}${g.pago?';opacity:.8':''}"
@@ -8191,6 +8262,7 @@ function renderLancamentos() {
             </div>
             <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px">
               ${g.items.length} lançamento${g.items.length>1?'s':''} · ${mesLabelCap}
+              ${totalPago>0&&!g.pago?` · <span style="color:var(--teal)">${fmtBRL(totalPago)} pago</span>`:''}
             </div>
           </td>
           <td>
@@ -8206,8 +8278,9 @@ function renderLancamentos() {
         <tr class="fat-grp-sub" id="fgs_${key}">
           <td colspan="7">
             <div class="fat-sub-wrap">
-              <div class="fat-sub-header">Lançamentos individuais — Centro de Custo por item</div>
+              <div class="fat-sub-header">Despesas individuais — clique ✅ para baixa parcial ou "Pagar fatura" para baixar tudo</div>
               ${subItems}
+              ${subFooter}
             </div>
           </td>
         </tr>`;
@@ -8297,8 +8370,16 @@ function renderLancamentos() {
       if (item._isFatGrp) {
         const g = item;
         const vencM = !g.pago && g.vencData < hoje;
-        const idsJ  = JSON.stringify(g.fatLancId ? [g.fatLancId] : g.items.map(x=>x.id));
         const keyM  = (g.cartaoId+'_'+g.vencYM).replace(/\W/g,'_');
+        // Armazena payload para o botão mobile (mesma chave do desktop mas com _ em vez de |)
+        window._fatPayload = window._fatPayload || {};
+        window._fatPayload[keyM] = {
+          ids:      g.items.map(x => x.id),
+          cartNome: g.cartNome,
+          total:    g.total,
+          vencData: g.vencData,
+          cartaoId: g.cartaoId
+        };
         return `<div style="background:var(--card);border:1px solid ${vencM?'rgba(224,82,82,.4)':g.pago?'var(--border)':'rgba(201,168,76,.3)'};border-radius:var(--r2);padding:14px 16px;margin-bottom:10px;border-left:3px solid ${vencM?'var(--red)':g.pago?'var(--teal)':'var(--gold)'}">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
             <div>
@@ -8316,8 +8397,8 @@ function renderLancamentos() {
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
             ${!g.pago
               ? `<button class="btn btn-ghost btn-sm" style="color:var(--teal);border-color:rgba(62,184,154,.3)"
-                   onclick="abrirBaixaCartaoIds(${idsJ},'${g.cartNome}',${g.total},'${g.vencData}','${g.cartaoId}',${!!g.fatLancId})">
-                   <i class="fa fa-check"></i> Pagar Fatura</button>`
+                   onclick="_abrirPagarFatura('${keyM}')">
+                   <i class="fa fa-check"></i> Pagar Fatura toda</button>`
               : `<button class="btn btn-ghost btn-sm" style="color:#f59e0b"
                    onclick="_fatGrpDesfazer('${g.cartaoId}','${g.vencYM}')">
                    <i class="fa fa-undo"></i> Desfazer</button>`}
@@ -8375,7 +8456,23 @@ function renderLancamentos() {
 function delLanc(id) {
   if (!confirm(t('toast.excluir_lancamento'))) return;
   const l = lancamentos.find(x=>x.id===id);
-  const isCartaoCompra = l && l.tipo==='Despesa' && l.cartaoId && !l.cartaoFatura;
+  if (!l) return;
+
+  // ── Se é pagamento de fatura de cartão: reverte despesas individuais para pendente ──
+  if (l.pagamentoFaturaCartao && l.faturaYMPago) {
+    const cartId = l.pagamentoFaturaCartao;
+    const vencYM = l.faturaYMPago;
+    lancamentos.filter(x =>
+      x.tipo==='Despesa' && x.cartaoId===cartId && !x._fatura &&
+      (x.dataFatura||'').slice(0,7)===vencYM && x.pago===true
+    ).forEach(x => { x.pago=false; delete x.dataPagamento; });
+    lancamentos = lancamentos.filter(x=>x.id!==id);
+    saveAll(); renderLancamentos(); renderCartoes(); renderDashboard(); renderContasPagarDash();
+    toast('Pagamento excluído. Fatura voltou para pendente.','inf');
+    return;
+  }
+
+  const isCartaoCompra = l.tipo==='Despesa' && l.cartaoId && !l.cartaoFatura;
   const cartaoId = isCartaoCompra ? l.cartaoId : null;
   const faturaYM = isCartaoCompra ? l.faturaYM || (l.data ? l.data.slice(0,7) : null) : null;
   lancamentos = lancamentos.filter(x=>x.id!==id);
@@ -9835,8 +9932,13 @@ function getDashData() {
     if (l.cc) { const centro = centros.find(c=>c.nome===l.cc); if (centro?.excluirRecDesp) return false; }
     if (banco && l.banco !== banco && l.banco !== '') return false;
 
-    // Usa dataPagamento quando o lançamento está pago, senão usa data de vencimento
-    const dataRef = (l.pago && l.dataPagamento) ? l.dataPagamento : l.data;
+    // Para despesas de cartão de crédito (banco='', cartaoId preenchido):
+    // usa a data da compra (data do lançamento), não dataPagamento (fechamento da fatura)
+    // Para todos os outros lançamentos pagos: usa dataPagamento se disponível
+    const isCartaoCC = l.tipo === 'Despesa' && l.cartaoId && !l.banco;
+    const dataRef = isCartaoCC
+      ? l.data  // sempre a data da compra
+      : (l.pago && l.dataPagamento) ? l.dataPagamento : l.data;
 
     if (mes === '__ano__') {
       return dataRef.slice(0,4) === ym.slice(0,4);
@@ -9862,7 +9964,7 @@ function renderDashboard() {
   // Receitas reais: inclui recebimentos via cartão de crédito/débito do cliente
   // Exclui apenas cargas de cartão débito (transDir='entrada') que são transferências internas
   const rec  = data.filter(l => isReceitaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
-  const desp = data.filter(l=>l.tipo==='Despesa' && !isTransferencia(l) && !l.cartaoFatura && l.banco!=='').reduce((s,l)=>s+parseMoney(l.valor),0);
+  const desp = data.filter(l => isDespesaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
   const saldo = rec - desp;
 
   // ── Saldo Total Hoje: saldoInicial + lançamentos PAGOS até hoje ──
@@ -9896,7 +9998,7 @@ function renderDashboard() {
   document.getElementById('dDesp').textContent   = fmtBRL(desp);
   document.getElementById('dSaldo').textContent  = fmtBRL(saldoPeriodo);
   document.getElementById('dReceitQ').textContent = data.filter(l => isReceitaReal(l)).length + ' lançamentos';
-  document.getElementById('dDespQ').textContent   = data.filter(l=>l.tipo==='Despesa'&&!isTransferencia(l)&&l.banco!=='').length + ' lançamentos';
+  document.getElementById('dDespQ').textContent   = data.filter(l => isDespesaReal(l)).length + ' lançamentos';
   document.getElementById('dSaldoHint').textContent = (saldoPeriodo>=0?'▲ Positivo':'▼ Negativo')+' · até '+fmtDate(dataFimFiltro);
 
   // Saldo Total Hoje
@@ -10334,9 +10436,9 @@ function buildCCCharts(data) {
     options:scaleOpt
   });
 
-  // Despesas por CC
+  // Despesas por CC — inclui despesas de cartão de crédito
   const dCC = {};
-  data.filter(l=>l.tipo==='Despesa').forEach(l=>{ dCC[l.cc||'Outros']=(dCC[l.cc||'Outros']||0)+parseMoney(l.valor); });
+  data.filter(l => isDespesaReal(l)).forEach(l=>{ dCC[l.cc||'Outros']=(dCC[l.cc||'Outros']||0)+parseMoney(l.valor); });
   if (chartDespCC) chartDespCC.destroy();
   chartDespCC = new Chart(document.getElementById('grafDespCC'), {
     type:'doughnut',
@@ -10833,9 +10935,9 @@ function renderMetas() {
     const hoje3 = new Date().toISOString().slice(0,10);
     const lancsCC = lancamentos.filter(l=>l.cc===m.cc&&l.data<=hoje3);
     const rec = lancsCC.filter(l => isReceitaReal(l)).reduce((a,l)=>a+parseMoney(l.valor),0);
-    const dep = lancsCC.filter(l=>l.tipo==='Despesa').reduce((a,l)=>a+parseMoney(l.valor),0);
+    const dep = lancsCC.filter(l => isDespesaReal(l)).reduce((a,l)=>a+parseMoney(l.valor),0);
     const val = m.tipo==='LimiteGasto'
-      ? lancamentos.filter(l=>l.cc===m.cc&&l.tipo==='Despesa'&&l.data.slice(0,7)===nowYM()).reduce((a,l)=>a+parseMoney(l.valor),0)
+      ? lancamentos.filter(l=>l.cc===m.cc&&isDespesaReal(l)&&l.data.slice(0,7)===nowYM()).reduce((a,l)=>a+parseMoney(l.valor),0)
       : m.tipo==='Receita' ? rec : Math.max(0, rec-dep);
     return s + val;
   }, 0);
@@ -10866,12 +10968,10 @@ function renderMetas() {
     if (m.cc) {
       const lancsCC = lancamentos.filter(l => l.cc === m.cc && l.data <= hoje2);
       const recCC   = lancsCC.filter(l => isReceitaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
-      const despCC  = lancsCC.filter(l=>l.tipo==='Despesa').reduce((s,l)=>s+parseMoney(l.valor),0);
+      const despCC  = lancsCC.filter(l => isDespesaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
       if (m.tipo === 'LimiteGasto') {
-        // Para limite de gasto: realizado = total gasto no CC (período todo ou mês atual?)
-        // Usa o mês atual para comparar com o orçamento mensal
         const despMes = lancamentos
-          .filter(l=>l.cc===m.cc&&l.tipo==='Despesa'&&l.data.slice(0,7)===ym)
+          .filter(l=>l.cc===m.cc && isDespesaReal(l) && l.data.slice(0,7)===ym)
           .reduce((s,l)=>s+parseMoney(l.valor),0);
         realizado = despMes; // mês atual vs alvo mensal
       } else if (m.tipo === 'Receita') {
@@ -10892,7 +10992,7 @@ function renderMetas() {
 
     // ── Gasto do mês atual (para barra de orçamento mensal) ──
     const gastoCC = m.cc ? lancamentos
-      .filter(l=>l.tipo==='Despesa'&&l.cc===m.cc&&l.data.slice(0,7)===ym)
+      .filter(l=>isDespesaReal(l)&&l.cc===m.cc&&l.data.slice(0,7)===ym)
       .reduce((s,l)=>s+parseMoney(l.valor),0) : 0;
     const receitaCC = m.cc ? lancamentos
       .filter(l=>isReceitaReal(l)&&l.cc===m.cc&&l.data.slice(0,7)===ym)
@@ -10978,7 +11078,7 @@ function renderLimitesCC() {
   const ym = nowYM();
   listEl.innerHTML = limiteMetas.map(m => {
     const gasto = lancamentos
-      .filter(l => l.tipo==='Despesa' && l.cc===m.cc && l.data.slice(0,7)===ym)
+      .filter(l => isDespesaReal(l) && l.cc===m.cc && l.data.slice(0,7)===ym)
       .reduce((s,l)=>s+parseMoney(l.valor),0);
     const pct = Math.min(100, Math.round((gasto/m.alvo)*100));
     const cor = pct>=90 ? 'var(--red)' : pct>=70 ? '#f59e0b' : 'var(--teal)';
@@ -11457,7 +11557,7 @@ function renderComparativoDash() {
       !(l.cc && ccExcl.has(l.cc))
     );
     const r = ls.filter(l => isReceitaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
-    const e = ls.filter(l=>l.tipo==='Despesa' && l.banco!=='').reduce((s,l)=>s+parseMoney(l.valor),0);
+    const e = ls.filter(l => isDespesaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
     return { r, e, s: r-e };
   }
 
@@ -11517,7 +11617,7 @@ function renderPrevisaoDash() {
     const recAtivos = recorrentes.filter(r=>r.ativo==='sim');
 
     const recLanc  = lancMes.filter(l => isReceitaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
-    const despLanc = lancMes.filter(l=>l.tipo==='Despesa'&&l.banco!=='').reduce((s,l)=>s+parseMoney(l.valor),0);
+    const despLanc = lancMes.filter(l => isDespesaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
     const recRec   = recAtivos.filter(r=>r.tipo==='Receita').reduce((s,r)=>s+r.valor,0);
     const despRec  = recAtivos.filter(r=>r.tipo==='Despesa').reduce((s,r)=>s+r.valor,0);
 
@@ -11625,7 +11725,7 @@ function renderAlertaLimiteCCDash() {
   if (!limiteMetas.length) { card.style.display='none'; return; }
   const ym = nowYM();
   const alertas = limiteMetas.map(m => {
-    const gasto = lancamentos.filter(l=>l.tipo==='Despesa' && l.cc===m.cc && l.data.slice(0,7)===ym && !isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
+    const gasto = lancamentos.filter(l=>isDespesaReal(l) && l.cc===m.cc && l.data.slice(0,7)===ym).reduce((s,l)=>s+parseMoney(l.valor),0);
     const pct   = Math.min(100, Math.round((gasto/m.alvo)*100));
     return { ...m, gasto, pct };
   }).filter(m=>m.pct>=70);
@@ -11699,7 +11799,7 @@ function verificarAlertas() {
 
   // Alerta de limite CC ≥ 90%
   metas.filter(m=>m.tipo==='LimiteGasto' && m.cc).forEach(m => {
-    const gasto = lancamentos.filter(l=>l.tipo==='Despesa' && l.cc===m.cc && l.data.slice(0,7)===ym && !isTransferencia(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
+    const gasto = lancamentos.filter(l=>isDespesaReal(l) && l.cc===m.cc && l.data.slice(0,7)===ym).reduce((s,l)=>s+parseMoney(l.valor),0);
     const pct = Math.round((gasto/m.alvo)*100);
     if (pct>=90) notificar(`Limite CC: ${m.cc}`, `${pct}% do limite atingido (${fmtBRL(gasto)} de ${fmtBRL(m.alvo)})`);
   });
@@ -11924,6 +12024,25 @@ function cancelarAgendamentoCartao(id) {
   toast('Agendamento cancelado e lançamento excluído.','ok');
 }
 
+/* ══ BAIXA PARCIAL DE ITEM DA FATURA CC ══ */
+function baixaRapidaCC(id) {
+  // Baixa rápida sem modal — usa data de hoje
+  const l = lancamentos.find(x=>x.id===id);
+  if (!l) return;
+  l.pago = true;
+  l.dataPagamento = new Date().toISOString().slice(0,10);
+  saveAll(); renderLancamentos(); renderDashboard(); renderContasPagarDash();
+  toast('✓ Item baixado: ' + fmtBRL(parseMoney(l.valor)) + ' — ' + (l.desc||''), 'ok');
+}
+function desfazerBaixaCC(id) {
+  const l = lancamentos.find(x=>x.id===id);
+  if (!l) return;
+  l.pago = false;
+  delete l.dataPagamento;
+  saveAll(); renderLancamentos(); renderDashboard(); renderContasPagarDash();
+  toast('Baixa parcial desfeita.', 'inf');
+}
+
 /* ══ BAIXA RÁPIDA ══ */
 function baixaRapida(id) {
   const l = lancamentos.find(x=>x.id===id); if(!l) return;
@@ -12111,43 +12230,36 @@ function renderContasPagarDash() {
   const em7  = new Date(Date.now()+7*864e5).toISOString().slice(0,10);
 
   // ── Faturas de cartão ──
-  // Prioridade 1: lançamentos _fatura:true (modelo novo — gerados automaticamente)
-  // Prioridade 2: despesas antigas de cartão sem _fatura (agrupadas on-the-fly)
+  // Sempre agrupa pelas despesas individuais (com detalhamento).
+  // Se há _fatura sintético para o mesmo cartão+mês, usa seu total/status mas mostra o agrupado.
   const fatMap = {};
 
-  // Lançamentos de fatura gerados automaticamente
-  lancamentos.filter(l => l._fatura && !l.pago).forEach(l => {
-    const key = l.cartaoId + '_' + l.dataFatura;
-    fatMap[key] = {
-      cartaoId: l.cartaoId,
-      nome: (cartoes.find(c=>c.id===l.cartaoId)||{nome:'Cartão'}).nome,
-      valor: parseMoney(l.valor),
-      vencData: l.dataFatura || l.data,
-      ids: [l.id],
-      qtd: lancamentos.filter(x=>x.cartaoId===l.cartaoId&&x._fatura!==true&&!x.pago&&x.tipo==='Despesa').length || 1,
-      isFatLanc: true, // é lançamento de fatura real
-      fatId: l.id
-    };
-  });
-
-  // Lançamentos antigos: despesas de cartão sem _fatura, não pagas → agrupa por cartão+mês
+  // Primeiro: coleta todas as despesas individuais não pagas por cartão+vencimento
   lancamentos.filter(l =>
     l.tipo==='Despesa' && !l.pago && l.cartaoId && !l._fatura
   ).forEach(l => {
     const c = cartoes.find(x=>x.id===l.cartaoId);
     if (!c) return;
-    // Calcula vencimento desta despesa
-    const fechDay = c.fech ? parseInt(c.fech) : 31;
-    const vencDay = c.venc ? parseInt(c.venc) : 10;
-    const lDate   = new Date((l.data||hoje)+'T12:00:00');
-    let fatY = lDate.getFullYear(), fatM = lDate.getMonth();
-    if (lDate.getDate() > fechDay) { fatM++; if(fatM>11){fatM=0;fatY++;} }
-    const ultDia = new Date(fatY, fatM+1, 0).getDate();
-    const vencData = fatY+'-'+String(fatM+1).padStart(2,'0')+'-'+String(Math.min(vencDay,ultDia)).padStart(2,'0');
-    const key = l.cartaoId + '_' + vencData;
-    if (!fatMap[key]) {
-      fatMap[key] = { cartaoId:l.cartaoId, nome:c.nome, valor:0, vencData, ids:[], qtd:0, isFatLanc:false };
+    let vencData;
+    if (l.dataFatura) {
+      vencData = l.dataFatura;
+    } else {
+      const fechDay = c.fech ? parseInt(c.fech) : 31;
+      const vencDay = c.venc ? parseInt(c.venc) : 10;
+      const lDate   = new Date((l.data||hoje)+'T12:00:00');
+      let fatY = lDate.getFullYear(), fatM = lDate.getMonth();
+      if (lDate.getDate() > fechDay) { fatM++; if(fatM>11){fatM=0;fatY++;} }
+      const ultDia = new Date(fatY, fatM+1, 0).getDate();
+      vencData = fatY+'-'+String(fatM+1).padStart(2,'0')+'-'+String(Math.min(vencDay,ultDia)).padStart(2,'0');
     }
+    // Usa só o YM como chave — igual ao renderLancamentos — para garantir um único grupo por mês
+    const vencYM = vencData.slice(0,7);
+    const key = l.cartaoId + '_' + vencYM;
+    if (!fatMap[key]) {
+      fatMap[key] = { cartaoId:l.cartaoId, nome:c.nome, valor:0, vencData, vencYM, ids:[], qtd:0, isFatLanc:false };
+    }
+    // Mantém a data de vencimento mais tardia do grupo
+    if (vencData > fatMap[key].vencData) fatMap[key].vencData = vencData;
     fatMap[key].valor += parseMoney(l.valor);
     fatMap[key].ids.push(l.id);
     fatMap[key].qtd++;
@@ -12219,46 +12331,99 @@ function renderContasPagarDash() {
   </div>`;
 }
 
+// Abre modal de pagamento de fatura a partir da chave do grupo
+// (evita aspas duplas no onclick ao passar arrays JSON inline)
+function _abrirPagarFatura(key) {
+  const p = window._fatPayload && window._fatPayload[key];
+  if (!p) { toast('Erro ao abrir pagamento. Tente atualizar a tela.','err'); return; }
+  abrirBaixaCartaoIds(p.ids, p.cartNome, p.total, p.vencData, p.cartaoId, false);
+}
+
 function abrirBaixaCartaoIds(ids, cartaoNome, totalFatura, vencData, cartaoId, isFatLanc) {
   const hoje = new Date().toISOString().slice(0,10);
   document.getElementById('mBaixaCartaoNome').textContent  = 'Fatura ' + cartaoNome;
   document.getElementById('mBaixaCartaoTotal').textContent = fmtBRL(totalFatura);
   document.getElementById('mBaixaCartaoQtd').textContent   = 'Venc. ' + fmtDate(vencData);
   document.getElementById('mBaixaCartaoData').value        = vencData || hoje;
-  // Guarda: ids, cartaoId e flag se é fatura real ou agrupamento legado
-  document.getElementById('mBaixaCartaoId').value = JSON.stringify({ids, cartaoId, isFatLanc: !!isFatLanc, vencData});
+  // Popula select de bancos
+  const sel = document.getElementById('mBaixaCartaoBanco');
+  if (sel) {
+    sel.innerHTML = '<option value="">— selecione —</option>' +
+      bancos.map(b => `<option value="${b.nome}">${b.nome}</option>`).join('');
+    // Tenta pré-selecionar o banco vinculado ao cartão
+    const cartObj = cartoes.find(c => c.id === cartaoId);
+    if (cartObj && cartObj.banco) sel.value = cartObj.banco;
+  }
+  // Guarda: ids, cartaoId, isFatLanc, vencData, total
+  document.getElementById('mBaixaCartaoId').value = JSON.stringify({ids, cartaoId, isFatLanc: !!isFatLanc, vencData, total: totalFatura});
   openModal('modalBaixaCartao');
 }
 
 function confirmarBaixaCartao() {
   const raw     = document.getElementById('mBaixaCartaoId').value;
   const dataPag = document.getElementById('mBaixaCartaoData').value || new Date().toISOString().slice(0,10);
+  const bancoPag = document.getElementById('mBaixaCartaoBanco')?.value || '';
   let payload;
   try { payload = JSON.parse(raw); } catch(e) { closeModal('modalBaixaCartao'); return; }
-  const {ids, cartaoId, isFatLanc, vencData} = payload;
+  const {ids, cartaoId, vencData, total} = payload;
 
-  if (isFatLanc) {
-    // Novo modelo: baixa o lançamento de fatura (_fatura:true)
-    ids.forEach(id => {
-      const l = lancamentos.find(x=>x.id===id);
-      if (l) { l.pago=true; l.dataPagamento=dataPag; }
-    });
-    // Também marca as despesas individuais do mesmo cartão+vencimento como pagas
-    lancamentos.filter(l =>
-      l.tipo==='Despesa' && l.cartaoId===cartaoId && !l._fatura &&
-      (l.dataFatura||'').slice(0,7)===vencData.slice(0,7)
-    ).forEach(l => { l.pago=true; l.dataPagamento=dataPag; });
+  if (!bancoPag) {
+    toast('Selecione a conta a ser debitada.', 'err');
+    document.getElementById('mBaixaCartaoBanco')?.focus();
+    return;
+  }
+
+  const vencYM = vencData.slice(0,7);
+  const cartObj = cartoes.find(c=>c.id===cartaoId);
+  const cartNome = cartObj ? cartObj.nome : 'Cartão';
+
+  // Verifica se já existe lançamento de pagamento desta fatura
+  const lancPagamento = lancamentos.find(l =>
+    l.pagamentoFaturaCartao===cartaoId && l.faturaYMPago===vencYM
+  );
+
+  // Calcula total real das despesas pendentes (parciais ou total)
+  const despFatura = lancamentos.filter(l =>
+    l.tipo==='Despesa' && l.cartaoId===cartaoId && !l._fatura &&
+    (l.dataFatura||'').slice(0,7)===vencYM
+  );
+  const totalFat = despFatura.reduce((s,l)=>s+parseMoney(l.valor),0);
+
+  if (lancPagamento) {
+    // Já existe — atualiza data e banco
+    lancPagamento.data = dataPag;
+    lancPagamento.dataPagamento = dataPag;
+    lancPagamento.banco = bancoPag;
+    lancPagamento.valor = totalFat;
+    lancPagamento.pago = true;
   } else {
-    // Modelo sem _fatura: marca todas as despesas passadas pelos ids
-    ids.forEach(id => {
-      const l = lancamentos.find(x=>x.id===id);
-      if (l) { l.pago=true; l.dataPagamento=dataPag; }
+    // Cria lançamento de débito único na conta bancária
+    lancamentos.push({
+      id: uid(),
+      tipo: 'Despesa',
+      data: dataPag,
+      banco: bancoPag,
+      cc: 'Cartões',
+      forma: 'Débito em Conta',
+      cartaoId: '',
+      parcelas: '1', period: 'Único',
+      valor: totalFat,
+      desc: `Pagamento fatura ${cartNome} ${vencYM.slice(5,7)}/${vencYM.slice(0,4)}`,
+      dataCriacao: new Date().toISOString().slice(0,10),
+      pago: true,
+      dataPagamento: dataPag,
+      pagamentoFaturaCartao: cartaoId,
+      faturaYMPago: vencYM,
+      _ocultarLanc: true   // não exibe como linha individual na tela de lançamentos
     });
   }
 
+  // Marca todas as despesas individuais da fatura como pagas também
+  despFatura.forEach(l => { l.pago=true; l.dataPagamento=dataPag; });
+
   saveAll(); renderLancamentos(); renderDashboard(); renderContasPagarDash();
   closeModal('modalBaixaCartao');
-  toast((_lang==='en'?'✓ Invoice ':_lang==='es'?'✓ Factura ':'✓ Fatura ') + fmtDate(vencData) + ' paga!','ok');
+  toast('✓ Fatura ' + fmtDate(vencData) + ' paga! Débito de ' + fmtBRL(totalFat) + ' em ' + bancoPag + '.','ok');
 }
 
 /* ══ CONCILIAÇÃO - ABAS ══ */
@@ -12751,13 +12916,13 @@ function relTblWrap(cols,rows,foot=''){return`<div class="tbl-wrap"><table class
 
 function relFluxoCaixa(ym){
   const itens=lancamentos.filter(l=>l.data&&l.data.startsWith(ym));
-  const rec=itens.filter(l=>isReceitaReal(l)), desp=itens.filter(l=>isDespesaReal(l)&&l.banco!=='');
+  const rec=itens.filter(l=>isReceitaReal(l)), desp=itens.filter(l=>isDespesaReal(l));
   const totR=rec.reduce((s,l)=>s+parseMoney(l.valor),0), totD=desp.reduce((s,l)=>s+parseMoney(l.valor),0), saldo=totR-totD;
   const porDia={};
   itens.forEach(l=>{
     if(!porDia[l.data])porDia[l.data]={r:0,d:0};
     if(isReceitaReal(l))porDia[l.data].r+=parseMoney(l.valor);
-    else if(isDespesaReal(l)&&l.banco!=='')porDia[l.data].d+=parseMoney(l.valor);
+    else if(isDespesaReal(l))porDia[l.data].d+=parseMoney(l.valor);
   });
   const rows=Object.keys(porDia).sort().map(d=>`<tr><td class="td-m">${relFmtDate(d)}</td><td style="color:var(--teal);font-family:var(--mono)">${porDia[d].r>0?relFmt(porDia[d].r):'—'}</td><td style="color:var(--red);font-family:var(--mono)">${porDia[d].d>0?relFmt(porDia[d].d):'—'}</td><td style="color:${(porDia[d].r-porDia[d].d)>=0?'var(--teal)':'var(--red)'};font-family:var(--mono)">${relFmt(porDia[d].r-porDia[d].d)}</td></tr>`).join('');
   const foot=`<tr><td>${t('gen.total_upper')}</td><td style="color:var(--teal)">${relFmt(totR)}</td><td style="color:var(--red)">${relFmt(totD)}</td><td style="color:${saldo>=0?'var(--teal)':'var(--red)'}">${relFmt(saldo)}</td></tr>`;
@@ -12788,17 +12953,11 @@ function relMovCartao(ym,cartaoFiltro){
   return `<div class="rel-header"><div class="rel-title"><i class="fa fa-credit-card" style="color:var(--gold);margin-right:8px"></i>Movimentação de Cartões — ${relMesLabel(ym)}</div><div class="rel-kpis">${cf.map(c=>{const t=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&(l.cartaoId===c.id||l.cc===c.nome)).reduce((s,l)=>s+parseMoney(l.valor),0);return relKpiHtml(c.nome,relFmt(t),'neg');}).join('')}</div></div>${html}`;
 }
 function relCategoria(ym){
-  // Usa lançamentos individuais do cartão (banco='') E despesas normais (banco preenchido exceto pagamento de fatura)
-  // Isso captura o CC específico de cada compra do cartão para análise correta por categoria
   const ccExcl = new Set(centros.filter(c=>c.excluirRecDesp).map(c=>c.nome));
   const desp=lancamentos.filter(l=>
     l.data && l.data.startsWith(ym) &&
-    l.tipo==='Despesa' &&
-    !isTransferencia(l) &&
-    !(l.cc && ccExcl.has(l.cc)) &&
-    // Inclui lançamentos de cartão (banco='') E despesas normais com banco
-    // Exclui pagamento de fatura (tem banco E desc começa com 'Pagamento fatura')
-    !((l.desc||'').startsWith('Pagamento fatura ') && l.banco)
+    isDespesaReal(l) &&
+    !(l.cc && ccExcl.has(l.cc))
   );
   const total=desp.reduce((s,l)=>s+parseMoney(l.valor),0);
   const por={};desp.forEach(l=>{const cat=l.cc||'Sem categoria';por[cat]=(por[cat]||0)+parseMoney(l.valor);});
@@ -12815,7 +12974,7 @@ function relRxD(de,ate){
   let totR=0,totD=0;
   const rows=meses.map(ym=>{
     const r=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&isReceitaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
-    const d=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&isDespesaReal(l)&&l.banco!=='').reduce((s,l)=>s+parseMoney(l.valor),0);
+    const d=lancamentos.filter(l=>l.data&&l.data.startsWith(ym)&&isDespesaReal(l)).reduce((s,l)=>s+parseMoney(l.valor),0);
     totR+=r;totD+=d;const saldo=r-d;
     return`<tr><td style="font-weight:600">${relMesLabel(ym)}</td><td style="color:var(--teal);font-family:var(--mono)">${relFmt(r)}</td><td style="color:var(--red);font-family:var(--mono)">${relFmt(d)}</td><td style="color:${saldo>=0?'var(--teal)':'var(--red)'};font-family:var(--mono)">${relFmt(saldo)}</td></tr>`;
   }).join('');
@@ -13714,13 +13873,12 @@ function abrirDetalhesDash(tipo) {
   } else if (tipo === 'saldo') {
     // Saldo = todas as receitas e despesas do período (exceto transferências)
     itens  = data.filter(l =>
-      isReceitaReal(l) ||
-      (l.tipo==='Despesa' && !isTransferencia(l) && l.banco!=='')
+      isReceitaReal(l) || isDespesaReal(l)
     );
     titulo = '= Saldo do Período';
     cor    = 'var(--gold)';
   } else {
-    itens  = data.filter(l => l.tipo==='Despesa' && !isTransferencia(l) && l.banco!=='');
+    itens  = data.filter(l => isDespesaReal(l));
     titulo = '↓ Total Despesas';
     cor    = 'var(--red)';
   }
@@ -14581,8 +14739,8 @@ function _drillReset() {
 function relCategoriaHierarquia(ym) {
   const ccExcl = new Set(centros.filter(c => c.excluirRecDesp).map(c => c.nome));
   const desp = lancamentos.filter(l =>
-    l.data && l.data.startsWith(ym) && l.tipo === 'Despesa' && !isTransferencia(l) &&
-    !(l.cc && ccExcl.has(l.cc)) && !((l.desc||'').startsWith('Pagamento fatura ') && l.banco)
+    l.data && l.data.startsWith(ym) && isDespesaReal(l) &&
+    !(l.cc && ccExcl.has(l.cc))
   );
   const total = desp.reduce((s, l) => s + parseMoney(l.valor), 0);
 
@@ -15111,7 +15269,7 @@ verificarTermos();
 
 <!-- Modal Baixa Fatura Cartão -->
 <div class="modal-bg" id="modalBaixaCartao" onclick="if(event.target===this)closeModal('modalBaixaCartao')">
-  <div class="modal" style="max-width:420px">
+  <div class="modal" style="max-width:460px">
     <button class="modal-close" onclick="closeModal('modalBaixaCartao')"><i class="fa fa-times"></i></button>
     <div class="modal-title" style="color:var(--teal)"><i class="fa fa-credit-card"></i> Pagar Fatura do Cartão</div>
     <input type="hidden" id="mBaixaCartaoId">
@@ -15121,11 +15279,19 @@ verificarTermos();
       <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:4px" id="mBaixaCartaoQtd"></div>
     </div>
     <div style="background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--teal);font-family:var(--mono)">
-      <i class="fa fa-info-circle" style="margin-right:6px"></i>Todos os lançamentos desta fatura serão marcados como pagos.
+      <i class="fa fa-info-circle" style="margin-right:6px"></i>Um débito único será registrado na conta selecionada. As despesas por categoria já estão registradas.
     </div>
-    <div class="field">
-      <label data-i18n="lbl.data_pagamento">Data do Pagamento</label>
-      <input type="date" id="mBaixaCartaoData">
+    <div class="input-row cols2">
+      <div class="field">
+        <label data-i18n="lbl.data_pagamento">Data do Pagamento</label>
+        <input type="date" id="mBaixaCartaoData">
+      </div>
+      <div class="field">
+        <label>Conta a Debitar *</label>
+        <select id="mBaixaCartaoBanco">
+          <option value="">— selecione —</option>
+        </select>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modalBaixaCartao')">Cancelar</button>
