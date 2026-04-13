@@ -5091,8 +5091,16 @@ window._applySelectOptions = function() {
       </div>
       <div class="field">
         <label data-i18n="lbl.data_req">Data *</label>
-        <input type="date" id="mLancData">
+        <input type="date" id="mLancData" onchange="_onDataLancChange()">
       </div>
+    </div>
+
+    <!-- Checkbox: lançar já baixado (aparece só quando data <= hoje) -->
+    <div id="fieldJaBaixado" style="display:none;margin-bottom:14px;padding:10px 14px;background:rgba(62,184,154,.07);border:1px solid rgba(62,184,154,.25);border-radius:var(--r)">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:12px;color:var(--teal)">
+        <input type="checkbox" id="mLancJaBaixado" style="width:16px;height:16px;accent-color:var(--teal);cursor:pointer" checked>
+        <span><strong>Lançar já baixado na data informada</strong> — registrar como pago imediatamente</span>
+      </label>
     </div>
 
     <!-- Forma de Pagamento logo após Data -->
@@ -7345,6 +7353,22 @@ function delCartao(id) {
 /* ══════════════════════════════════════════
    LANÇAMENTOS
 ══════════════════════════════════════════ */
+// ── Controle de data: exibe/oculta checkbox "Lançar já baixado" ───────────
+function _onDataLancChange() {
+  const dataVal = document.getElementById('mLancData')?.value || '';
+  const hoje    = new Date().toISOString().slice(0,10);
+  const fieldEl = document.getElementById('fieldJaBaixado');
+  const chkEl   = document.getElementById('mLancJaBaixado');
+  if (!fieldEl) return;
+  if (dataVal && dataVal <= hoje) {
+    fieldEl.style.display = '';
+    if (chkEl) chkEl.checked = true;  // vem marcado por padrão
+  } else {
+    fieldEl.style.display = 'none';
+    if (chkEl) chkEl.checked = false; // internamente desmarcado para datas futuras
+  }
+}
+
 // ── Controle de Parcelas × Periodicidade ──────────────────────────────────
 function _onParcelasChange() {
   const parcSel  = document.getElementById('mLancParcelas');
@@ -7442,6 +7466,8 @@ function openModalLanc(id) {
     onFormaChange();  // mostra/oculta cartao conforme forma selecionada
     onCartaoChange(); // preenche info de fechamento/vencimento se cartão já selecionado
   }
+  // Exibe/oculta checkbox "Lançar já baixado" conforme a data
+  _onDataLancChange();
   openModal('modalLanc');
 }
 
@@ -7460,6 +7486,10 @@ function saveLanc() {
   const valor    = parseMoney(valorRaw);
   const desc     = document.getElementById('mLancDesc').value.trim();
   const editId   = document.getElementById('lancEditId').value;
+  // Checkbox "lançar já baixado" — só válido para datas <= hoje e sem cartão de crédito
+  const hoje0    = new Date().toISOString().slice(0,10);
+  const jaBaixadoEl = document.getElementById('mLancJaBaixado');
+  const jaBaixado = !cartaoId && jaBaixadoEl && jaBaixadoEl.checked && data && data <= hoje0;
   // Lançamento no cartão não debita conta corrente diretamente
   const bancoFinal = cartaoId ? '' : banco;
 
@@ -7566,9 +7596,9 @@ function saveLanc() {
       }
       toast(t('toast.compra_parcelada') + nParcelas + 'x lançada no cartão débito!', 'ok');
     } else {
-      // Cartão de crédito: lógica de fatura/fechamento normal
-      // 1a fatura: se compra foi feita APOS o fechamento → fatura do proximo mes
-      //            se foi ANTES ou NO DIA → fatura do mes corrente
+      // Cartão de crédito: lógica de fatura/fechamento
+      // REGRA: dia == fechamento → fatura do mês atual
+      //        dia > fechamento (d+1 em diante) → fatura do mês seguinte
       let primeiraFatura = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
       if (baseDate.getDate() > fechDay) {
         primeiraFatura.setMonth(primeiraFatura.getMonth() + 1);
@@ -7659,6 +7689,7 @@ function saveLanc() {
       const tipoFinal2 = tipo === 'Financiamento' ? 'Despesa' : tipo;
       const groupId2 = uid();
       const baseDate2 = new Date(data + 'T12:00:00');
+      const hoje2 = new Date().toISOString().slice(0,10);
       for (let p = 0; p < nParcelas; p++) {
         let pDate = new Date(baseDate2);
         if (period === 'Diário')    pDate.setDate(pDate.getDate() + p);
@@ -7668,12 +7699,16 @@ function saveLanc() {
         else if (period === 'Anual')    pDate.setFullYear(pDate.getFullYear() + p);
         const pDateStr = pDate.getFullYear()+'-'+String(pDate.getMonth()+1).padStart(2,'0')+'-'+String(pDate.getDate()).padStart(2,'0');
         const descParcela = (desc ? desc+' ' : '')+'('+(p+1)+'/'+nParcelas+')';
+        // Aplica jaBaixado para parcelas com data <= hoje
+        const parcJaBaixado = jaBaixado && pDateStr <= hoje2;
         lancamentos.push({
           id:uid(), groupId:groupId2,
           dataCriacao: new Date().toISOString().slice(0,10),
           tipo:tipoFinal2, banco:bancoFinal, cc, forma, cartaoId:'',
           parcelas:String(nParcelas), parcelaNum:p+1, period,
-          valor, desc:descParcela, data:pDateStr, pago:false,
+          valor, desc:descParcela, data:pDateStr,
+          pago: parcJaBaixado,
+          ...(parcJaBaixado ? {dataPagamento: pDateStr} : {}),
           ...(financId ? {financId} : {})
         });
       }
@@ -7688,18 +7723,20 @@ function saveLanc() {
     let fechDataSingle = data; // fallback: data informada pelo usuário
 
     // Lógica de fatura/fechamento aplica APENAS para cartão de crédito
+    // REGRA: data == dia de fechamento → fatura do mês atual
+    //        data > dia de fechamento (d+1 em diante) → fatura do mês seguinte
     if (isCartaoDesp && !isCartaoDebitoDesp) {
       const cartS = cartSel2;
       const fechS = cartS?.fech ? parseInt(cartS.fech) : 31;
       const vencS = cartS?.venc ? parseInt(cartS.venc) : 10;
-      // Determina mês da fatura a partir da data do lançamento
+      // Determina mês da fatura: só avança se dia ESTRITAMENTE MAIOR que fechamento
       const baseS = new Date(data+'T12:00:00');
       let fatYS = baseS.getFullYear(), fatMS = baseS.getMonth(); // 0-based
       if (baseS.getDate() > fechS) { fatMS++; if(fatMS>11){fatMS=0;fatYS++;} }
       // Data de vencimento da fatura
       const ultVenc = new Date(fatYS, fatMS+1, 0).getDate();
       fatDataSingle = fatYS+'-'+String(fatMS+1).padStart(2,'0')+'-'+String(Math.min(vencS,ultVenc)).padStart(2,'0');
-      // Data contábil = fechamento do mês da fatura (data que fica no lançamento)
+      // Data contábil = fechamento do mês da fatura
       const ultFech = new Date(fatYS, fatMS+1, 0).getDate();
       const fechDiaS = Math.min(fechS, ultFech);
       fechDataSingle = fatYS+'-'+String(fatMS+1).padStart(2,'0')+'-'+String(fechDiaS).padStart(2,'0');
@@ -7718,11 +7755,12 @@ function saveLanc() {
       ...(isPeriod ? {parcelaNum:1, groupId:gid} : {}),
       // Cartão débito: pago imediatamente, sem dataFatura
       // Cartão crédito: pendente até o pagamento da fatura
+      // Sem cartão: respeita o checkbox "jaBaixado"
       ...(isCartaoDebitoDesp
         ? {pago:true, dataPagamento:data}
         : isCartaoDesp
           ? {pago:false, dataFatura:fatDataSingle}
-          : {})
+          : jaBaixado ? {pago:true, dataPagamento:data} : {pago:false})
     };
     lancamentos.push(obj);
     // Nota: não criamos _fatura aqui — o agrupamento em renderLancamentos e renderContasPagarDash
@@ -9206,8 +9244,8 @@ function openModalInvest(id) {
   document.getElementById('modalInvestTitle').textContent = id ? 'Editar Investimento' : 'Novo Investimento';
   document.getElementById('mInvestNome').value    = inv?.nome||'';
   document.getElementById('mInvestTipo').value    = inv?.tipo||'Renda Fixa';
-  document.getElementById('mInvestAportado').value= inv ? fmtBRL(inv.aportado) : '';
-  document.getElementById('mInvestAtual').value   = inv ? fmtBRL(inv.atual) : '';
+  document.getElementById('mInvestAportado').value= inv ? fmtBRL(inv.aportado) : fmtBRL(0);
+  document.getElementById('mInvestAtual').value   = inv ? fmtBRL(inv.atual)    : fmtBRL(0);
   document.getElementById('mInvestRentab').value  = inv?.rentab||'';
   document.getElementById('mInvestData').value    = inv?.data||'';
   document.getElementById('mInvestVenc').value    = inv?.venc||'';
@@ -9230,8 +9268,9 @@ function saveInvest() {
   const venc    = document.getElementById('mInvestVenc').value;
   const obs     = document.getElementById('mInvestObs').value.trim();
 
-  if (!nome)    { toast(t('toast.informe_nome'),'err'); return; }
-  if (!aportado){ toast(t('toast.informe_valor_aplicado'),'err'); return; }
+  if (!nome) { toast(t('toast.informe_nome'),'err'); return; }
+  // Aceita aportado=0 (investimento ainda sem aporte inicial)
+  if (aportado < 0) { toast('Valor não pode ser negativo.','err'); return; }
   // Guard against accidentally huge values (e.g. paste error)
   if (aportado > 99999999) { toast(t('toast.informe_valor_alto2'),'err'); return; }
 
