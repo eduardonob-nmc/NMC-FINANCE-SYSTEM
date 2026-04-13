@@ -3395,8 +3395,11 @@ window._applySelectOptions = function() {
         </div>
         <div class="nav-group">
           <div class="nav-group-label" data-i18n="nav.group.operacoes">Operações</div>
+          <button class="nav-item" onclick="switchTab('lancamentos',document.querySelector('[data-tab=lancamentos]'));openModalLanc()">
+            <i class="fa fa-plus-circle ni"></i> <span>Novo Lançamento</span>
+          </button>
           <button class="nav-item" data-tab="lancamentos" onclick="switchTab('lancamentos',this)">
-            <i class="fa fa-exchange-alt ni"></i> <span data-i18n="nav.lancamentos">Lançamentos</span>
+            <i class="fa fa-exchange-alt ni"></i> <span>Edição e Pesquisa de Lançamentos</span>
           </button>
           <button class="nav-item" data-tab="recorrentes" onclick="switchTab('recorrentes',this)">
             <i class="fa fa-sync-alt ni"></i> <span data-i18n="nav.recorrentes">Recorrentes</span>
