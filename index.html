@@ -12090,17 +12090,18 @@ function baixaRapida(id) {
   const l = lancamentos.find(x=>x.id===id); if(!l) return;
   const hoje = new Date().toISOString().slice(0,10);
   document.getElementById('modalBaixaId').value = id;
-  document.getElementById('modalBaixaData').value = hoje;
   document.getElementById('modalBaixaDesc').textContent = l.desc || 'Lançamento';
   document.getElementById('modalBaixaValor').textContent = fmtBRL(parseMoney(l.valor));
   // Limpar campos extras
   ['modalBaixaDesconto','modalBaixaMulta','modalBaixaJuros','modalBaixaCorrecao'].forEach(function(fid){
     const el=document.getElementById(fid); if(el) el.value='';
   });
-  document.getElementById('modalBaixaDescontoBox').style.display='none';
-  document.getElementById('modalBaixaAtrasoBox').style.display='none';
   // Armazena data de vencimento para comparação
   document.getElementById('modalBaixaData').dataset.venc = l.data || hoje;
+  // Data padrão = hoje (pode ser alterada pelo usuário)
+  document.getElementById('modalBaixaData').value = hoje;
+  // Exibe/oculta campos de desconto ou juros conforme diferença entre hoje e vencimento
+  onBaixaDataChange();
   openModal('modalBaixa');
 }
 function onBaixaDataChange() {
