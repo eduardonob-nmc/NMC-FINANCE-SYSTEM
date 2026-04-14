@@ -1160,6 +1160,13 @@ tbody tr:last-child td { border-bottom: none; }
   .cad-btn-wrap .btn { width:100%;justify-content:center; }
 }
 
+/* Modal Patrimônio/Investimento — responsivo sem scroll lateral */
+#modalInvest .modal { box-sizing:border-box; overflow-x:hidden; }
+@media(max-width:540px) {
+  #modalInvest .modal { width:96vw !important; max-width:96vw !important; }
+  #modalInvest [style*="grid-template-columns:1fr 1fr"] { grid-template-columns:1fr !important; }
+}
+
 /* ── Conciliação — totalmente responsiva ── */
 /* ── Conciliação — 100% responsiva, sem scroll lateral ── */
 #tab-conciliacao { max-width:100%; overflow-x:hidden; }
@@ -1374,8 +1381,8 @@ window._I18N = {
     'page.config': 'Configuração',
     'page.config.sub': 'Backup, alertas, conciliação e ajustes do sistema',
     'page.manual': 'Manual do Sistema',
-    'page.investimentos': 'Investimentos',
-    'page.investimentos.sub': 'Controle de aplicações e patrimônio',
+    'page.investimentos': 'Patrimônio e Investimentos',
+    'page.investimentos.sub': 'Controle de patrimônio, investimentos e evolução',
     'page.financiamentos': 'Financiamentos',
     'page.financiamentos.sub': 'Controle de parcelas e saldo devedor',
     'page.conciliacao': 'Conciliação Bancária',
@@ -4531,8 +4538,8 @@ window._applySelectOptions = function() {
         <div class="page-hd">
           <div style="display:flex;align-items:center;gap:12px">
             <div>
-              <div class="page-title" id="pageTitle_investimentos" data-i18n="page.investimentos">Investimentos</div>
-              <div class="page-sub" id="pageSub_investimentos" data-i18n="page.investimentos.sub">Controle de aplicações e patrimônio</div>
+              <div class="page-title" id="pageTitle_investimentos" data-i18n="page.investimentos">Patrimônio e Investimentos</div>
+              <div class="page-sub" id="pageSub_investimentos" data-i18n="page.investimentos.sub">Controle de patrimônio, investimentos e evolução</div>
             </div>
           </div>
           <button class="btn btn-gold btn-full-mobile" onclick="openModalInvest()">
@@ -5622,7 +5629,7 @@ window._applySelectOptions = function() {
 
 <!-- Modal Investimento -->
 <div class="modal-bg" id="modalInvest">
-  <div class="modal" style="width:580px">
+  <div class="modal" style="width:min(580px,96vw);max-width:580px;box-sizing:border-box">
     <button class="modal-close" onclick="closeModal('modalInvest')"><i class="fa fa-times"></i></button>
     <div class="modal-title" id="modalInvestTitle">Novo Patrimônio ou Investimento</div>
     <input type="hidden" id="investEditId">
@@ -5630,24 +5637,24 @@ window._applySelectOptions = function() {
     <!-- Categoria: Investimento ou Patrimônio -->
     <div class="field" style="margin-bottom:14px">
       <label style="font-weight:600">Categoria *</label>
-      <div style="display:flex;gap:10px;margin-top:6px">
-        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 18px;border-radius:var(--r);border:1px solid var(--border);flex:1;justify-content:center;user-select:none" id="lblCatInvest">
+      <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--border);flex:1;min-width:120px;justify-content:center;user-select:none" id="lblCatInvest">
           <input type="radio" name="mInvestCategoria" id="mInvestCatInvest" value="Investimento" onchange="_onInvestCatChange()" style="accent-color:var(--teal);width:15px;height:15px" checked>
           <i class="fa fa-chart-line" style="color:var(--teal)"></i> <span>Investimento</span>
         </label>
-        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 18px;border-radius:var(--r);border:1px solid var(--border);flex:1;justify-content:center;user-select:none" id="lblCatPatrim">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--border);flex:1;min-width:120px;justify-content:center;user-select:none" id="lblCatPatrim">
           <input type="radio" name="mInvestCategoria" id="mInvestCatPatrim" value="Patrimônio" onchange="_onInvestCatChange()" style="accent-color:var(--gold);width:15px;height:15px">
           <i class="fa fa-home" style="color:var(--gold)"></i> <span>Patrimônio</span>
         </label>
       </div>
     </div>
 
-    <div class="input-row cols2">
-      <div class="field">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div class="field" style="margin:0">
         <label>Nome de Identificação *</label>
-        <input id="mInvestNome" placeholder="Ex: CDB Nubank, Imóvel Rua X, IVVB11...">
+        <input id="mInvestNome" placeholder="Ex: CDB Nubank, Imóvel, IVVB11...">
       </div>
-      <div class="field">
+      <div class="field" style="margin:0">
         <label>Tipo *</label>
         <select id="mInvestTipo">
           <option value="Renda Fixa">Renda Fixa</option>
@@ -5667,12 +5674,12 @@ window._applySelectOptions = function() {
         </select>
       </div>
     </div>
-    <div class="input-row cols2">
-      <div class="field">
-        <label>Valor Aplicado (total aportado) *</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div class="field" style="margin:0">
+        <label>Valor de Aquisição / Aportado *</label>
         <input id="mInvestAportado" placeholder="R$ 0,00" oninput="maskMoney(this)">
       </div>
-      <div class="field">
+      <div class="field" style="margin:0">
         <label>Valor Atual</label>
         <input id="mInvestAtual" placeholder="R$ 0,00" oninput="maskMoney(this)">
       </div>
@@ -5680,37 +5687,37 @@ window._applySelectOptions = function() {
 
     <!-- Campo Depreciação — só para Patrimônio -->
     <div id="fieldInvestDepreciacao" style="display:none">
-      <div class="input-row cols2">
-        <div class="field">
-          <label>Depreciação Anual (%) <span style="font-size:10px;color:var(--text3);font-weight:400">— abatida na virada de cada ano</span></label>
-          <input id="mInvestDepreciacao" type="number" step="0.01" min="0" max="100" placeholder="Ex: 10 (para 10% ao ano)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin:0">
+          <label>Depreciação Anual (%)<br><span style="font-size:10px;color:var(--text3);font-weight:400">abatida na virada do ano</span></label>
+          <input id="mInvestDepreciacao" type="number" step="0.01" min="0" max="100" placeholder="Ex: 10">
         </div>
-        <div class="field">
-          <label>Rentabilidade Anual Esperada (%)</label>
+        <div class="field" style="margin:0">
+          <label>Rentabilidade Esperada (%/ano)</label>
           <input id="mInvestRentab" type="number" step="0.01" placeholder="Ex: 5.0">
         </div>
       </div>
     </div>
 
-    <!-- Campo Rentabilidade — só para Investimento -->
-    <div id="fieldInvestRentab" style="">
-      <div class="input-row cols2">
-        <div class="field">
-          <label>Rentabilidade Anual Esperada (%)</label>
+    <!-- Campo Rentabilidade + Banco — só para Investimento -->
+    <div id="fieldInvestRentab">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin:0">
+          <label>Rentabilidade Esperada (%/ano)</label>
           <input id="mInvestRentabInv" type="number" step="0.01" placeholder="Ex: 12.5">
         </div>
-        <div class="field">
-          <label data-i18n="lbl.banco_corretora">Banco / Corretora</label>
+        <div class="field" style="margin:0">
+          <label>Banco / Corretora</label>
           <select id="mInvestBanco">
-            <option value="" data-i18n-key="opt.selecione">— selecione —</option>
+            <option value="">— selecione —</option>
           </select>
         </div>
       </div>
     </div>
 
     <!-- Banco para Patrimônio -->
-    <div id="fieldInvestBancoPatrim" style="display:none">
-      <div class="field">
+    <div id="fieldInvestBancoPatrim" style="display:none;margin-bottom:12px">
+      <div class="field" style="margin:0">
         <label>Instituição / Custódia (opcional)</label>
         <select id="mInvestBancoPatrim">
           <option value="">— selecione —</option>
@@ -5718,21 +5725,21 @@ window._applySelectOptions = function() {
       </div>
     </div>
 
-    <div class="input-row cols2">
-      <div class="field">
-        <label data-i18n="lbl.data_inicio">Data de Início</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div class="field" style="margin:0">
+        <label>Data de Início</label>
         <input id="mInvestData" type="date">
       </div>
-      <div class="field">
+      <div class="field" style="margin:0">
         <label>Vencimento (opcional)</label>
         <input id="mInvestVenc" type="date">
       </div>
     </div>
     <div class="field">
       <label>Observação</label>
-      <input id="mInvestObs" placeholder="Ex: Indexado ao CDI, IPCA+6%, Apartamento 2 quartos...">
+      <input id="mInvestObs" placeholder="Ex: Indexado ao CDI, Apartamento 2 quartos...">
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" style="flex-wrap:wrap;gap:8px">
       <button class="btn btn-outline" onclick="closeModal('modalInvest')">Cancelar</button>
       <button class="btn btn-gold" onclick="saveInvest()"><i class="fa fa-save"></i> Salvar</button>
     </div>
@@ -6460,6 +6467,8 @@ function doLogin() {
   aplicarDepreciacaoAnualPatrimonio();
   pedirPermissaoNotificacao();
   setTimeout(verificarAlertas, 2000);
+  // Garante que sempre abre no Dashboard — independente da aba que estava ativa antes
+  switchTab('dashboard', document.querySelector('[data-tab="dashboard"]'));
 }
 
 document.addEventListener('keydown', e => {
