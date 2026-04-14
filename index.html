@@ -1223,8 +1223,8 @@ tbody tr:last-child td { border-bottom: none; }
 @media(max-width:900px){ .invest-grid { grid-template-columns:1fr 1fr; } }
 @media(max-width:540px){ .invest-grid { grid-template-columns:1fr; } }
 
-.invest-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r2); padding:18px 20px; position:relative; overflow:hidden; }
-.invest-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--teal),var(--gold)); }
+.invest-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r2); padding:18px 20px; position:relative; }
+.invest-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--teal),var(--gold)); border-radius:var(--r2) var(--r2) 0 0; }
 .invest-card-name { font-family:var(--serif); font-size:16px; font-weight:600; color:var(--text); margin-bottom:4px; }
 .invest-badge-tipo { display:inline-block; font-family:var(--mono); font-size:10px; padding:2px 8px; border-radius:99px; background:rgba(62,184,154,.15); color:var(--teal); margin-bottom:12px; }
 .invest-stat { margin-bottom:8px; }
@@ -3492,11 +3492,11 @@ window._applySelectOptions = function() {
             <div class="stat-hint" id="dSaldoTotalHint">todos os lançamentos</div>
             <div id="dSaldoBreakdown" style="display:none;margin-top:8px;border-top:1px solid var(--border);padding-top:8px"></div>
           </div>
-          <!-- Item 5: Card Patrimônio Atual -->
-          <div class="stat-card" style="border-color:var(--teal);cursor:pointer" onclick="abrirDetalhePatrimonio()" title="Clique para ver detalhes dos investimentos">
-            <div class="stat-label"><i class="fa fa-chart-line" style="font-size:10px;color:var(--teal);margin-right:4px"></i>Patrimônio Atual <i class="fa fa-chevron-right" style="font-size:9px;opacity:.5;margin-left:4px"></i></div>
+          <!-- Item 5: Card Patrimônio e Investimentos -->
+          <div class="stat-card" style="border-color:var(--teal);cursor:pointer" onclick="abrirDetalhePatrimonio()" title="Clique para ver detalhes">
+            <div class="stat-label"><i class="fa fa-chart-line" style="font-size:10px;color:var(--teal);margin-right:4px"></i>Patrimônio e Invest. <i class="fa fa-chevron-right" style="font-size:9px;opacity:.5;margin-left:4px"></i></div>
             <div class="stat-val" id="dPatrimonio" style="color:var(--teal)">R$ 0,00</div>
-            <div class="stat-hint" id="dPatrimonioHint">total em investimentos</div>
+            <div class="stat-hint" id="dPatrimonioHint">investimentos + patrimônio</div>
           </div>
         </div>
 
@@ -4536,7 +4536,7 @@ window._applySelectOptions = function() {
             </div>
           </div>
           <button class="btn btn-gold btn-full-mobile" onclick="openModalInvest()">
-            <i class="fa fa-plus"></i> Novo Investimento
+            <i class="fa fa-plus"></i> Novo Patrimônio ou Investimento
           </button>
         </div>
 
@@ -4565,12 +4565,18 @@ window._applySelectOptions = function() {
             <div class="chart-box"><button class="chart-zoom-btn" id="zoomResetInvestTipo" onclick="resetZoom('grafInvestTipo',this)">↺ Reset zoom</button><canvas id="grafInvestTipo" style="max-height:340px"></canvas></div>
           </div>
           <div class="card">
-            <div class="card-title">Distribuição por Ativo <span class="badge badge-gold">Pizza</span></div>
+            <div class="card-title">Investimentos vs Patrimônio <span class="badge badge-gold">Pizza</span></div>
             <div class="chart-box"><button class="chart-zoom-btn" id="zoomResetInvestAtivo" onclick="resetZoom('grafInvestAtivo',this)">↺ Reset zoom</button><canvas id="grafInvestAtivo" style="max-height:340px"></canvas></div>
           </div>
         </div>
         <div class="card" style="margin-bottom:20px">
-          <div class="card-title">Evolução Mensal do Patrimônio <span class="badge badge-gold">Gráfico</span></div>
+          <div class="card-title">Evolução Mensal — Investimentos, Patrimônio e Total <span class="badge badge-gold">Gráfico</span></div>
+          <div style="font-size:11px;color:var(--text3);font-family:var(--mono);padding:0 0 8px 0">
+            <span style="color:#c9a84c">■</span> Total Geral &nbsp;
+            <span style="color:#3eb89a">■</span> Investimentos &nbsp;
+            <span style="color:#a78bfa">■</span> Patrimônio &nbsp;
+            <span style="color:#4a8fff">- -</span> Capital Investido
+          </div>
           <div class="chart-box"><button class="chart-zoom-btn" id="zoomResetInvestEvolucao" onclick="resetZoom('grafInvestEvolucao',this)">↺ Reset zoom</button><canvas id="grafInvestEvolucao"></canvas></div>
         </div>
 
@@ -5618,12 +5624,28 @@ window._applySelectOptions = function() {
 <div class="modal-bg" id="modalInvest">
   <div class="modal" style="width:580px">
     <button class="modal-close" onclick="closeModal('modalInvest')"><i class="fa fa-times"></i></button>
-    <div class="modal-title" id="modalInvestTitle">Novo Investimento</div>
+    <div class="modal-title" id="modalInvestTitle">Novo Patrimônio ou Investimento</div>
     <input type="hidden" id="investEditId">
+
+    <!-- Categoria: Investimento ou Patrimônio -->
+    <div class="field" style="margin-bottom:14px">
+      <label style="font-weight:600">Categoria *</label>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 18px;border-radius:var(--r);border:1px solid var(--border);flex:1;justify-content:center;user-select:none" id="lblCatInvest">
+          <input type="radio" name="mInvestCategoria" id="mInvestCatInvest" value="Investimento" onchange="_onInvestCatChange()" style="accent-color:var(--teal);width:15px;height:15px" checked>
+          <i class="fa fa-chart-line" style="color:var(--teal)"></i> <span>Investimento</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 18px;border-radius:var(--r);border:1px solid var(--border);flex:1;justify-content:center;user-select:none" id="lblCatPatrim">
+          <input type="radio" name="mInvestCategoria" id="mInvestCatPatrim" value="Patrimônio" onchange="_onInvestCatChange()" style="accent-color:var(--gold);width:15px;height:15px">
+          <i class="fa fa-home" style="color:var(--gold)"></i> <span>Patrimônio</span>
+        </label>
+      </div>
+    </div>
+
     <div class="input-row cols2">
       <div class="field">
-        <label>Nome do Investimento *</label>
-        <input id="mInvestNome" placeholder="Ex: CDB Nubank, IVVB11...">
+        <label>Nome de Identificação *</label>
+        <input id="mInvestNome" placeholder="Ex: CDB Nubank, Imóvel Rua X, IVVB11...">
       </div>
       <div class="field">
         <label>Tipo *</label>
@@ -5638,6 +5660,9 @@ window._applySelectOptions = function() {
           <option value="Cripto">Cripto</option>
           <option value="Previdência">Previdência</option>
           <option value="Poupança">Poupança</option>
+          <option value="Imóvel">Imóvel</option>
+          <option value="Veículo">Veículo</option>
+          <option value="Equipamento">Equipamento</option>
           <option value="Outro">Outro</option>
         </select>
       </div>
@@ -5652,18 +5677,47 @@ window._applySelectOptions = function() {
         <input id="mInvestAtual" placeholder="R$ 0,00" oninput="maskMoney(this)">
       </div>
     </div>
-    <div class="input-row cols2">
-      <div class="field">
-        <label>Rentabilidade Anual Esperada (%)</label>
-        <input id="mInvestRentab" type="number" step="0.01" placeholder="Ex: 12.5">
+
+    <!-- Campo Depreciação — só para Patrimônio -->
+    <div id="fieldInvestDepreciacao" style="display:none">
+      <div class="input-row cols2">
+        <div class="field">
+          <label>Depreciação Anual (%) <span style="font-size:10px;color:var(--text3);font-weight:400">— abatida na virada de cada ano</span></label>
+          <input id="mInvestDepreciacao" type="number" step="0.01" min="0" max="100" placeholder="Ex: 10 (para 10% ao ano)">
+        </div>
+        <div class="field">
+          <label>Rentabilidade Anual Esperada (%)</label>
+          <input id="mInvestRentab" type="number" step="0.01" placeholder="Ex: 5.0">
+        </div>
       </div>
+    </div>
+
+    <!-- Campo Rentabilidade — só para Investimento -->
+    <div id="fieldInvestRentab" style="">
+      <div class="input-row cols2">
+        <div class="field">
+          <label>Rentabilidade Anual Esperada (%)</label>
+          <input id="mInvestRentabInv" type="number" step="0.01" placeholder="Ex: 12.5">
+        </div>
+        <div class="field">
+          <label data-i18n="lbl.banco_corretora">Banco / Corretora</label>
+          <select id="mInvestBanco">
+            <option value="" data-i18n-key="opt.selecione">— selecione —</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banco para Patrimônio -->
+    <div id="fieldInvestBancoPatrim" style="display:none">
       <div class="field">
-        <label data-i18n="lbl.banco_corretora">Banco / Corretora</label>
-        <select id="mInvestBanco">
-          <option value="" data-i18n-key="opt.selecione">— selecione —</option>
+        <label>Instituição / Custódia (opcional)</label>
+        <select id="mInvestBancoPatrim">
+          <option value="">— selecione —</option>
         </select>
       </div>
     </div>
+
     <div class="input-row cols2">
       <div class="field">
         <label data-i18n="lbl.data_inicio">Data de Início</label>
@@ -5676,11 +5730,58 @@ window._applySelectOptions = function() {
     </div>
     <div class="field">
       <label>Observação</label>
-      <input id="mInvestObs" placeholder="Ex: Indexado ao CDI, IPCA+6%...">
+      <input id="mInvestObs" placeholder="Ex: Indexado ao CDI, IPCA+6%, Apartamento 2 quartos...">
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modalInvest')">Cancelar</button>
       <button class="btn btn-gold" onclick="saveInvest()"><i class="fa fa-save"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Reavaliação de Patrimônio / Investimento -->
+<div class="modal-bg" id="modalReavaliacao" onclick="if(event.target===this)closeModal('modalReavaliacao')">
+  <div class="modal" style="max-width:460px">
+    <button class="modal-close" onclick="closeModal('modalReavaliacao')"><i class="fa fa-times"></i></button>
+    <div class="modal-title" style="color:var(--gold)"><i class="fa fa-balance-scale"></i> Reavaliação de Valor</div>
+    <input type="hidden" id="mReavaliacaoId">
+
+    <!-- Identificação do bem -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;color:var(--text)" id="mReavaliacaoNome">—</div>
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:3px">
+        Valor atual: <span id="mReavaliacaoAtual" style="color:var(--gold);font-weight:600">R$ 0,00</span>
+      </div>
+    </div>
+
+    <!-- Campos -->
+    <div class="input-row cols2">
+      <div class="field">
+        <label>Data da Reavaliação *</label>
+        <input type="date" id="mReavaliacaoData">
+      </div>
+      <div class="field">
+        <label>Novo Valor *</label>
+        <input id="mReavaliacaoValor" placeholder="R$ 0,00" oninput="maskMoney(this);_onReavaliacaoValorChange()">
+      </div>
+    </div>
+
+    <!-- Variação calculada em tempo real -->
+    <div id="mReavaliacaoVariacao" style="display:none;padding:10px 14px;border-radius:var(--r);margin-bottom:14px;font-size:12px;font-family:var(--mono)"></div>
+
+    <div class="field">
+      <label>Motivo / Observação</label>
+      <input id="mReavaliacaoObs" placeholder="Ex: Avaliação imobiliária, valorização de mercado, ajuste de inventário...">
+    </div>
+
+    <div style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;font-size:11px;color:var(--text2)">
+      <i class="fa fa-info-circle" style="color:var(--gold);margin-right:6px"></i>
+      O valor atual será atualizado a partir da data informada. Um histórico de reavaliações é mantido automaticamente.
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalReavaliacao')">Cancelar</button>
+      <button class="btn btn-gold" onclick="confirmarReavaliacao()"><i class="fa fa-check"></i> Confirmar Reavaliação</button>
     </div>
   </div>
 </div>
@@ -5931,7 +6032,7 @@ function _decrypt(raw) {
 }
 
 /* ══ VERSÃO DO APP ══════════════════════════ */
-const APP_VERSION = '20.17.20260401';
+const APP_VERSION = '20.17.20260413';
 const APP_BUILD   = '20260401';
 
 /* ══════════════════════════════════════════
@@ -6356,6 +6457,7 @@ function doLogin() {
   renderDashboard();
   renderFaturasProjetadas();
   gerarRecorrentesAutoAoLogin();
+  aplicarDepreciacaoAnualPatrimonio();
   pedirPermissaoNotificacao();
   setTimeout(verificarAlertas, 2000);
 }
@@ -9241,22 +9343,131 @@ function renderFinanciamentos() {
 /* ══════════════════════════════════════════
    INVESTIMENTOS
 ══════════════════════════════════════════ */
+// ── Reavaliação de Patrimônio / Investimento ─────────────────────────────
+function openModalReavaliacao(id) {
+  const inv = investimentos.find(i => i.id === id);
+  if (!inv) return;
+  const hoje = new Date().toISOString().slice(0,10);
+
+  document.getElementById('mReavaliacaoId').value        = id;
+  document.getElementById('mReavaliacaoNome').textContent = inv.nome + (inv.categoria ? ' · ' + inv.categoria : '');
+  document.getElementById('mReavaliacaoAtual').textContent = fmtBRL(inv.atual || inv.aportado || 0);
+  document.getElementById('mReavaliacaoData').value       = hoje;
+  document.getElementById('mReavaliacaoValor').value      = fmtBRL(inv.atual || inv.aportado || 0);
+  document.getElementById('mReavaliacaoObs').value        = '';
+  document.getElementById('mReavaliacaoVariacao').style.display = 'none';
+  openModal('modalReavaliacao');
+  // Dispara cálculo imediato da variação com o valor atual
+  _onReavaliacaoValorChange();
+}
+
+function _onReavaliacaoValorChange() {
+  const id   = document.getElementById('mReavaliacaoId').value;
+  const inv  = investimentos.find(i => i.id === id);
+  if (!inv) return;
+  const novoValor  = parseMoney(document.getElementById('mReavaliacaoValor').value);
+  const valorAtual = inv.atual || inv.aportado || 0;
+  const varEl = document.getElementById('mReavaliacaoVariacao');
+  if (!varEl) return;
+  if (isNaN(novoValor) || novoValor === valorAtual) {
+    varEl.style.display = 'none';
+    return;
+  }
+  const diff   = novoValor - valorAtual;
+  const pct    = valorAtual > 0 ? (diff / valorAtual * 100) : 0;
+  const isPos  = diff >= 0;
+  varEl.style.display  = '';
+  varEl.style.background   = isPos ? 'rgba(62,184,154,.08)'  : 'rgba(224,82,82,.08)';
+  varEl.style.borderLeft   = `3px solid ${isPos ? 'var(--teal)' : 'var(--red)'}`;
+  varEl.innerHTML = `
+    <span style="color:var(--text2)">Variação: </span>
+    <strong style="color:${isPos ? 'var(--teal)' : 'var(--red)'}">${isPos ? '+' : ''}${fmtBRL(diff)}</strong>
+    <span style="color:var(--text3)"> (${isPos ? '+' : ''}${pct.toFixed(2)}%)</span>
+    <span style="color:var(--text3);margin-left:12px">Novo valor: </span>
+    <strong style="color:var(--gold)">${fmtBRL(novoValor)}</strong>
+  `;
+}
+
+function confirmarReavaliacao() {
+  const id       = document.getElementById('mReavaliacaoId').value;
+  const data     = document.getElementById('mReavaliacaoData').value;
+  const novoValor = parseMoney(document.getElementById('mReavaliacaoValor').value);
+  const obs      = document.getElementById('mReavaliacaoObs').value.trim();
+  const inv      = investimentos.find(i => i.id === id);
+
+  if (!inv)       { toast('Registro não encontrado.', 'err'); return; }
+  if (!data)      { toast('Informe a data da reavaliação.', 'err'); return; }
+  if (isNaN(novoValor) || novoValor < 0) { toast('Informe um valor válido.', 'err'); return; }
+
+  const valorAnterior = inv.atual || inv.aportado || 0;
+  const diff = novoValor - valorAnterior;
+  const pct  = valorAnterior > 0 ? (diff / valorAnterior * 100) : 0;
+
+  // Mantém histórico de reavaliações
+  if (!inv.reavaliacoes) inv.reavaliacoes = [];
+  inv.reavaliacoes.push({
+    data,
+    valorAnterior,
+    novoValor,
+    diff,
+    pct: parseFloat(pct.toFixed(4)),
+    obs,
+    criadoEm: new Date().toISOString().slice(0,10)
+  });
+
+  // Atualiza valor atual
+  inv.atual = novoValor;
+
+  saveAll();
+  renderInvestimentos();
+  renderDashboard();
+  closeModal('modalReavaliacao');
+  toast(`✓ Reavaliação registrada: ${fmtBRL(novoValor)} (${diff >= 0 ? '+' : ''}${pct.toFixed(2)}%)`, 'ok');
+}
+
 function openModalInvest(id) {
   const inv = id ? investimentos.find(i=>i.id===id) : null;
   document.getElementById('investEditId').value = id||'';
-  document.getElementById('modalInvestTitle').textContent = id ? 'Editar Investimento' : 'Novo Investimento';
+  document.getElementById('modalInvestTitle').textContent = id ? 'Editar Patrimônio ou Investimento' : 'Novo Patrimônio ou Investimento';
   document.getElementById('mInvestNome').value    = inv?.nome||'';
   document.getElementById('mInvestTipo').value    = inv?.tipo||'Renda Fixa';
   document.getElementById('mInvestAportado').value= inv ? fmtBRL(inv.aportado) : fmtBRL(0);
   document.getElementById('mInvestAtual').value   = inv ? fmtBRL(inv.atual)    : fmtBRL(0);
-  document.getElementById('mInvestRentab').value  = inv?.rentab||'';
+  document.getElementById('mInvestRentabInv').value = inv?.rentab||'';
+  document.getElementById('mInvestRentab').value    = inv?.rentab||'';
+  document.getElementById('mInvestDepreciacao').value = inv?.depreciacao||'';
   document.getElementById('mInvestData').value    = inv?.data||'';
   document.getElementById('mInvestVenc').value    = inv?.venc||'';
   document.getElementById('mInvestObs').value     = inv?.obs||'';
-  const sb = document.getElementById('mInvestBanco');
-  sb.innerHTML = '<option value="" data-i18n-key="opt.selecione">— selecione —</option>' + bancos.map(b=>`<option value="${b.nome}">${b.nome}</option>`).join('');
-  if (inv?.banco) sb.value = inv.banco;
+  // Categoria
+  const isPatrim = inv?.categoria === 'Patrimônio';
+  document.getElementById('mInvestCatInvest').checked = !isPatrim;
+  document.getElementById('mInvestCatPatrim').checked  = isPatrim;
+  // Popula selects de banco
+  const bOpts = '<option value="">— selecione —</option>' + bancos.map(b=>`<option value="${b.nome}">${b.nome}</option>`).join('');
+  document.getElementById('mInvestBanco').innerHTML = bOpts;
+  document.getElementById('mInvestBancoPatrim').innerHTML = '<option value="">— selecione —</option>' + bancos.map(b=>`<option value="${b.nome}">${b.nome}</option>`).join('');
+  if (inv?.banco) {
+    document.getElementById('mInvestBanco').value = inv.banco;
+    document.getElementById('mInvestBancoPatrim').value = inv.banco;
+  }
+  // Ajusta visibilidade dos campos conforme categoria
+  _onInvestCatChange();
   openModal('modalInvest');
+}
+
+function _onInvestCatChange() {
+  const isPatrim = document.getElementById('mInvestCatPatrim')?.checked;
+  // Campos exclusivos de Patrimônio
+  document.getElementById('fieldInvestDepreciacao').style.display = isPatrim ? '' : 'none';
+  document.getElementById('fieldInvestBancoPatrim').style.display = isPatrim ? '' : 'none';
+  // Campos exclusivos de Investimento
+  document.getElementById('fieldInvestRentab').style.display = isPatrim ? 'none' : '';
+  // Estilos dos botões de seleção
+  const lblI = document.getElementById('lblCatInvest');
+  const lblP = document.getElementById('lblCatPatrim');
+  if (lblI) lblI.style.cssText = `display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 18px;border-radius:var(--r);border:1px solid ${isPatrim?'var(--border)':'var(--teal)'};flex:1;justify-content:center;user-select:none;background:${isPatrim?'':'rgba(62,184,154,.08)'}`;
+  if (lblP) lblP.style.cssText = `display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 18px;border-radius:var(--r);border:1px solid ${isPatrim?'var(--gold)':'var(--border)'};flex:1;justify-content:center;user-select:none;background:${isPatrim?'rgba(201,168,76,.08)':''}`;
 }
 
 function saveInvest() {
@@ -9265,8 +9476,19 @@ function saveInvest() {
   const tipo    = document.getElementById('mInvestTipo').value;
   const aportado= parseMoney(document.getElementById('mInvestAportado').value);
   const atual   = parseMoney(document.getElementById('mInvestAtual').value)||aportado;
-  const rentab  = parseFloat(document.getElementById('mInvestRentab').value)||0;
-  const banco   = document.getElementById('mInvestBanco').value;
+  const isPatrim = document.getElementById('mInvestCatPatrim')?.checked;
+  const categoria = isPatrim ? 'Patrimônio' : 'Investimento';
+  // Rentabilidade e depreciação conforme categoria
+  const rentab  = isPatrim
+    ? (parseFloat(document.getElementById('mInvestRentab').value)||0)
+    : (parseFloat(document.getElementById('mInvestRentabInv').value)||0);
+  const depreciacao = isPatrim
+    ? (parseFloat(document.getElementById('mInvestDepreciacao').value)||0)
+    : 0;
+  // Banco conforme categoria
+  const banco   = isPatrim
+    ? document.getElementById('mInvestBancoPatrim').value
+    : document.getElementById('mInvestBanco').value;
   const data    = document.getElementById('mInvestData').value;
   const venc    = document.getElementById('mInvestVenc').value;
   const obs     = document.getElementById('mInvestObs').value.trim();
@@ -9278,7 +9500,7 @@ function saveInvest() {
   if (aportado > 99999999) { toast(t('toast.informe_valor_alto2'),'err'); return; }
 
   const invId = editId||uid();
-  const obj = { id: invId, nome, tipo, aportado, atual, rentab, banco, data, venc, obs };
+  const obj = { id: invId, nome, tipo, categoria, aportado, atual, rentab, depreciacao, banco, data, venc, obs };
   if (editId) {
     const idx = investimentos.findIndex(i=>i.id===editId);
     if (idx>=0) investimentos[idx] = obj;
@@ -9425,33 +9647,38 @@ function renderInvestimentos() {
   const filtSel = document.getElementById('investFiltro');
   if (filtSel) {
     const curFilt = filtSel.value;
-    filtSel.innerHTML = '<option value="" data-i18n-key="opt.todos_invest">Todos os investimentos</option>' +
-      investimentos.map(i=>`<option value="${i.id}"${i.id===curFilt?' selected':''}>${i.nome}</option>`).join('');
+    filtSel.innerHTML = '<option value="" data-i18n-key="opt.todos_invest">Todos</option>' +
+      investimentos.map(i=>`<option value="${i.id}"${i.id===curFilt?' selected':''}>${i.nome} (${i.categoria||'Investimento'})</option>`).join('');
   }
   const filtId = filtSel?.value || '';
   const invFiltrados = filtId ? investimentos.filter(i=>i.id===filtId) : investimentos;
 
-  // Totais (sempre do conjunto completo)
-  const totalAportado  = investimentos.reduce((s,i)=>s+i.aportado,0);
-  const totalAtual     = investimentos.reduce((s,i)=>s+i.atual,0);
-  const totalRentab    = totalAportado > 0 ? ((totalAtual - totalAportado)/totalAportado*100) : 0;
+  // ── Totais separados por categoria ──
+  const soInvest  = investimentos.filter(i => (i.categoria||'Investimento') === 'Investimento');
+  const soPatrim  = investimentos.filter(i => i.categoria === 'Patrimônio');
+  const totAportInvest = soInvest.reduce((s,i)=>s+i.aportado,0);
+  const totAtualInvest = soInvest.reduce((s,i)=>s+i.atual,0);
+  const totAtualPatrim = soPatrim.reduce((s,i)=>s+i.atual,0);
+  const totGeral       = totAtualInvest + totAtualPatrim;
+  const totAportGeral  = totAportInvest + soPatrim.reduce((s,i)=>s+i.aportado,0);
+  const totalRentab    = totAportGeral > 0 ? ((totGeral - totAportGeral)/totAportGeral*100) : 0;
 
   if (statsEl) {
     statsEl.innerHTML = `
       <div class="stat-card neu">
-        <div class="stat-label">Total Aportado</div>
-        <div class="stat-val neu">${fmtBRL(totalAportado)}</div>
-        <div class="stat-hint">${investimentos.length} investimentos</div>
+        <div class="stat-label"><i class="fa fa-chart-line" style="color:var(--teal);margin-right:5px"></i>Total Investido</div>
+        <div class="stat-val neu">${fmtBRL(totAtualInvest)}</div>
+        <div class="stat-hint">${soInvest.length} investimento(s)</div>
       </div>
-      <div class="stat-card ${totalAtual>=totalAportado?'pos':'neg'}">
-        <div class="stat-label">Patrimônio Atual</div>
-        <div class="stat-val ${totalAtual>=totalAportado?'pos':'neg'}">${fmtBRL(totalAtual)}</div>
-        <div class="stat-hint">valor de mercado</div>
+      <div class="stat-card ${totAtualPatrim>0?'neu':'neu'}">
+        <div class="stat-label"><i class="fa fa-home" style="color:var(--gold);margin-right:5px"></i>Total Patrimônio</div>
+        <div class="stat-val" style="color:var(--gold)">${fmtBRL(totAtualPatrim)}</div>
+        <div class="stat-hint">${soPatrim.length} bem(ns) cadastrado(s)</div>
       </div>
       <div class="stat-card ${totalRentab>=0?'pos':'neg'}">
-        <div class="stat-label">Rentabilidade Total</div>
-        <div class="stat-val ${totalRentab>=0?'pos':'neg'}">${totalRentab>=0?'+':''}${totalRentab.toFixed(2)}%</div>
-        <div class="stat-hint">${fmtBRL(totalAtual-totalAportado)} ${totalAtual>=totalAportado?'de ganho':'de perda'}</div>
+        <div class="stat-label"><i class="fa fa-university" style="color:var(--text3);margin-right:5px"></i>Patrimônio Total</div>
+        <div class="stat-val ${totalRentab>=0?'pos':'neg'}">${fmtBRL(totGeral)}</div>
+        <div class="stat-hint">${totalRentab>=0?'+':''}${totalRentab.toFixed(2)}% sobre aportado</div>
       </div>
     `;
   }
@@ -9459,35 +9686,45 @@ function renderInvestimentos() {
   if (!investimentos.length) {
     grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><i class="fa fa-chart-pie"></i>'+t('empty.investimentos')+'</div>';
   } else if (!invFiltrados.length) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><i class="fa fa-chart-pie"></i>Nenhum investimento encontrado para este filtro.</div>';
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><i class="fa fa-chart-pie"></i>Nenhum item encontrado para este filtro.</div>';
     if (movBody) movBody.innerHTML = '';
     buildInvestCharts(invFiltrados);
     return;
   }
 
-  // Cards — usa lista filtrada
+  // Cards
   grid.innerHTML = invFiltrados.map(inv => {
-    const ganho   = inv.atual - inv.aportado;
-    const rentPct = inv.aportado > 0 ? (ganho/inv.aportado*100) : 0;
-    const isPos   = ganho >= 0;
-    const vencStr = inv.venc ? `<div class="invest-stat"><div class="invest-stat-label">Vencimento</div><div class="invest-stat-val">${fmtDate(inv.venc)}</div></div>` : '';
+    const isPatrim = inv.categoria === 'Patrimônio';
+    const ganho    = inv.atual - inv.aportado;
+    const rentPct  = inv.aportado > 0 ? (ganho/inv.aportado*100) : 0;
+    const isPos    = ganho >= 0;
+    const vencStr  = inv.venc ? `<div class="invest-stat"><div class="invest-stat-label">Vencimento</div><div class="invest-stat-val">${fmtDate(inv.venc)}</div></div>` : '';
+    const deprStr  = isPatrim && inv.depreciacao > 0
+      ? `<div class="invest-stat"><div class="invest-stat-label">Depreciação Anual</div><div class="invest-stat-val" style="color:var(--red)">${inv.depreciacao}% a.a.</div></div>` : '';
+    const reavalStr = inv.reavaliacoes?.length
+      ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px">${inv.reavaliacoes.length} reavaliação(ões) registrada(s)</div>` : '';
+    const catBadge = isPatrim
+      ? `<span style="font-size:9px;padding:2px 7px;background:rgba(201,168,76,.15);color:var(--gold);border-radius:99px;font-family:var(--mono);font-weight:600">PATRIMÔNIO</span>`
+      : `<span style="font-size:9px;padding:2px 7px;background:rgba(62,184,154,.15);color:var(--teal);border-radius:99px;font-family:var(--mono);font-weight:600">INVESTIMENTO</span>`;
     return `<div class="invest-card">
-      <div class="invest-card-name">${inv.nome}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <div class="invest-card-name" style="margin-bottom:0">${inv.nome}</div>
+        ${catBadge}
+      </div>
       <div class="invest-badge-tipo">${inv.tipo}</div>
       ${inv.banco ? `<div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:10px">${inv.banco}</div>` : ''}
-      <div class="invest-stat"><div class="invest-stat-label">Total Aportado</div><div class="invest-stat-val">${fmtBRL(inv.aportado)}</div></div>
-      <div class="invest-stat"><div class="invest-stat-label">Valor Atual</div><div class="invest-stat-val gold">${fmtBRL(inv.atual)}</div></div>
-      <div class="invest-stat"><div class="invest-stat-label">Resultado</div>
+      <div class="invest-stat"><div class="invest-stat-label">${isPatrim?'Valor de Aquisição':'Total Aportado'}</div><div class="invest-stat-val">${fmtBRL(inv.aportado)}</div></div>
+      <div class="invest-stat"><div class="invest-stat-label">${isPatrim?'Valor Atual de Mercado':'Valor Atual'}</div><div class="invest-stat-val gold">${fmtBRL(inv.atual)}</div></div>
+      <div class="invest-stat"><div class="invest-stat-label">${isPatrim?'Variação':'Resultado'}</div>
         <div class="invest-stat-val ${isPos?'teal':'red'}">${isPos?'+':''}${fmtBRL(ganho)}
           <span class="invest-rentab ${isPos?'pos':'neg'}"> (${isPos?'+':''}${rentPct.toFixed(2)}%)</span>
         </div>
       </div>
-      ${inv.rentab ? `<div class="invest-stat"><div class="invest-stat-label">Rentab. Esperada</div><div class="invest-stat-val">${inv.rentab}% a.a.</div></div>` : ''}
-      ${vencStr}
+      ${!isPatrim && inv.rentab ? `<div class="invest-stat"><div class="invest-stat-label">Rentab. Esperada</div><div class="invest-stat-val">${inv.rentab}% a.a.</div></div>` : ''}
+      ${deprStr}${vencStr}${reavalStr}
       <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="openLancInvest('${inv.id}')">
-          <i class="fa fa-plus"></i> Movimentar
-        </button>
+        ${!isPatrim ? `<button class="btn btn-outline btn-sm" onclick="openLancInvest('${inv.id}')"><i class="fa fa-plus"></i> Movimentar</button>` : ''}
+        <button class="btn btn-sm" style="background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--gold);border-radius:var(--r)" onclick="openModalReavaliacao('${inv.id}')"><i class="fa fa-balance-scale"></i> Reavaliação</button>
         <button class="btn btn-ghost btn-sm btn-edit" onclick="openModalInvest('${inv.id}')"><i class="fa fa-pencil-alt"></i></button>
         <button class="btn btn-ghost btn-sm btn-danger" onclick="delInvest('${inv.id}')"><i class="fa fa-trash"></i></button>
       </div>
@@ -9565,7 +9802,7 @@ function buildInvestCharts(invFiltrados) {
     responsive:true
   };
 
-  // Por Tipo
+  // ── Gráfico 1: Distribuição por Tipo (todos)
   const byTipo = {};
   investimentos.forEach(i=>{ byTipo[i.tipo]=(byTipo[i.tipo]||0)+i.atual; });
   if (chartInvestTipo) chartInvestTipo.destroy();
@@ -9582,24 +9819,29 @@ function buildInvestCharts(invFiltrados) {
     });
   }
 
-  // Por Ativo
-  const byAtivo = {};
-  investimentos.forEach(i=>{ byAtivo[i.nome]=(byAtivo[i.nome]||0)+i.atual; });
+  // ── Gráfico 2: Investimentos vs Patrimônio (barras)
+  const soInvest = investimentos.filter(i=>(i.categoria||'Investimento')==='Investimento');
+  const soPatrim = investimentos.filter(i=>i.categoria==='Patrimônio');
+  const totInvest = soInvest.reduce((s,i)=>s+i.atual,0);
+  const totPatrim = soPatrim.reduce((s,i)=>s+i.atual,0);
   if (chartInvestAtivo) chartInvestAtivo.destroy();
   const ctxAtivo = document.getElementById('grafInvestAtivo');
   if (ctxAtivo) {
     chartInvestAtivo = new Chart(ctxAtivo, {
       type:'doughnut',
-      data:{ labels:Object.keys(byAtivo), datasets:[{
-        data:Object.values(byAtivo),
-        backgroundColor:['#c9a84c','#3eb89a','#4a8fff','#f59e0b','#a78bfa','#ec4899','#ef4444','#8b5cf6','#06b6d4','#10b981'],
-        borderWidth:0
-      }]},
+      data:{
+        labels:['Investimentos','Patrimônio'],
+        datasets:[{
+          data:[totInvest, totPatrim],
+          backgroundColor:['#3eb89a','#c9a84c'],
+          borderWidth:0
+        }]
+      },
       options:scaleOpt
     });
   }
 
-  // Evolução mensal — duas linhas: Saldo Total e Capital Investido
+  // ── Gráfico 3: Evolução mensal — Investimentos, Patrimônio e Total
   const ctxEv = document.getElementById('grafInvestEvolucao');
   if (ctxEv) {
     const hoje = new Date();
@@ -9608,38 +9850,40 @@ function buildInvestCharts(invFiltrados) {
       const d = new Date(hoje.getFullYear(), hoje.getMonth()-i, 1);
       meses.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));
     }
-
-    // Investimentos considerados (filtrados ou todos)
     const invBase = invFiltrados;
+    const ymAtual = meses[meses.length-1];
 
-    const saldoTotalMes   = []; // Saldo Total = aportes - resgates + rendimentos
-    const capitalMes      = []; // Capital Investido = aportes - resgates (sem rendimentos)
-    const ymAtual = meses[meses.length - 1]; // mês atual
+    const saldoInvestMes = [];
+    const saldoPatrimMes = [];
+    const capitalInvestMes = [];
+    const totalGeralMes = [];
 
     meses.forEach(ym => {
-      const toDate = ym + '-31';
-      let saldoTotal = 0, capital = 0;
+      const toDate = ym+'-31';
+      let sInvest=0, sPatrim=0, capInvest=0;
       invBase.forEach(inv => {
-        const movs = movsInvest.filter(m => m.investId===inv.id && m.data <= toDate);
+        const isP = inv.categoria === 'Patrimônio';
+        const movs = movsInvest.filter(m=>m.investId===inv.id && m.data<=toDate);
+        let val=0, cap=0;
         if (movs.length > 0) {
-          // Tem movimentações: calcula pelo histórico
-          const aportes  = movs.filter(m=>m.tipo==='Aporte').reduce((s,m)=>s+m.valor,0);
-          const resgates = movs.filter(m=>m.tipo==='Resgate').reduce((s,m)=>s+m.valor,0);
-          const rends    = movs.filter(m=>m.tipo==='Rendimento').reduce((s,m)=>s+m.valor,0);
-          saldoTotal += aportes - resgates + rends;
-          capital    += aportes - resgates;
-        } else if (ym === ymAtual) {
-          // Sem movimentações: usa valores cadastrados no mês atual
-          saldoTotal += inv.atual   || 0;
-          capital    += inv.aportado|| 0;
+          const ap = movs.filter(m=>m.tipo==='Aporte').reduce((s,m)=>s+m.valor,0);
+          const re = movs.filter(m=>m.tipo==='Resgate').reduce((s,m)=>s+m.valor,0);
+          const rd = movs.filter(m=>m.tipo==='Rendimento').reduce((s,m)=>s+m.valor,0);
+          val = ap-re+rd; cap = ap-re;
+        } else if (ym >= (inv.data||'0000-00').slice(0,7)) {
+          val = inv.atual||0; cap = inv.aportado||0;
         }
+        if (isP) sPatrim += val;
+        else { sInvest += val; capInvest += cap; }
       });
-      saldoTotalMes.push(saldoTotal);
-      capitalMes.push(capital);
+      saldoInvestMes.push(sInvest);
+      saldoPatrimMes.push(sPatrim);
+      capitalInvestMes.push(capInvest);
+      totalGeralMes.push(sInvest+sPatrim);
     });
 
-    const labels = meses.map(m => {
-      const [y,mo] = m.split('-');
+    const labels = meses.map(m=>{
+      const [y,mo]=m.split('-');
       return new Date(+y,+mo-1,1).toLocaleDateString('pt-BR',{month:'short',year:'2-digit'});
     });
 
@@ -9650,21 +9894,37 @@ function buildInvestCharts(invFiltrados) {
         labels,
         datasets:[
           {
-            label:'Saldo Total',
-            data: saldoTotalMes,
+            label:'Total (Invest.+Patrim.)',
+            data: totalGeralMes,
             borderColor:'#c9a84c',
-            backgroundColor:'rgba(201,168,76,.08)',
+            backgroundColor:'rgba(201,168,76,.07)',
             borderWidth:2.5, tension:.4, pointRadius:4,
             pointBackgroundColor:'#c9a84c', fill:true, order:1
           },
           {
-            label:'Capital Investido',
-            data: capitalMes,
-            borderColor:'#4a8fff',
-            backgroundColor:'rgba(74,143,255,.06)',
+            label:'Investimentos',
+            data: saldoInvestMes,
+            borderColor:'#3eb89a',
+            backgroundColor:'rgba(62,184,154,.05)',
             borderWidth:2, tension:.4, pointRadius:3,
+            pointBackgroundColor:'#3eb89a', fill:false, order:2
+          },
+          {
+            label:'Patrimônio',
+            data: saldoPatrimMes,
+            borderColor:'#a78bfa',
+            backgroundColor:'rgba(167,139,250,.05)',
+            borderWidth:2, tension:.4, pointRadius:3,
+            pointBackgroundColor:'#a78bfa', fill:false, order:3
+          },
+          {
+            label:'Capital Investido',
+            data: capitalInvestMes,
+            borderColor:'#4a8fff',
+            backgroundColor:'transparent',
+            borderWidth:1.5, tension:.4, pointRadius:2,
             pointBackgroundColor:'#4a8fff',
-            borderDash:[5,3], fill:false, order:2
+            borderDash:[5,3], fill:false, order:4
           }
         ]
       },
@@ -9672,15 +9932,14 @@ function buildInvestCharts(invFiltrados) {
         responsive:true, maintainAspectRatio:true,
         interaction:{mode:'index',intersect:false},
         plugins:{
-          legend:{labels:{color:'#8a9bb8',font:{family:'DM Mono',size:9},
-            boxWidth:10, usePointStyle:true, padding:6}},
+          legend:{labels:{color:'#8a9bb8',font:{family:'DM Mono',size:9},boxWidth:10,usePointStyle:true,padding:6}},
           tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmtBRL(ctx.parsed.y)}},
-        zoom: zoomPluginCfg('grafInvestEvolucao').zoom,
-        pan:  zoomPluginCfg('grafInvestEvolucao').pan
+          zoom: zoomPluginCfg('grafInvestEvolucao').zoom,
+          pan:  zoomPluginCfg('grafInvestEvolucao').pan
         },
         scales:{
           x:{ticks:{color:'#526178',font:{family:'DM Mono',size:10}},grid:{color:'rgba(30,45,69,.6)'}},
-          y: Object.assign({}, yAxisOpts([{data:saldoTotalMes},{data:capitalMes}]))
+          y: Object.assign({}, yAxisOpts([{data:totalGeralMes},{data:saldoInvestMes},{data:saldoPatrimMes}]))
         }
       }
     });
@@ -10601,12 +10860,21 @@ function _calcPatrimonioAtual() {
 }
 
 function updatePatrimonioCard() {
-  const el = document.getElementById('dPatrimonio');
+  const el   = document.getElementById('dPatrimonio');
   const hint = document.getElementById('dPatrimonioHint');
   if (!el) return;
-  const total = _calcPatrimonioAtual();
+  const soInvest = investimentos.filter(i=>(i.categoria||'Investimento')==='Investimento');
+  const soPatrim = investimentos.filter(i=>i.categoria==='Patrimônio');
+  const totInvest = soInvest.reduce((s,i)=>s+(i.atual||i.aportado||0),0);
+  const totPatrim = soPatrim.reduce((s,i)=>s+(i.atual||i.aportado||0),0);
+  const total = totInvest + totPatrim;
   el.textContent = fmtBRL(total);
-  if (hint) hint.textContent = investimentos.length + ' investimento(s)';
+  if (hint) {
+    const partes = [];
+    if (soInvest.length) partes.push(`Invest: ${fmtBRL(totInvest)}`);
+    if (soPatrim.length) partes.push(`Patrim: ${fmtBRL(totPatrim)}`);
+    hint.textContent = partes.length ? partes.join(' · ') : (investimentos.length + ' item(ns)');
+  }
 }
 
 function abrirDetalhePatrimonio() {
@@ -10617,37 +10885,58 @@ function abrirDetalhePatrimonio() {
     openModal('modalPatrimonio');
     return;
   }
-  const total = _calcPatrimonioAtual();
-  body.innerHTML = investimentos.map(inv => {
-    const movs = movsInvest.filter(m => m.investId === inv.id);
-    let valorAtual = inv.atual || inv.aportado || 0;
-    if (movs.length > 0) {
-      const aportes  = movs.filter(m=>m.tipo==='Aporte').reduce((a,m)=>a+m.valor,0);
-      const resgates = movs.filter(m=>m.tipo==='Resgate').reduce((a,m)=>a+m.valor,0);
-      const rends    = movs.filter(m=>m.tipo==='Rendimento').reduce((a,m)=>a+m.valor,0);
-      valorAtual = aportes - resgates + rends;
-    }
-    const pct = total > 0 ? (valorAtual/total*100).toFixed(1) : 0;
-    const barW = total > 0 ? Math.min(100, valorAtual/total*100) : 0;
-    return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+
+  const soInvest = investimentos.filter(i=>(i.categoria||'Investimento')==='Investimento');
+  const soPatrim = investimentos.filter(i=>i.categoria==='Patrimônio');
+  const totInvest = soInvest.reduce((s,i)=>s+(i.atual||i.aportado||0),0);
+  const totPatrim = soPatrim.reduce((s,i)=>s+(i.atual||i.aportado||0),0);
+  const total = totInvest + totPatrim;
+
+  const mkLinha = (inv, totRef) => {
+    const valorAtual = inv.atual || inv.aportado || 0;
+    const pct  = totRef > 0 ? (valorAtual/totRef*100).toFixed(1) : 0;
+    const barW = totRef > 0 ? Math.min(100, valorAtual/totRef*100) : 0;
+    const isPatrim = inv.categoria === 'Patrimônio';
+    const cor = isPatrim ? 'var(--gold)' : 'var(--teal)';
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
         <div>
           <div style="font-weight:600;color:var(--text)">${inv.nome}</div>
-          <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${inv.tipo||'—'}${inv.banco?' · '+inv.banco:''}</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${inv.tipo||'—'}${inv.banco?' · '+inv.banco:''}</div>
         </div>
         <div style="text-align:right">
-          <div style="font-family:var(--mono);font-size:15px;color:var(--teal);font-weight:600">${fmtBRL(valorAtual)}</div>
-          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${pct}% do total</div>
+          <div style="font-family:var(--mono);font-size:14px;color:${cor};font-weight:600">${fmtBRL(valorAtual)}</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${pct}%</div>
         </div>
       </div>
-      <div style="background:var(--surface);border-radius:99px;height:4px;overflow:hidden">
-        <div style="height:100%;border-radius:99px;background:var(--teal);width:${barW}%;transition:width .4s"></div>
+      <div style="background:var(--surface);border-radius:99px;height:3px;overflow:hidden">
+        <div style="height:100%;border-radius:99px;background:${cor};width:${barW}%;transition:width .4s"></div>
       </div>
     </div>`;
-  }).join('') + `<div style="padding:14px 0;display:flex;justify-content:space-between;font-family:var(--mono);font-weight:700">
-    <span style="color:var(--text2)">TOTAL</span>
+  };
+
+  let html = '';
+
+  if (soInvest.length) {
+    html += `<div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin:14px 0 6px">
+      <i class="fa fa-chart-line" style="margin-right:5px"></i>Investimentos — ${fmtBRL(totInvest)}
+    </div>`;
+    html += soInvest.map(i=>mkLinha(i, totInvest)).join('');
+  }
+
+  if (soPatrim.length) {
+    html += `<div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:14px 0 6px">
+      <i class="fa fa-home" style="margin-right:5px"></i>Patrimônio — ${fmtBRL(totPatrim)}
+    </div>`;
+    html += soPatrim.map(i=>mkLinha(i, totPatrim)).join('');
+  }
+
+  html += `<div style="padding:14px 0;display:flex;justify-content:space-between;font-family:var(--mono);font-weight:700;border-top:2px solid var(--border);margin-top:8px">
+    <span style="color:var(--text2)">TOTAL GERAL</span>
     <span style="color:var(--teal);font-size:16px">${fmtBRL(total)}</span>
   </div>`;
+
+  body.innerHTML = html;
   openModal('modalPatrimonio');
 }
 
@@ -11441,6 +11730,42 @@ function verificarRecorrentesPendentes() {
         <i class="fa fa-redo"></i> Renovar
       </button>
     </div>`).join('')}`;
+}
+
+// ── Depreciação Anual de Patrimônio ──────────────────────────────────────
+// Aplicada uma vez por ano (na virada do ano). Usa campo `ultimaDepreciacao`
+// para rastrear o último ano em que foi aplicada e evitar duplicação.
+function aplicarDepreciacaoAnualPatrimonio() {
+  const anoAtual = new Date().getFullYear();
+  let dirty = false;
+
+  investimentos.forEach(inv => {
+    if (inv.categoria !== 'Patrimônio') return;
+    const depPct = parseFloat(inv.depreciacao) || 0;
+    if (depPct <= 0) return;
+
+    // Só aplica se ainda não foi aplicada neste ano
+    const ultimoAno = inv.ultimaDepreciacao ? parseInt(inv.ultimaDepreciacao) : 0;
+    if (ultimoAno >= anoAtual) return;
+
+    // Aplica a depreciação sobre o valor atual
+    const valorAtual = parseFloat(inv.atual) || parseFloat(inv.aportado) || 0;
+    if (valorAtual <= 0) return;
+
+    const reducao = Math.round(valorAtual * (depPct / 100) * 100) / 100;
+    const novoValor = Math.max(0, valorAtual - reducao);
+
+    inv.atual = novoValor;
+    inv.ultimaDepreciacao = String(anoAtual);
+    dirty = true;
+
+    console.log(`[NMC] Depreciação ${anoAtual}: ${inv.nome} — ${depPct}% → -R$${reducao.toFixed(2)} → Novo valor: R$${novoValor.toFixed(2)}`);
+  });
+
+  if (dirty) {
+    saveAll();
+    toast('Depreciação anual aplicada a patrimônios cadastrados.', 'inf');
+  }
 }
 
 function gerarRecorrentesAutoAoLogin() {
@@ -13039,15 +13364,55 @@ function relInadimplencia(ym){
 }
 function relInvestimentos(){
   if(!investimentos.length)return'<div class="rel-empty"><i class="fa fa-chart-pie"></i>'+t('empty.investimentos')+'</div>';
-  const total=investimentos.reduce((s,i)=>s+(i.saldoAtual||i.valor||0),0);
-  const rows=investimentos.map(inv=>{
-    const aport=movsInvest.filter(m=>m.investId===inv.id&&m.tipo==='Aporte').reduce((s,m)=>s+m.valor,0);
-    const rend=movsInvest.filter(m=>m.investId===inv.id&&m.tipo==='Rendimento').reduce((s,m)=>s+m.valor,0);
-    const saldo=inv.saldoAtual||inv.valor||0, lucro=saldo-aport, pct=aport?Math.round((lucro/aport)*100):0;
-    return`<tr><td style="font-weight:600">${inv.nome||'—'}</td><td>${inv.tipo||'—'}</td><td style="font-family:var(--mono)">${relFmt(aport)}</td><td style="color:var(--teal);font-family:var(--mono)">${relFmt(rend)}</td><td style="color:var(--gold);font-family:var(--mono)">${relFmt(saldo)}</td><td style="color:${lucro>=0?'var(--teal)':'var(--red)'};font-family:var(--mono)">${lucro>=0?'+':''}${relFmt(lucro)} (${pct}%)</td></tr>`;
+
+  const soInvest = investimentos.filter(i=>(i.categoria||'Investimento')==='Investimento');
+  const soPatrim = investimentos.filter(i=>i.categoria==='Patrimônio');
+  const totInvest = soInvest.reduce((s,i)=>s+(i.atual||i.aportado||0),0);
+  const totPatrim = soPatrim.reduce((s,i)=>s+(i.atual||i.aportado||0),0);
+  const total = totInvest + totPatrim;
+
+  const mkRows = (lista) => lista.map(inv=>{
+    const isP = inv.categoria === 'Patrimônio';
+    const aport = movsInvest.filter(m=>m.investId===inv.id&&m.tipo==='Aporte').reduce((s,m)=>s+m.valor,0);
+    const rend  = movsInvest.filter(m=>m.investId===inv.id&&m.tipo==='Rendimento').reduce((s,m)=>s+m.valor,0);
+    const valorAtual = inv.atual||inv.aportado||0;
+    const base   = inv.aportado||0;
+    const lucro  = valorAtual - base;
+    const pct    = base ? Math.round((lucro/base)*100) : 0;
+    const deprStr = isP && inv.depreciacao > 0 ? `${inv.depreciacao}% a.a.` : '—';
+    return`<tr>
+      <td style="font-weight:600">${inv.nome||'—'}</td>
+      <td>${inv.tipo||'—'}</td>
+      <td style="font-family:var(--mono)">${relFmt(base)}</td>
+      ${isP
+        ? `<td style="color:var(--red);font-family:var(--mono)">${deprStr}</td>`
+        : `<td style="color:var(--teal);font-family:var(--mono)">${relFmt(rend)}</td>`}
+      <td style="color:var(--gold);font-family:var(--mono);font-weight:600">${relFmt(valorAtual)}</td>
+      <td style="color:${lucro>=0?'var(--teal)':'var(--red)'};font-family:var(--mono)">${lucro>=0?'+':''}${relFmt(lucro)} (${pct}%)</td>
+    </tr>`;
   }).join('');
-  return `<div class="rel-header"><div class="rel-title"><i class="fa fa-chart-pie" style="color:var(--gold);margin-right:8px"></i>Posição de Investimentos</div><div class="rel-kpis">${relKpiHtml('Patrimônio Total',relFmt(total),'neu')}${relKpiHtml('Investimentos',investimentos.length,'neu')}</div></div>
-    <div class="rel-section">${relSecHd('layer-group','Carteira de Investimentos')}${relTblWrap([t('lbl.nome'),t('col.tipo'),'Aportado','Rendimentos',t('rel.saldo_lbl')+' Atual','Resultado'],rows,`<tr><td colspan="4">TOTAL</td><td style="color:var(--gold)">${relFmt(total)}</td><td></td></tr>`)}</div>`;
+
+  const tblInvest = soInvest.length
+    ? `${relSecHd('chart-line','Investimentos')}
+       ${relTblWrap(['Nome','Tipo','Aportado','Rendimentos','Valor Atual','Resultado'],
+         mkRows(soInvest),
+         `<tr><td colspan="4"><strong>TOTAL INVESTIMENTOS</strong></td><td style="color:var(--gold)">${relFmt(totInvest)}</td><td></td></tr>`)}` : '';
+
+  const tblPatrim = soPatrim.length
+    ? `${relSecHd('home','Patrimônio')}
+       ${relTblWrap(['Nome','Tipo','Valor Aquisição','Deprec. Anual','Valor Atual','Variação'],
+         mkRows(soPatrim),
+         `<tr><td colspan="4"><strong>TOTAL PATRIMÔNIO</strong></td><td style="color:var(--gold)">${relFmt(totPatrim)}</td><td></td></tr>`)}` : '';
+
+  return `<div class="rel-header">
+    <div class="rel-title"><i class="fa fa-chart-pie" style="color:var(--gold);margin-right:8px"></i>Posição de Patrimônio e Investimentos</div>
+    <div class="rel-kpis">
+      ${relKpiHtml('Total Investimentos',relFmt(totInvest),'pos')}
+      ${relKpiHtml('Total Patrimônio',relFmt(totPatrim),'neu')}
+      ${relKpiHtml('Total Geral',relFmt(total),'neu')}
+    </div>
+  </div>
+  <div class="rel-section">${tblInvest}${tblPatrim}</div>`;
 }
 function relRecebimentosForma() {
   const mes   = document.getElementById('relMes')?.value || nowYM();
