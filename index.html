@@ -689,7 +689,7 @@ body::before {
 }
 
 /* ── SECTIONS ── */
-.section { display: none; padding: 30px 32px; animation: fadeUp .25s ease both; max-width:100%; overflow-x:hidden; }
+.section { display: none; padding: 30px 32px; animation: fadeUp .25s ease both; max-width:100%; overflow-x:clip; }
 .section.active { display: block; }
 
 /* ── PAGE HEADER ── */
@@ -804,7 +804,7 @@ tbody tr { transition: background .1s; }
 tbody tr:hover td { background: rgba(255,255,255,.022); color: var(--text); }
 tbody tr:last-child td { border-bottom: none; }
 
-.td-mono { font-family: var(--mono); font-size: 12px; }
+.td-mono { font-family: var(--mono); font-size: 12px; white-space: nowrap; min-width: 100px; }
 .td-type-r { color: var(--teal); font-weight: 500; font-family: var(--mono); }
 .td-type-d { color: var(--red);  font-weight: 500; font-family: var(--mono); }
 
@@ -3704,13 +3704,13 @@ window._applySelectOptions = function() {
 
         <div class="card tbl-mobile-hide" style="padding:0">
           <div class="tbl-wrap" style="overflow-x:auto">
-            <table id="tblLanc" style="table-layout:fixed;width:100%;min-width:680px">
+            <table id="tblLanc" style="table-layout:fixed;width:100%;min-width:740px">
               <colgroup>
                 <col style="width:76px"><!-- Tipo -->
                 <col style="width:88px"><!-- Vencimento -->
                 <col style="width:auto"><!-- Descrição + CC -->
                 <col style="width:110px"><!-- Conta / Cartão -->
-                <col style="width:90px"><!-- Valor -->
+                <col style="width:128px"><!-- Valor — R$ 99.999,99 cabe em 128px -->
                 <col style="width:90px"><!-- Status -->
                 <col style="width:120px"><!-- Ações -->
               </colgroup>
@@ -3726,6 +3726,7 @@ window._applySelectOptions = function() {
                 </tr>
               </thead>
               <tbody id="tblLancBody"></tbody>
+              <tfoot id="tblLancFoot"></tfoot>
             </table>
           </div>
         </div>
@@ -3870,6 +3871,78 @@ window._applySelectOptions = function() {
               <thead><tr><th data-i18n="lbl.forma">Forma de Pagamento</th><th style="width:90px;text-align:center" data-i18n="lbl.taxa">Taxa (%)</th><th style="width:72px" data-i18n="lbl.acoes">Ações</th></tr></thead>
               <tbody id="tblFormaBody"></tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- Cadastro de Moedas -->
+        <div class="card" style="margin-top:16px">
+          <div class="card-title"><i class="fa fa-coins" style="color:var(--gold)"></i> Moedas e Cotações</div>
+          <div class="cad-form" style="flex-wrap:wrap">
+            <div class="field" style="min-width:120px;max-width:140px">
+              <label>Código *</label>
+              <input id="inMoedaCodigo" placeholder="Ex: USD, EUR" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+            </div>
+            <div class="field cad-field-grow">
+              <label>Nome *</label>
+              <input id="inMoedaNome" placeholder="Ex: Dólar Americano, Euro">
+            </div>
+            <div class="field" style="min-width:100px;max-width:120px">
+              <label>Símbolo</label>
+              <input id="inMoedaSimbolo" placeholder="Ex: $, €">
+            </div>
+            <div class="cad-btn-wrap">
+              <button class="btn btn-gold btn-sm" onclick="addMoeda()"><i class="fa fa-plus"></i> Adicionar</button>
+            </div>
+          </div>
+          <div class="hr"></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr>
+                <th style="width:80px">Código</th>
+                <th>Nome</th>
+                <th style="width:60px">Símbolo</th>
+                <th style="width:72px">Ações</th>
+              </tr></thead>
+              <tbody id="tblMoedaBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Cotações mensais -->
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+            <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:10px">
+              <i class="fa fa-calendar-alt" style="color:var(--teal);margin-right:6px"></i>
+              Cotações Mensais <span style="font-size:11px;color:var(--text3);font-weight:400">— usado no Balanço Patrimonial</span>
+            </div>
+            <div class="cad-form" style="flex-wrap:wrap">
+              <div class="field" style="min-width:120px;max-width:140px">
+                <label>Moeda *</label>
+                <select id="inCotacaoMoeda" style="width:100%">
+                  <option value="">— selecione —</option>
+                </select>
+              </div>
+              <div class="field" style="min-width:110px;max-width:130px">
+                <label>Mês/Ano *</label>
+                <input type="month" id="inCotacaoMes">
+              </div>
+              <div class="field" style="min-width:130px;max-width:160px">
+                <label>Cotação (em R$) *</label>
+                <input id="inCotacaoValor" placeholder="Ex: 5,85" oninput="maskMoney(this)">
+              </div>
+              <div class="cad-btn-wrap">
+                <button class="btn btn-teal btn-sm" onclick="addCotacao()" style="background:var(--teal);color:#fff;border-color:var(--teal)"><i class="fa fa-plus"></i> Registrar</button>
+              </div>
+            </div>
+            <div class="tbl-wrap" style="margin-top:8px">
+              <table>
+                <thead><tr>
+                  <th>Moeda</th>
+                  <th style="width:100px">Mês/Ano</th>
+                  <th style="width:120px;text-align:right">Cotação (R$)</th>
+                  <th style="width:72px">Ações</th>
+                </tr></thead>
+                <tbody id="tblCotacaoBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -4542,9 +4615,14 @@ window._applySelectOptions = function() {
               <div class="page-sub" id="pageSub_investimentos" data-i18n="page.investimentos.sub">Controle de patrimônio, investimentos e evolução</div>
             </div>
           </div>
-          <button class="btn btn-gold btn-full-mobile" onclick="openModalInvest()">
-            <i class="fa fa-plus"></i> Novo Patrimônio ou Investimento
-          </button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+            <button class="btn btn-outline btn-sm" id="btnAbrirBalanco" title="Balanço Patrimonial">
+              <i class="fa fa-university"></i> Balanço
+            </button>
+            <button class="btn btn-gold btn-full-mobile" onclick="openModalInvest()">
+              <i class="fa fa-plus"></i> Novo Patrimônio ou Investimento
+            </button>
+          </div>
         </div>
 
         <!-- Stats patrimônio -->
@@ -5047,11 +5125,21 @@ window._applySelectOptions = function() {
                 <option value="investimentos" data-i18n-key="rel.investimentos">Posição de Investimentos</option>
                 <option value="recorrentes" data-i18n-key="rel.recorrentes">Lançamentos Recorrentes</option>
                 <option value="recebimentos_forma" data-i18n-key="rel.recebimentos_forma">Recebimentos por Forma de Pagamento</option>
+                <optgroup label="─────── Contabilidade ───────">
+                <option value="balanco">Balanço Patrimonial Simplificado</option>
+                <option value="dre">DRE — Demonstração do Resultado</option>
+                </optgroup>
               </select>
             </div>
             <div class="filter-field" id="relFiltroMesWrap">
               <label data-i18n="lbl.mes">Mês</label>
               <select id="relMes" onchange="renderRelatorio()" style="padding:9px 14px;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);outline:none;-webkit-appearance:none"></select>
+            </div>
+            <div class="filter-field" id="relFiltroAnoWrap" style="display:none">
+              <label>Ano</label>
+              <select id="relAno" onchange="renderRelatorio()" style="padding:9px 14px;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);outline:none;-webkit-appearance:none">
+                <option value="">Todos os anos</option>
+              </select>
             </div>
             <div class="filter-field" id="relFiltroBancoWrap" style="display:none">
               <label data-i18n="lbl.conta">Conta</label>
@@ -5070,8 +5158,7 @@ window._applySelectOptions = function() {
               <input type="month" id="relAte" onchange="renderRelatorio()" style="padding:9px 14px;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);outline:none">
             </div>
             <div style="display:flex;gap:8px">
-              <button class="btn btn-gold" onclick="renderRelatorio()"><i class="fa fa-sync-alt"></i> Gerar</button>
-              <button class="btn btn-outline" onclick="exportarRelatorioPDF()"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
+              <button class="btn btn-gold" onclick="exportarRelatorioPDF()"><i class="fa fa-print"></i> Imprimir / Exportar PDF</button>
             </div>
           </div>
         </div>
@@ -5699,7 +5786,7 @@ window._applySelectOptions = function() {
       </div>
     </div>
 
-    <!-- Campo Rentabilidade + Banco — só para Investimento -->
+    <!-- Campo Rentabilidade + Banco + Liquidez + Indexador — só para Investimento -->
     <div id="fieldInvestRentab">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div class="field" style="margin:0">
@@ -5713,15 +5800,71 @@ window._applySelectOptions = function() {
           </select>
         </div>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin:0">
+          <label>Liquidez <span style="font-size:10px;color:var(--text3)">(prazo de resgate)</span></label>
+          <select id="mInvestLiquidez">
+            <option value="Imediata">Imediata (liquidez diária)</option>
+            <option value="CurtoPrazo">Curto prazo (&lt; 1 ano)</option>
+            <option value="MedioPrazo">Médio prazo (1–5 anos)</option>
+            <option value="LongoPrazo">Longo prazo (&gt; 5 anos)</option>
+            <option value="SemLiquidez">Sem liquidez antecipada</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0">
+          <label>Indexador / Benchmark</label>
+          <select id="mInvestIndexador">
+            <option value="">— nenhum —</option>
+            <option value="CDI">CDI</option>
+            <option value="SELIC">SELIC</option>
+            <option value="IPCA">IPCA</option>
+            <option value="IGP-M">IGP-M</option>
+            <option value="Prefixado">Prefixado</option>
+            <option value="IBOVESPA">IBOVESPA</option>
+            <option value="IFIX">IFIX (FIIs)</option>
+            <option value="Dólar">Dólar (USD)</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin:0">
+          <label>% do Indexador <span style="font-size:10px;color:var(--text3)">(ex: 110% do CDI)</span></label>
+          <input id="mInvestPctIndexador" type="number" step="0.1" min="0" placeholder="Ex: 110">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Preço Médio de Compra (R$)</label>
+          <input id="mInvestPrecoMedio" placeholder="R$ 0,00" oninput="maskMoney(this)">
+        </div>
+      </div>
     </div>
 
-    <!-- Banco para Patrimônio -->
+    <!-- Banco + Liquidez para Patrimônio -->
     <div id="fieldInvestBancoPatrim" style="display:none;margin-bottom:12px">
-      <div class="field" style="margin:0">
-        <label>Instituição / Custódia (opcional)</label>
-        <select id="mInvestBancoPatrim">
-          <option value="">— selecione —</option>
-        </select>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin:0">
+          <label>Instituição / Custódia (opcional)</label>
+          <select id="mInvestBancoPatrim">
+            <option value="">— selecione —</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0">
+          <label>Método de Depreciação</label>
+          <select id="mInvestMetodoDepr">
+            <option value="linear">Linear (cotas fixas)</option>
+            <option value="digitos">Soma dos dígitos (decrescente)</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin:0">
+          <label>Valor Residual (R$) <span style="font-size:10px;color:var(--text3)">valor mínimo pós-depr.</span></label>
+          <input id="mInvestValorResidual" placeholder="R$ 0,00" oninput="maskMoney(this)">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Vida Útil (anos)</label>
+          <input id="mInvestVidaUtil" type="number" min="1" max="100" placeholder="Ex: 5">
+        </div>
       </div>
     </div>
 
@@ -5737,11 +5880,65 @@ window._applySelectOptions = function() {
     </div>
     <div class="field">
       <label>Observação</label>
-      <input id="mInvestObs" placeholder="Ex: Indexado ao CDI, Apartamento 2 quartos...">
+      <input id="mInvestObs" placeholder="Ex: 110% do CDI, Apartamento 2 quartos Rua X...">
     </div>
     <div class="modal-footer" style="flex-wrap:wrap;gap:8px">
       <button class="btn btn-outline" onclick="closeModal('modalInvest')">Cancelar</button>
       <button class="btn btn-gold" onclick="saveInvest()"><i class="fa fa-save"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Benfeitoria -->
+<div class="modal-bg" id="modalBenfeitoria" onclick="if(event.target===this)closeModal('modalBenfeitoria')">
+  <div class="modal" style="max-width:440px">
+    <button class="modal-close" onclick="closeModal('modalBenfeitoria')"><i class="fa fa-times"></i></button>
+    <div class="modal-title" style="color:var(--teal)"><i class="fa fa-hammer"></i> Registrar Benfeitoria</div>
+    <input type="hidden" id="mBenfeitoriaId">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:12px">
+      <div style="font-weight:600;color:var(--text)" id="mBenfeitoriaInvNome">—</div>
+      <div style="color:var(--text3);font-family:var(--mono);margin-top:2px">Valor atual: <span id="mBenfeitoriaInvAtual" style="color:var(--gold)">R$ 0,00</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div class="field" style="margin:0"><label>Data *</label><input type="date" id="mBenfeitoriaData"></div>
+      <div class="field" style="margin:0"><label>Valor da Benfeitoria *</label><input id="mBenfeitoriaValor" placeholder="R$ 0,00" oninput="maskMoney(this);_onBenfeitoriaValorChange()"></div>
+    </div>
+    <div class="field"><label>Descrição</label><input id="mBenfeitoriaDesc" placeholder="Ex: Reforma cozinha, instalação solar, novo motor..."></div>
+    <div id="mBenfeitoriaPrevia" style="display:none;padding:8px 12px;background:rgba(62,184,154,.08);border:1px solid rgba(62,184,154,.2);border-radius:var(--r);font-size:12px;font-family:var(--mono);margin-bottom:12px"></div>
+    <div style="font-size:11px;color:var(--text3);padding:8px 12px;background:var(--surface);border-radius:var(--r);margin-bottom:14px">
+      <i class="fa fa-info-circle" style="color:var(--teal);margin-right:5px"></i>
+      Benfeitorias são capitalizadas — somam ao valor do bem. Diferente de manutenção, que é despesa operacional.
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalBenfeitoria')">Cancelar</button>
+      <button class="btn btn-teal" onclick="confirmarBenfeitoria()" style="background:var(--teal);color:#fff;border-color:var(--teal)"><i class="fa fa-check"></i> Capitalizar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Balanço Patrimonial -->
+<div class="modal-bg" id="modalBalanco" onclick="if(event.target===this)closeModal('modalBalanco')">
+  <div class="modal" style="width:min(720px,96vw)">
+    <button class="modal-close" onclick="closeModal('modalBalanco')"><i class="fa fa-times"></i></button>
+    <div class="modal-title"><i class="fa fa-university" style="color:var(--gold);margin-right:8px"></i>Balanço Patrimonial Simplificado</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:12px;color:var(--text2)">Ano:</label>
+        <select id="balAnnoSel" onchange="_renderBalancoModal()" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:6px 10px;font-size:13px">
+          <option value="">Posição Atual</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:12px;color:var(--text2)">Moeda:</label>
+        <select id="balMoedaSel" onchange="_renderBalancoModal()" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:6px 10px;font-size:13px">
+          <option value="BRL">R$ — Real Brasileiro</option>
+        </select>
+      </div>
+      <span style="font-size:11px;color:var(--text3)">Posição acumulada até o final do ano</span>
+    </div>
+    <div id="modalBalancoBody" style="font-size:13px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalBalanco')">Fechar</button>
     </div>
   </div>
 </div>
@@ -6039,7 +6236,7 @@ function _decrypt(raw) {
 }
 
 /* ══ VERSÃO DO APP ══════════════════════════ */
-const APP_VERSION = '20.17.20260413';
+const APP_VERSION = '20.18.20260413';
 const APP_BUILD   = '20260401';
 
 /* ══════════════════════════════════════════
@@ -6094,6 +6291,8 @@ let formas       = [];
 let cartoes      = [];
 let lancamentos  = [];
 let financiamentos = [];
+let moedas     = [];  // [{id, codigo, nome, simbolo}]
+let cotacoes   = [];  // [{id, moedaId, mesAno:'YYYY-MM', valor}]
 let investimentos  = [];
 let movsInvest     = [];
 let metas          = [];
@@ -6180,6 +6379,8 @@ function _loadAllData() {
   movsInvest     = LS.get('movsInvest');
   metas          = LS.get('metas');
   recorrentes    = LS.get('recorrentes');
+  moedas         = LS.get('moedas')    || [];
+  cotacoes       = LS.get('cotacoes')  || [];
   orcamento      = LS.get('orcamento');
   _migrateTransferencias(); // migra dados antigos sem a flag
 
@@ -6313,6 +6514,8 @@ function saveAll() {
   LS.set('metas',           metas);
   LS.set('recorrentes',     recorrentes);
   LS.set('orcamento',       orcamento);
+  LS.set('moedas',          moedas);
+  LS.set('cotacoes',        cotacoes);
   _saveUsuarios(usuarios);
 }
 
@@ -6432,7 +6635,7 @@ function doLogin() {
       sessionStorage.setItem(SK, '1');
       setTimeout(function() {
         try {
-          const obj = {bancos,centros,formas,cartoes,lancamentos,usuarios,
+          const obj = {bancos,centros,formas,cartoes,lancamentos,usuarios,moedas,cotacoes,
             financiamentos,investimentos,movsInvest,metas,recorrentes,
             _v:'20', _ts:new Date().toISOString(), _enc:true, _auto:true};
           const blob = new Blob([JSON.stringify(obj)], {type:'application/json'});
@@ -6550,6 +6753,8 @@ function renderAll() {
   renderRecorrentes();
   refreshSelects();
   _populateCCDataLists();
+  if(typeof renderMoedas==="function"){renderMoedas();}
+  if(typeof renderCotacoes==="function"){renderCotacoes();}
 }
 
 /* ══════════════════════════════════════════
@@ -8233,22 +8438,44 @@ function renderLancamentos() {
   const pendBar = document.getElementById('lancPendenciasBar');
   if (pendBar) {
     const venc = lancamentos.filter(l=>l.tipo==='Despesa'&&!l._fatura&&!l.cartaoFatura&&l.pago!==true&&l.pago!=='true'&&l.data<hoje);
-    const pend = lancamentos.filter(l=>l.tipo==='Despesa'&&!l._fatura&&!l.cartaoFatura&&l.pago!==true&&l.pago!=='true'&&l.data>=hoje);
-    const totV = venc.reduce((s,l)=>s+parseMoney(l.valor),0);
-    const totP = pend.reduce((s,l)=>s+parseMoney(l.valor),0);
-    if (venc.length||pend.length) {
+
+    // Limites de mês atual e próximo
+    const _now       = new Date();
+    const _anoAtual  = _now.getFullYear();
+    const _mesAtual  = _now.getMonth(); // 0-based
+    const fimMesAtual = _anoAtual + '-' + String(_mesAtual+1).padStart(2,'0') + '-31';
+    const _proxMes    = _mesAtual === 11 ? 0 : _mesAtual + 1;
+    const _proxAno    = _mesAtual === 11 ? _anoAtual + 1 : _anoAtual;
+    const fimProxMes  = _proxAno + '-' + String(_proxMes+1).padStart(2,'0') + '-31';
+    const ymAtual     = _anoAtual + '-' + String(_mesAtual+1).padStart(2,'0');
+    const ymProx      = _proxAno  + '-' + String(_proxMes+1).padStart(2,'0');
+
+    const base = l => l.tipo==='Despesa'&&!l._fatura&&!l.cartaoFatura&&l.pago!==true&&l.pago!=='true';
+    const pendEste = lancamentos.filter(l=>base(l)&&l.data>=hoje&&l.data.slice(0,7)===ymAtual);
+    const pendProx = lancamentos.filter(l=>base(l)&&l.data.slice(0,7)===ymProx);
+
+    const totV  = venc.reduce((s,l)=>s+parseMoney(l.valor),0);
+    const totPE = pendEste.reduce((s,l)=>s+parseMoney(l.valor),0);
+    const totPP = pendProx.reduce((s,l)=>s+parseMoney(l.valor),0);
+
+    if (venc.length||pendEste.length||pendProx.length) {
       pendBar.innerHTML = `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px">
         ${venc.length?`<div onclick="document.getElementById('fLancStatus').value='vencido';renderLancamentos()" style="background:var(--red-pale);border:1px solid rgba(224,82,82,.3);border-radius:var(--r2);padding:11px 16px;display:flex;align-items:center;gap:10px;cursor:pointer">
           <i class="fa fa-exclamation-circle" style="color:var(--red);font-size:18px"></i>
           <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red)">Vencidas</div>
           <div style="font-family:var(--mono);font-size:15px;font-weight:600;color:var(--red)">${fmtBRL(totV)}</div>
           <div style="font-size:11px;color:var(--text3)">${venc.length} item${venc.length>1?'s':''}</div></div></div>`:''}
-        ${pend.length?`<div onclick="document.getElementById('fLancStatus').value='pendente';renderLancamentos()" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:var(--r2);padding:11px 16px;display:flex;align-items:center;gap:10px;cursor:pointer">
+        ${pendEste.length?`<div onclick="document.getElementById('fLancMes').value='${ymAtual}';document.getElementById('fLancStatus').value='pendente';renderLancamentos()" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:var(--r2);padding:11px 16px;display:flex;align-items:center;gap:10px;cursor:pointer">
           <i class="fa fa-clock" style="color:#f59e0b;font-size:18px"></i>
-          <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#f59e0b">A Vencer</div>
-          <div style="font-family:var(--mono);font-size:15px;font-weight:600;color:#f59e0b">${fmtBRL(totP)}</div>
-          <div style="font-size:11px;color:var(--text3)">${pend.length} item${pend.length>1?'s':''}</div></div></div>`:''}
-        ${status?`<div style="display:flex;align-items:center"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('fLancStatus').value='';renderLancamentos()"><i class="fa fa-times"></i> Ver todos</button></div>`:''}
+          <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#f59e0b">A Vencer Neste Mês</div>
+          <div style="font-family:var(--mono);font-size:15px;font-weight:600;color:#f59e0b">${fmtBRL(totPE)}</div>
+          <div style="font-size:11px;color:var(--text3)">${pendEste.length} item${pendEste.length>1?'s':''}</div></div></div>`:''}
+        ${pendProx.length?`<div onclick="document.getElementById('fLancMes').value='${ymProx}';document.getElementById('fLancStatus').value='pendente';renderLancamentos()" style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.3);border-radius:var(--r2);padding:11px 16px;display:flex;align-items:center;gap:10px;cursor:pointer">
+          <i class="fa fa-calendar-alt" style="color:#818cf8;font-size:18px"></i>
+          <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#818cf8">A Vencer Mês Que Vem</div>
+          <div style="font-family:var(--mono);font-size:15px;font-weight:600;color:#818cf8">${fmtBRL(totPP)}</div>
+          <div style="font-size:11px;color:var(--text3)">${pendProx.length} item${pendProx.length>1?'s':''}</div></div></div>`:''}
+        ${status?`<div style="display:flex;align-items:center"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('fLancStatus').value='';document.getElementById('fLancMes').value='';renderLancamentos()"><i class="fa fa-times"></i> Ver todos</button></div>`:''}
       </div>`;
     } else pendBar.innerHTML='';
   }
@@ -8421,7 +8648,7 @@ function renderLancamentos() {
             <div style="font-size:13px;color:var(--gold);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.cartNome}</div>
             <div style="font-size:10px;color:var(--text3)">Cartão de Crédito</div>
           </td>
-          <td class="td-mono" style="text-align:right;color:var(--red);font-weight:600">
+          <td class="td-mono" style="text-align:right;color:var(--red);font-weight:600;white-space:nowrap;padding-right:10px">
             -${fmtBRL(g.total)}
           </td>
           <td>${badge}</td>
@@ -8482,7 +8709,7 @@ function renderLancamentos() {
              title="${contaExib}">${contaExib}</div>
         ${formaExib?'<div style="font-size:10px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+formaExib+'</div>':''}
       </td>
-      <td class="td-mono" style="text-align:right;${isTransferencia(l)?(l.transDir==='entrada'?'color:var(--teal)':'color:var(--red)'):(isRec?'color:var(--teal)':'color:var(--red)')};font-weight:600">
+      <td class="td-mono" style="text-align:right;${isTransferencia(l)?(l.transDir==='entrada'?'color:var(--teal)':'color:var(--red)'):(isRec?'color:var(--teal)':'color:var(--red)')};font-weight:600;white-space:nowrap;padding-right:10px">
         ${isTransferencia(l)?(l.transDir==='entrada'?'+':'-'):(isRec?'+':'-')}${fmtBRL(parseMoney(l.valor))}
       </td>
       <td>${sBadge}</td>
@@ -8497,6 +8724,43 @@ function renderLancamentos() {
   });
 
   tb.innerHTML = rowsHtml;
+
+  // ── Rodapé: totais do filtro atual ───────────────────────────────────────
+  const foot = document.getElementById('tblLancFoot');
+  if (foot && dataFinal.length) {
+    let totRec = 0, totDesp = 0, totTransf = 0;
+    dataFinal.forEach(item => {
+      if (item._isFatGrp) {
+        totDesp += item.total;
+      } else {
+        const v = parseMoney(item.valor);
+        if (isTransferencia(item))       totTransf += v;
+        else if (item.tipo === 'Receita') totRec   += v;
+        else                              totDesp  += v;
+      }
+    });
+    const saldo = totRec - totDesp;
+    foot.innerHTML = `<tr style="border-top:2px solid var(--border)">
+      <td colspan="4" style="padding:10px 12px;font-family:var(--mono);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3)">
+        ${dataFinal.length} lançamento${dataFinal.length>1?'s':''} no filtro
+      </td>
+      <td style="padding:10px 10px 10px 0;text-align:right;white-space:nowrap;font-family:var(--mono);font-size:13px;font-weight:700">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+          ${totRec  > 0 ? `<span style="color:var(--teal);font-size:11px">+ ${fmtBRL(totRec)}</span>`   : ''}
+          ${totDesp > 0 ? `<span style="color:var(--red);font-size:11px">− ${fmtBRL(totDesp)}</span>`   : ''}
+          ${totTransf > 0 ? `<span style="color:var(--text3);font-size:11px">⇄ ${fmtBRL(totTransf)}</span>` : ''}
+          <span style="color:${saldo>=0?'var(--teal)':'var(--red)'};font-size:13px;border-top:1px solid var(--border);padding-top:3px;margin-top:1px">
+            ${saldo>=0?'+':''}${fmtBRL(saldo)}
+          </span>
+        </div>
+      </td>
+      <td colspan="2" style="padding:10px 12px;font-family:var(--mono);font-size:10px;color:var(--text3);vertical-align:bottom">
+        <span style="color:${saldo>=0?'var(--teal)':'var(--red)'}">saldo</span>
+      </td>
+    </tr>`;
+  } else if (foot) {
+    foot.innerHTML = '';
+  }
 
   // Atualiza metas se visível
   const tabMetasEl = document.getElementById('tab-metas');
@@ -9448,6 +9712,14 @@ function openModalInvest(id) {
   document.getElementById('mInvestData').value    = inv?.data||'';
   document.getElementById('mInvestVenc').value    = inv?.venc||'';
   document.getElementById('mInvestObs').value     = inv?.obs||'';
+  // Novos campos
+  document.getElementById('mInvestLiquidez').value      = inv?.liquidez||'Imediata';
+  document.getElementById('mInvestIndexador').value     = inv?.indexador||'';
+  document.getElementById('mInvestPctIndexador').value  = inv?.pctIndexador||'';
+  document.getElementById('mInvestPrecoMedio').value    = inv?.precoMedio ? fmtBRL(inv.precoMedio) : '';
+  document.getElementById('mInvestValorResidual').value = inv?.valorResidual ? fmtBRL(inv.valorResidual) : '';
+  document.getElementById('mInvestVidaUtil').value      = inv?.vidaUtil||'';
+  document.getElementById('mInvestMetodoDepr').value    = inv?.metodoDepr||'linear';
   // Categoria
   const isPatrim = inv?.categoria === 'Patrimônio';
   document.getElementById('mInvestCatInvest').checked = !isPatrim;
@@ -9494,6 +9766,14 @@ function saveInvest() {
   const depreciacao = isPatrim
     ? (parseFloat(document.getElementById('mInvestDepreciacao').value)||0)
     : 0;
+  const metodoDepr   = isPatrim ? (document.getElementById('mInvestMetodoDepr').value||'linear') : 'linear';
+  const valorResidual= isPatrim ? parseMoney(document.getElementById('mInvestValorResidual').value||'0') : 0;
+  const vidaUtil     = isPatrim ? (parseInt(document.getElementById('mInvestVidaUtil').value)||0) : 0;
+  // Campos de Investimento
+  const liquidez     = !isPatrim ? (document.getElementById('mInvestLiquidez').value||'Imediata') : '';
+  const indexador    = !isPatrim ? (document.getElementById('mInvestIndexador').value||'') : '';
+  const pctIndexador = !isPatrim ? (parseFloat(document.getElementById('mInvestPctIndexador').value)||0) : 0;
+  const precoMedio   = !isPatrim ? parseMoney(document.getElementById('mInvestPrecoMedio').value||'0') : 0;
   // Banco conforme categoria
   const banco   = isPatrim
     ? document.getElementById('mInvestBancoPatrim').value
@@ -9503,13 +9783,13 @@ function saveInvest() {
   const obs     = document.getElementById('mInvestObs').value.trim();
 
   if (!nome) { toast(t('toast.informe_nome'),'err'); return; }
-  // Aceita aportado=0 (investimento ainda sem aporte inicial)
   if (aportado < 0) { toast('Valor não pode ser negativo.','err'); return; }
-  // Guard against accidentally huge values (e.g. paste error)
   if (aportado > 99999999) { toast(t('toast.informe_valor_alto2'),'err'); return; }
 
   const invId = editId||uid();
-  const obj = { id: invId, nome, tipo, categoria, aportado, atual, rentab, depreciacao, banco, data, venc, obs };
+  const obj = { id: invId, nome, tipo, categoria, aportado, atual, rentab, depreciacao,
+    metodoDepr, valorResidual, vidaUtil, liquidez, indexador, pctIndexador, precoMedio,
+    banco, data, venc, obs };
   if (editId) {
     const idx = investimentos.findIndex(i=>i.id===editId);
     if (idx>=0) investimentos[idx] = obj;
@@ -9703,37 +9983,75 @@ function renderInvestimentos() {
 
   // Cards
   grid.innerHTML = invFiltrados.map(inv => {
-    const isPatrim = inv.categoria === 'Patrimônio';
-    const ganho    = inv.atual - inv.aportado;
-    const rentPct  = inv.aportado > 0 ? (ganho/inv.aportado*100) : 0;
-    const isPos    = ganho >= 0;
-    const vencStr  = inv.venc ? `<div class="invest-stat"><div class="invest-stat-label">Vencimento</div><div class="invest-stat-val">${fmtDate(inv.venc)}</div></div>` : '';
-    const deprStr  = isPatrim && inv.depreciacao > 0
-      ? `<div class="invest-stat"><div class="invest-stat-label">Depreciação Anual</div><div class="invest-stat-val" style="color:var(--red)">${inv.depreciacao}% a.a.</div></div>` : '';
+    const isPatrim  = inv.categoria === 'Patrimônio';
+    const ganho     = inv.atual - inv.aportado;
+    const rentPct   = inv.aportado > 0 ? (ganho/inv.aportado*100) : 0;
+    const isPos     = ganho >= 0;
+
+    // Vencimento
+    const vencStr = inv.venc ? `<div class="invest-stat"><div class="invest-stat-label">Vencimento</div><div class="invest-stat-val">${fmtDate(inv.venc)}</div></div>` : '';
+
+    // Depreciação (Patrimônio)
+    const deprStr = isPatrim && inv.depreciacao > 0
+      ? `<div class="invest-stat"><div class="invest-stat-label">Deprec. Anual (${inv.metodoDepr||'linear'})</div><div class="invest-stat-val" style="color:var(--red)">${inv.depreciacao}% a.a.${inv.valorResidual>0?' · Residual: '+fmtBRL(inv.valorResidual):''}</div></div>` : '';
+
+    // Indexador + Liquidez (Investimento)
+    const idxStr = !isPatrim && inv.indexador
+      ? `<div class="invest-stat"><div class="invest-stat-label">Indexador</div><div class="invest-stat-val">${inv.indexador}${inv.pctIndexador>0?' · '+inv.pctIndexador+'%':''}</div></div>` : '';
+    const liqLabel = {Imediata:'Liquidez diária',CurtoPrazo:'Curto prazo',MedioPrazo:'Médio prazo',LongoPrazo:'Longo prazo',SemLiquidez:'Sem liquidez'};
+    const liqStr = !isPatrim && inv.liquidez
+      ? `<div class="invest-stat"><div class="invest-stat-label">Liquidez</div><div class="invest-stat-val" style="font-size:11px">${liqLabel[inv.liquidez]||inv.liquidez}</div></div>` : '';
+
+    // IR estimado (Investimento renda fixa)
+    let irStr = '';
+    if (!isPatrim && ganho > 0) {
+      const diasAte = inv.data ? Math.max(0, Math.floor((new Date()-new Date(inv.data+'T12:00:00'))/86400000)) : 0;
+      const aliqIR  = diasAte <= 180 ? 22.5 : diasAte <= 360 ? 20 : diasAte <= 720 ? 17.5 : 15;
+      const irVal   = ganho * aliqIR / 100;
+      const rendLiq = ganho - irVal;
+      irStr = `<div class="invest-stat" style="background:rgba(62,184,154,.04);border-radius:var(--r);padding:4px 6px;margin-top:4px">
+        <div class="invest-stat-label">IR estimado (${aliqIR}% · ${diasAte}d)</div>
+        <div class="invest-stat-val" style="font-size:11px;color:var(--red)">-${fmtBRL(irVal)} · Líquido: <span style="color:var(--teal)">${fmtBRL(rendLiq)}</span></div>
+      </div>`;
+    }
+
+    // Reavaliações
     const reavalStr = inv.reavaliacoes?.length
-      ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px">${inv.reavaliacoes.length} reavaliação(ões) registrada(s)</div>` : '';
+      ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px"><i class="fa fa-history" style="margin-right:3px"></i>${inv.reavaliacoes.length} reavaliação(ões)</div>` : '';
+
+    // Badge de categoria
     const catBadge = isPatrim
       ? `<span style="font-size:9px;padding:2px 7px;background:rgba(201,168,76,.15);color:var(--gold);border-radius:99px;font-family:var(--mono);font-weight:600">PATRIMÔNIO</span>`
       : `<span style="font-size:9px;padding:2px 7px;background:rgba(62,184,154,.15);color:var(--teal);border-radius:99px;font-family:var(--mono);font-weight:600">INVESTIMENTO</span>`;
+
+    // Badge de liquidez para circulante/não circulante
+    const liqBadge = !isPatrim && inv.liquidez
+      ? (inv.liquidez==='Imediata'||inv.liquidez==='CurtoPrazo'
+          ? `<span style="font-size:9px;padding:1px 5px;background:rgba(74,143,255,.12);color:#4a8fff;border-radius:99px;font-family:var(--mono)">CIRCULANTE</span>`
+          : `<span style="font-size:9px;padding:1px 5px;background:rgba(167,139,250,.12);color:#a78bfa;border-radius:99px;font-family:var(--mono)">LONGO PRAZO</span>`)
+      : '';
+
     return `<div class="invest-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
         <div class="invest-card-name" style="margin-bottom:0">${inv.nome}</div>
-        ${catBadge}
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">${catBadge}${liqBadge}</div>
       </div>
       <div class="invest-badge-tipo">${inv.tipo}</div>
-      ${inv.banco ? `<div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:10px">${inv.banco}</div>` : ''}
+      ${inv.banco ? `<div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:8px">${inv.banco}</div>` : ''}
       <div class="invest-stat"><div class="invest-stat-label">${isPatrim?'Valor de Aquisição':'Total Aportado'}</div><div class="invest-stat-val">${fmtBRL(inv.aportado)}</div></div>
       <div class="invest-stat"><div class="invest-stat-label">${isPatrim?'Valor Atual de Mercado':'Valor Atual'}</div><div class="invest-stat-val gold">${fmtBRL(inv.atual)}</div></div>
-      <div class="invest-stat"><div class="invest-stat-label">${isPatrim?'Variação':'Resultado'}</div>
+      <div class="invest-stat"><div class="invest-stat-label">${isPatrim?'Variação':'Resultado Bruto'}</div>
         <div class="invest-stat-val ${isPos?'teal':'red'}">${isPos?'+':''}${fmtBRL(ganho)}
           <span class="invest-rentab ${isPos?'pos':'neg'}"> (${isPos?'+':''}${rentPct.toFixed(2)}%)</span>
         </div>
       </div>
+      ${irStr}
       ${!isPatrim && inv.rentab ? `<div class="invest-stat"><div class="invest-stat-label">Rentab. Esperada</div><div class="invest-stat-val">${inv.rentab}% a.a.</div></div>` : ''}
-      ${deprStr}${vencStr}${reavalStr}
+      ${idxStr}${liqStr}${deprStr}${vencStr}${reavalStr}
       <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
         ${!isPatrim ? `<button class="btn btn-outline btn-sm" onclick="openLancInvest('${inv.id}')"><i class="fa fa-plus"></i> Movimentar</button>` : ''}
         <button class="btn btn-sm" style="background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--gold);border-radius:var(--r)" onclick="openModalReavaliacao('${inv.id}')"><i class="fa fa-balance-scale"></i> Reavaliação</button>
+        ${isPatrim ? `<button class="btn btn-sm" style="background:rgba(62,184,154,.12);color:var(--teal);border:1px solid var(--teal);border-radius:var(--r)" onclick="openModalBenfeitoria('${inv.id}')"><i class="fa fa-hammer"></i> Benfeitoria</button>` : ''}
         <button class="btn btn-ghost btn-sm btn-edit" onclick="openModalInvest('${inv.id}')"><i class="fa fa-pencil-alt"></i></button>
         <button class="btn btn-ghost btn-sm btn-danger" onclick="delInvest('${inv.id}')"><i class="fa fa-trash"></i></button>
       </div>
@@ -10839,6 +11157,8 @@ function importData() {
       if (obj.movsInvest)     movsInvest     = obj.movsInvest;
       if (obj.metas)          metas          = obj.metas;
       if (obj.recorrentes)    recorrentes    = obj.recorrentes;
+      if (obj.moedas)         moedas         = obj.moedas    || [];
+      if (obj.cotacoes)       cotacoes       = obj.cotacoes  || [];
       _migrateTransferencias(); // migra transferências do backup
       saveAll(); renderAll(); renderDashboard();
       toast(`Dados importados! (backup de ${obj._ts ? new Date(obj._ts).toLocaleString('pt-BR') : 'data desconhecida'})`);
@@ -10907,15 +11227,32 @@ function abrirDetalhePatrimonio() {
     const barW = totRef > 0 ? Math.min(100, valorAtual/totRef*100) : 0;
     const isPatrim = inv.categoria === 'Patrimônio';
     const cor = isPatrim ? 'var(--gold)' : 'var(--teal)';
+    const ganho = valorAtual - (inv.aportado||0);
+    const rentPct = (inv.aportado||0) > 0 ? (ganho/(inv.aportado)*100).toFixed(1) : '—';
+    // TIR
+    const tir = !isPatrim ? calcularTIRInvestimento(inv) : null;
+    // IR
+    const diasAte = !isPatrim && inv.data ? Math.max(0,Math.floor((new Date()-new Date(inv.data+'T12:00:00'))/86400000)) : 0;
+    const aliq    = diasAte<=180?22.5:diasAte<=360?20:diasAte<=720?17.5:15;
+    const irEst   = !isPatrim && ganho>0 ? ganho*aliq/100 : 0;
+    const extra = !isPatrim
+      ? `<div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">
+          ${tir!==null?`<span style="font-size:10px;font-family:var(--mono);color:#a78bfa">TIR: ${tir>=0?'+':''}${tir.toFixed(1)}% a.a.</span>`:''}
+          ${irEst>0?`<span style="font-size:10px;font-family:var(--mono);color:var(--red)">IR est.: -${fmtBRL(irEst)}</span>`:''}
+          ${inv.indexador?`<span style="font-size:10px;font-family:var(--mono);color:var(--text3)">${inv.indexador}${inv.pctIndexador?' '+inv.pctIndexador+'%':''}</span>`:''}
+         </div>`
+      : (inv.depreciacao>0 ? `<div style="font-size:10px;font-family:var(--mono);color:var(--red);margin-top:3px">Deprec. ${inv.depreciacao}% a.a. (${inv.metodoDepr||'linear'})</div>` : '');
     return `<div style="padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px">
         <div>
           <div style="font-weight:600;color:var(--text)">${inv.nome}</div>
           <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${inv.tipo||'—'}${inv.banco?' · '+inv.banco:''}</div>
+          ${extra}
         </div>
-        <div style="text-align:right">
+        <div style="text-align:right;flex-shrink:0;padding-left:8px">
           <div style="font-family:var(--mono);font-size:14px;color:${cor};font-weight:600">${fmtBRL(valorAtual)}</div>
-          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${pct}%</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${pct}% do grupo</div>
+          <div style="font-size:10px;font-family:var(--mono);color:${ganho>=0?'var(--teal)':'var(--red)'}">${ganho>=0?'+':''}${rentPct}%</div>
         </div>
       </div>
       <div style="background:var(--surface);border-radius:99px;height:3px;overflow:hidden">
@@ -11750,32 +12087,445 @@ function aplicarDepreciacaoAnualPatrimonio() {
 
   investimentos.forEach(inv => {
     if (inv.categoria !== 'Patrimônio') return;
-    const depPct = parseFloat(inv.depreciacao) || 0;
+    const depPct      = parseFloat(inv.depreciacao) || 0;
     if (depPct <= 0) return;
 
-    // Só aplica se ainda não foi aplicada neste ano
-    const ultimoAno = inv.ultimaDepreciacao ? parseInt(inv.ultimaDepreciacao) : 0;
+    const ultimoAno   = inv.ultimaDepreciacao ? parseInt(inv.ultimaDepreciacao) : 0;
     if (ultimoAno >= anoAtual) return;
 
-    // Aplica a depreciação sobre o valor atual
-    const valorAtual = parseFloat(inv.atual) || parseFloat(inv.aportado) || 0;
-    if (valorAtual <= 0) return;
+    const valorAtual  = parseFloat(inv.atual) || parseFloat(inv.aportado) || 0;
+    const residual    = parseFloat(inv.valorResidual) || 0;
+    const metodo      = inv.metodoDepr || 'linear';
+    const vidaUtil    = parseInt(inv.vidaUtil) || 0;
 
-    const reducao = Math.round(valorAtual * (depPct / 100) * 100) / 100;
-    const novoValor = Math.max(0, valorAtual - reducao);
+    // Não deprecia abaixo do valor residual
+    if (valorAtual <= residual) return;
+
+    const baseDepr    = valorAtual - residual; // base depreciável
+    let reducao       = 0;
+
+    if (metodo === 'digitos' && vidaUtil > 1) {
+      // Soma dos dígitos: depreciação decrescente
+      // Ano corrente da vida útil
+      const anoInicio = inv.data ? new Date(inv.data+'T12:00:00').getFullYear() : (anoAtual - 1);
+      const anoVida   = Math.min(vidaUtil, anoAtual - anoInicio + 1);
+      const somaDigitos = vidaUtil * (vidaUtil + 1) / 2;
+      const fator     = Math.max(0, (vidaUtil - anoVida + 1)) / somaDigitos;
+      reducao         = Math.round(baseDepr * fator * 100) / 100;
+    } else {
+      // Linear: percentual fixo sobre base depreciável
+      reducao = Math.round(baseDepr * (depPct / 100) * 100) / 100;
+    }
+
+    const novoValor = Math.max(residual, valorAtual - reducao);
+
+    // Registra no histórico de depreciações
+    if (!inv.historicoDep) inv.historicoDep = [];
+    inv.historicoDep.push({ ano: anoAtual, valorAntes: valorAtual, reducao, novoValor, metodo });
 
     inv.atual = novoValor;
     inv.ultimaDepreciacao = String(anoAtual);
     dirty = true;
-
-    console.log(`[NMC] Depreciação ${anoAtual}: ${inv.nome} — ${depPct}% → -R$${reducao.toFixed(2)} → Novo valor: R$${novoValor.toFixed(2)}`);
+    console.log(`[NMC] Deprec. ${anoAtual} (${metodo}): ${inv.nome} → -${fmtBRL(reducao)} → ${fmtBRL(novoValor)}`);
   });
 
-  if (dirty) {
-    saveAll();
-    toast('Depreciação anual aplicada a patrimônios cadastrados.', 'inf');
+  if (dirty) { saveAll(); toast('Depreciação anual aplicada a patrimônios.', 'inf'); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// BENFEITORIAS — capitaliza melhorias em patrimônios
+// ═══════════════════════════════════════════════════════════
+function openModalBenfeitoria(invId) {
+  const inv = investimentos.find(i=>i.id===invId);
+  if (!inv) return;
+  document.getElementById('mBenfeitoriaId').value    = invId;
+  document.getElementById('mBenfeitoriaInvNome').textContent = inv.nome;
+  document.getElementById('mBenfeitoriaInvAtual').textContent = fmtBRL(inv.atual||0);
+  document.getElementById('mBenfeitoriaData').value  = new Date().toISOString().slice(0,10);
+  document.getElementById('mBenfeitoriaValor').value = '';
+  document.getElementById('mBenfeitoriaDesc').value  = '';
+  document.getElementById('mBenfeitoriaPrevia').style.display = 'none';
+  openModal('modalBenfeitoria');
+}
+
+function _onBenfeitoriaValorChange() {
+  const invId = document.getElementById('mBenfeitoriaId').value;
+  const inv   = investimentos.find(i=>i.id===invId);
+  if (!inv) return;
+  const val   = parseMoney(document.getElementById('mBenfeitoriaValor').value||'0');
+  const prev  = document.getElementById('mBenfeitoriaPrevia');
+  if (val > 0) {
+    const novo = (inv.atual||0) + val;
+    prev.style.display = '';
+    prev.innerHTML = `<i class="fa fa-arrow-right" style="color:var(--teal);margin:0 6px"></i>
+      Novo valor: <strong style="color:var(--teal)">${fmtBRL(novo)}</strong>
+      <span style="color:var(--text3);font-size:11px">(+${fmtBRL(val)})</span>`;
+  } else {
+    prev.style.display = 'none';
   }
 }
+
+function confirmarBenfeitoria() {
+  const invId = document.getElementById('mBenfeitoriaId').value;
+  const data  = document.getElementById('mBenfeitoriaData').value;
+  const val   = parseMoney(document.getElementById('mBenfeitoriaValor').value||'0');
+  const desc  = document.getElementById('mBenfeitoriaDesc').value.trim();
+  const inv   = investimentos.find(i=>i.id===invId);
+  if (!inv) return;
+  if (!data) { toast('Informe a data.','err'); return; }
+  if (val <= 0) { toast('Informe o valor da benfeitoria.','err'); return; }
+
+  const valorAntes = inv.atual||0;
+  inv.atual = valorAntes + val;
+  if (!inv.benfeitorias) inv.benfeitorias = [];
+  inv.benfeitorias.push({ data, valor: val, desc, valorAntes, novoValor: inv.atual, criadoEm: new Date().toISOString().slice(0,10) });
+
+  saveAll(); renderInvestimentos(); renderDashboard();
+  closeModal('modalBenfeitoria');
+  toast(`✓ Benfeitoria capitalizada: ${fmtBRL(val)} → Novo valor: ${fmtBRL(inv.atual)}`, 'ok');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIR — Taxa Interna de Retorno por investimento
+// (método Newton-Raphson sobre fluxos de caixa reais)
+// ═══════════════════════════════════════════════════════════
+function calcularTIR(fluxos) {
+  // fluxos: [{data:'YYYY-MM-DD', valor: +/-}]
+  if (!fluxos || fluxos.length < 2) return null;
+  const t0 = new Date(fluxos[0].data+'T12:00:00').getTime();
+  const fcs = fluxos.map(f => ({
+    t: (new Date(f.data+'T12:00:00').getTime()-t0)/(1000*60*60*24*365),
+    v: f.valor
+  }));
+  // Newton-Raphson
+  let r = 0.1;
+  for (let i=0; i<100; i++) {
+    let npv=0, dnpv=0;
+    fcs.forEach(f => {
+      const d = Math.pow(1+r, f.t);
+      npv  += f.v / d;
+      dnpv -= f.t * f.v / (d * (1+r));
+    });
+    if (Math.abs(dnpv) < 1e-10) break;
+    const rNew = r - npv/dnpv;
+    if (Math.abs(rNew - r) < 1e-8) { r = rNew; break; }
+    r = rNew;
+    if (r < -0.999) r = -0.999;
+  }
+  return isFinite(r) && r > -1 ? r*100 : null;
+}
+
+function calcularTIRInvestimento(inv) {
+  const movs = movsInvest.filter(m=>m.investId===inv.id);
+  if (!movs.length && !inv.data) return null;
+  const fluxos = [];
+  if (inv.data && inv.aportado > 0) fluxos.push({ data: inv.data, valor: -inv.aportado });
+  movs.forEach(m => {
+    if (m.tipo==='Aporte')   fluxos.push({ data: m.data, valor: -m.valor });
+    if (m.tipo==='Resgate')  fluxos.push({ data: m.data, valor: +m.valor });
+    if (m.tipo==='Rendimento') fluxos.push({ data: m.data, valor: +m.valor });
+  });
+  // Valor atual como saída positiva (como se resgatasse hoje)
+  const hoje = new Date().toISOString().slice(0,10);
+  fluxos.push({ data: hoje, valor: +(inv.atual||inv.aportado||0) });
+  if (fluxos.length < 2) return null;
+  fluxos.sort((a,b)=>a.data.localeCompare(b.data));
+  return calcularTIR(fluxos);
+}
+
+// ═══════════════════════════════════════════════════════════
+// BALANÇO PATRIMONIAL SIMPLIFICADO
+// ═══════════════════════════════════════════════════════════
+function gerarBalancoPatrimonial(anoFiltro) {
+  // ATIVO CIRCULANTE: saldos bancários + investimentos imediata/curto prazo
+  // anoFiltro: "2025", "2026" ou null (tudo)
+  const fimAno = anoFiltro ? (anoFiltro + '-12-31') : null;
+  const saldosBancos = bancos.reduce((s,b)=>{
+    const mv = lancamentos.filter(l=>l.pago && l.banco===b.nome && (!fimAno || l.data<=fimAno));
+    const ent = mv.filter(l=>l.tipo==='Receita'||l.transDir==='entrada').reduce((a,l)=>a+parseMoney(l.valor),0);
+    const sai = mv.filter(l=>l.tipo==='Despesa'||l.transDir==='saida').reduce((a,l)=>a+parseMoney(l.valor),0);
+    return s + (parseFloat(b.saldoInicial)||0) + ent - sai;
+  },0);
+
+  const invCirculante = investimentos.filter(i=>
+    (i.categoria||'Investimento')==='Investimento' &&
+    (!i.liquidez || i.liquidez==='Imediata' || i.liquidez==='CurtoPrazo')
+  ).reduce((s,i)=>s+(i.atual||0),0);
+
+  const invNaoCirculante = investimentos.filter(i=>
+    (i.categoria||'Investimento')==='Investimento' &&
+    (i.liquidez==='MedioPrazo' || i.liquidez==='LongoPrazo' || i.liquidez==='SemLiquidez')
+  ).reduce((s,i)=>s+(i.atual||0),0);
+
+  const imobilizado = investimentos.filter(i=>i.categoria==='Patrimônio')
+    .reduce((s,i)=>s+(i.atual||0),0);
+
+  const totalAtivo = Math.max(0, saldosBancos) + invCirculante + invNaoCirculante + imobilizado;
+
+  // PASSIVO — calculado pelos lançamentos de financiamento pendentes
+  const hoje = new Date().toISOString().slice(0,10);
+  const ano1  = new Date(); ano1.setFullYear(ano1.getFullYear()+1);
+  const ano1s = ano1.toISOString().slice(0,10);
+
+  // Lançamentos de financiamento não pagos (filtrados pelo ano se houver)
+  const lancFinanc = lancamentos.filter(function(l){
+    return l.financId && l.tipo === 'Despesa' && !l.pago
+      && l.data && (!fimAno || l.data <= fimAno);
+  });
+
+  const passCirc = lancFinanc
+    .filter(function(l){ return l.data <= ano1s; })
+    .reduce(function(s,l){ return s + parseMoney(l.valor); }, 0);
+
+  const passNaoCirc = lancFinanc
+    .filter(function(l){ return l.data > ano1s; })
+    .reduce(function(s,l){ return s + parseMoney(l.valor); }, 0);
+
+  const totalPassivo = passCirc + passNaoCirc;
+  const pl = totalAtivo - totalPassivo;
+  const liqCorrente = passCirc > 0 ? ((Math.max(0,saldosBancos)+invCirculante)/passCirc) : null;
+
+  return { saldosBancos: Math.max(0,saldosBancos), invCirculante, invNaoCirculante, imobilizado,
+    totalAtivo, passCirc, passNaoCirc, totalPassivo, pl, liqCorrente };
+}
+
+// Gera o HTML do Balanço Patrimonial (compartilhado entre modal e relatório)
+function _htmlBalanco(b, ano, simb) {
+  simb = simb || 'R$';
+  var fmtMoe = function(v){ return simb + ' ' + Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+  const row = (label, val, bold, color, bg) => {
+    const tdStyle = `padding:6px 10px;font-family:var(--mono);text-align:right;color:${color||'var(--text)'}`;
+    const trStyle = `${bold?'font-weight:700;':''}${bg?'background:'+bg+';':''}`;
+    return `<tr style="${trStyle}">
+      <td style="padding:6px 10px;color:var(--text2)">${label}</td>
+      <td style="${tdStyle}">${fmtMoe(val)}</td>
+    </tr>`;
+  };
+  const secHd = (label) =>
+    `<tr><td colspan="2" style="padding:6px 10px;font-weight:600;color:var(--text);font-size:11px;background:var(--surface);border-bottom:1px solid var(--border)">${label}</td></tr>`;
+  const divider = `<tr><td colspan="2" style="padding:0;border-top:2px solid var(--border)"></td></tr>`;
+
+  return `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px">ATIVO${ano?' — '+ano:''}</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+          ${secHd('ATIVO CIRCULANTE')}
+          ${row('Saldo em Contas Bancárias',b.saldosBancos,false,'var(--teal)')}
+          ${row('Investimentos (liquidez imediata/curto)',b.invCirculante,false,'var(--teal)')}
+          ${secHd('ATIVO NÃO CIRCULANTE')}
+          ${row('Investimentos (médio/longo prazo)',b.invNaoCirculante,false,'var(--text)')}
+          ${row('Imobilizado — Patrimônio',b.imobilizado,false,'var(--gold)')}
+          ${divider}
+          ${row('TOTAL ATIVO',b.totalAtivo,true,'var(--teal)','var(--surface)')}
+        </table>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:8px">PASSIVO + PL${ano?' — '+ano:''}</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+          ${secHd('PASSIVO CIRCULANTE (até 12 meses)')}
+          ${row('Financiamentos vencendo em 12m',b.passCirc,false,'var(--red)')}
+          ${secHd('PASSIVO NÃO CIRCULANTE')}
+          ${row('Financiamentos (acima de 12m)',b.passNaoCirc,false,'var(--red)')}
+          ${divider}
+          ${row('TOTAL PASSIVO',b.totalPassivo,true,'var(--red)','var(--surface)')}
+          <tr><td colspan="2" style="padding:0;border-top:2px solid var(--gold)"></td></tr>
+          ${row('PATRIMÔNIO LÍQUIDO (Ativo − Passivo)',b.pl,true,b.pl>=0?'var(--gold)':'var(--red)','rgba(201,168,76,.06)')}
+        </table>
+        ${b.liqCorrente!==null?`
+        <div style="margin-top:12px;padding:10px 14px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:2px">ÍNDICE DE LIQUIDEZ CORRENTE</div>
+            <div style="font-size:10px;color:var(--text3)">${b.liqCorrente>=2?'⬤ Excelente (≥2)':b.liqCorrente>=1?'⬤ Adequado (≥1)':'⚠ Atenção — passivo > ativo circulante'}</div>
+          </div>
+          <div style="font-size:24px;font-weight:700;color:${b.liqCorrente>=1?'var(--teal)':'var(--red)'}">${b.liqCorrente.toFixed(2)}</div>
+        </div>` : ''}
+      </div>
+    </div>`;
+}
+
+function abrirBalancoPatrimonial() {
+  try {
+    // Popular select de anos
+    var selAno = document.getElementById('balAnnoSel');
+    if (selAno) {
+      var anoAtual = new Date().getFullYear();
+      var anos = new Set([anoAtual]);
+      lancamentos.forEach(function(l){ if(l.data) anos.add(parseInt(l.data.slice(0,4))); });
+      while (selAno.options.length > 1) selAno.remove(1);
+      Array.from(anos).sort().forEach(function(a){
+        var o = document.createElement('option');
+        o.value = a; o.textContent = 'Ano ' + a;
+        selAno.appendChild(o);
+      });
+    }
+    // Popular select de moedas
+    renderMoedas();
+    // Renderizar o conteúdo
+    _renderBalancoModal();
+    openModal('modalBalanco');
+  } catch(e) {
+    console.error('abrirBalancoPatrimonial erro:', e);
+    toast('Erro ao abrir balanço: ' + e.message, 'err');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOEDAS E COTAÇÕES
+// ═══════════════════════════════════════════════════════════
+function renderMoedas() {
+  const body = document.getElementById('tblMoedaBody');
+  if (!body) return;
+  body.innerHTML = moedas.length ? moedas.map(function(m){
+    return '<tr><td><b>'+m.codigo+'</b></td><td>'+m.nome+'</td><td>'+(m.simbolo||'')+'</td>'
+      +'<td><button class="btn btn-ghost btn-icon btn-danger" onclick="delMoeda(this.dataset.id)" data-id="'+m.id+'"><i class="fa fa-trash"></i></button></td></tr>';
+  }).join('') : '<tr><td colspan="4"><div class="empty"><i class="fa fa-coins"></i>Nenhuma moeda cadastrada.</div></td></tr>';
+
+  // Popular select de cotação
+  const sel = document.getElementById('inCotacaoMoeda');
+  if (sel) {
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— selecione —</option>' +
+      moedas.map(m => '<option value="' + m.id + '">' + m.codigo + ' — ' + m.nome + '</option>').join('');
+    if (cur) sel.value = cur;
+  }
+
+  // Popular select do modal de balanço
+  const selBal = document.getElementById('balMoedaSel');
+  if (selBal) {
+    const curBal = selBal.value;
+    selBal.innerHTML = '<option value="BRL">R$ — Real Brasileiro</option>' +
+      moedas.map(m => '<option value="' + m.id + '">' + (m.simbolo||m.codigo) + ' — ' + m.nome + '</option>').join('');
+    if (curBal) selBal.value = curBal;
+  }
+}
+
+function addMoeda() {
+  const codigo  = (document.getElementById('inMoedaCodigo').value||'').trim().toUpperCase();
+  const nome    = (document.getElementById('inMoedaNome').value||'').trim();
+  const simbolo = (document.getElementById('inMoedaSimbolo').value||'').trim();
+  if (!codigo || !nome) { toast('Informe o código e o nome da moeda.','err'); return; }
+  if (moedas.find(m=>m.codigo===codigo)) { toast('Código ' + codigo + ' já cadastrado.','err'); return; }
+  moedas.push({ id: uid(), codigo, nome, simbolo });
+  document.getElementById('inMoedaCodigo').value = '';
+  document.getElementById('inMoedaNome').value   = '';
+  document.getElementById('inMoedaSimbolo').value= '';
+  saveAll(); renderMoedas();
+  toast('Moeda ' + codigo + ' cadastrada!', 'ok');
+}
+
+function delMoeda(id) {
+  moedas    = moedas.filter(m=>m.id!==id);
+  cotacoes  = cotacoes.filter(c=>c.moedaId!==id);
+  saveAll(); renderMoedas(); renderCotacoes();
+  toast('Moeda removida.','inf');
+}
+
+function renderCotacoes() {
+  const body = document.getElementById('tblCotacaoBody');
+  if (!body) return;
+  const sorted = [...cotacoes].sort((a,b)=>b.mesAno.localeCompare(a.mesAno));
+  body.innerHTML = sorted.length ? sorted.map(c => {
+    const m = moedas.find(x=>x.id===c.moedaId);
+    return '<tr>'
+      + '<td><b>' + (m?m.codigo:'?') + '</b> — ' + (m?m.nome:'') + '</td>'
+      + '<td>' + _fmtMesAno(c.mesAno) + '</td>'
+      + '<td style="text-align:right;font-family:var(--mono)">' + fmtBRL(c.valor) + '</td>'
+      + '<td><button class="btn btn-ghost btn-icon btn-danger" onclick="delCotacao(this.dataset.id)" data-id="'+c.id+'"><i class="fa fa-trash"></i></button></td>'
+      + '</tr>';
+  }).join('') : '<tr><td colspan="4"><div class="empty"><i class="fa fa-calendar"></i>Nenhuma cotação registrada.</div></td></tr>';
+}
+
+function _fmtMesAno(mesAno) {
+  if (!mesAno) return '—';
+  var parts = mesAno.split('-');
+  var meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return meses[parseInt(parts[1])-1] + '/' + parts[0];
+}
+
+function addCotacao() {
+  const moedaId = document.getElementById('inCotacaoMoeda').value;
+  const mesAno  = document.getElementById('inCotacaoMes').value;
+  const valor   = parseMoney(document.getElementById('inCotacaoValor').value||'0');
+  if (!moedaId) { toast('Selecione a moeda.','err'); return; }
+  if (!mesAno)  { toast('Informe o mês/ano.','err'); return; }
+  if (!valor)   { toast('Informe a cotação.','err'); return; }
+  // Remove cotação anterior do mesmo mês/moeda
+  cotacoes = cotacoes.filter(c=>!(c.moedaId===moedaId && c.mesAno===mesAno));
+  cotacoes.push({ id: uid(), moedaId, mesAno, valor });
+  document.getElementById('inCotacaoValor').value = '';
+  saveAll(); renderCotacoes();
+  const m = moedas.find(x=>x.id===moedaId);
+  toast('Cotação registrada: ' + (m?m.codigo:'') + ' = ' + fmtBRL(valor) + ' em ' + _fmtMesAno(mesAno), 'ok');
+}
+
+function delCotacao(id) {
+  cotacoes = cotacoes.filter(c=>c.id!==id);
+  saveAll(); renderCotacoes();
+}
+
+function getCotacao(moedaId, anoOuMes) {
+  // Retorna a cotação mais recente para a moeda no ano/mês informado
+  // anoOuMes pode ser 'YYYY' ou 'YYYY-MM'
+  if (!moedaId || moedaId === 'BRL') return 1;
+  var filtro = cotacoes.filter(function(c) {
+    return c.moedaId === moedaId && c.mesAno.startsWith(anoOuMes ? String(anoOuMes).slice(0,4) : '');
+  });
+  if (!filtro.length) {
+    // Tentar cotação mais recente disponível
+    filtro = cotacoes.filter(function(c){ return c.moedaId === moedaId; });
+  }
+  if (!filtro.length) return 1;
+  filtro.sort(function(a,b){ return b.mesAno.localeCompare(a.mesAno); });
+  return filtro[0].valor;
+}
+
+// ═══════════════════════════════════════════════════════════
+// BALANÇO COM MOEDA — renderização unificada
+// ═══════════════════════════════════════════════════════════
+function _renderBalancoModal() {
+  var selAno = document.getElementById('balAnnoSel');
+  var selMoe = document.getElementById('balMoedaSel');
+  var anoSel = selAno  ? (selAno.value  || '') : '';
+  var moeSel = selMoe  ? (selMoe.value  || 'BRL') : 'BRL';
+  var b      = gerarBalancoPatrimonial(anoSel || null);
+  // Converter para moeda selecionada
+  var cotacao = getCotacao(moeSel, anoSel || new Date().getFullYear());
+  var moedaObj = moeSel === 'BRL' ? null : moedas.find(function(m){ return m.id === moeSel; });
+  var simb = moedaObj ? (moedaObj.simbolo || moedaObj.codigo) : 'R$';
+  if (moeSel !== 'BRL' && cotacao > 0) {
+    var conv = function(v){ return v / cotacao; };
+    b = {
+      saldosBancos:      conv(b.saldosBancos),
+      invCirculante:     conv(b.invCirculante),
+      invNaoCirculante:  conv(b.invNaoCirculante),
+      imobilizado:       conv(b.imobilizado),
+      totalAtivo:        conv(b.totalAtivo),
+      passCirc:          conv(b.passCirc),
+      passNaoCirc:       conv(b.passNaoCirc),
+      totalPassivo:      conv(b.totalPassivo),
+      pl:                conv(b.pl),
+      liqCorrente:       b.liqCorrente
+    };
+  }
+  var bodyEl = document.getElementById('modalBalancoBody');
+  if (bodyEl) bodyEl.innerHTML = _htmlBalanco(b, anoSel, simb);
+}
+
+// ═══════════════════════════════════════════════════════════
+// WIRING DE EVENTOS — feito via addEventListener para não depender de onclick inline
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  // Botão Balanço na tela de Patrimônio e Investimentos
+  var btnBal = document.getElementById('btnAbrirBalanco');
+  if (btnBal) {
+    btnBal.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      abrirBalancoPatrimonial();
+    });
+  }
+});
 
 function gerarRecorrentesAutoAoLogin() {
   const hoje = new Date();
@@ -13254,42 +14004,249 @@ function relPopularFiltros(){
   const ini=new Date(hoje2.getFullYear(),hoje2.getMonth()-5,1);
   const de=document.getElementById('relDe');const ate=document.getElementById('relAte');
   if(de)de.value=ym2(ini); if(ate)ate.value=ym2(hoje2);
+  // Popular select de anos (para Balanço e DRE)
+  const selAno=document.getElementById('relAno');
+  if(selAno){
+    const anoAtual=hoje.getFullYear();
+    const anos=new Set([anoAtual]);
+    lancamentos.forEach(l=>{if(l.data)anos.add(parseInt(l.data.slice(0,4)));});
+    while(selAno.options.length>1) selAno.remove(1);
+    [...anos].sort().forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent='Ano '+a;selAno.appendChild(o);});
+    selAno.value=String(anoAtual);
+  }
 }
 function relOnTipoChange(){
   const tipo=(document.getElementById('relTipo')||{}).value||'fluxo';
-  const showMes=['fluxo','banco','cartao','categoria','categoria_hierarquia','inadimplencia','orcado_realizado'].includes(tipo);
+  const showMes=['fluxo','banco','cartao','categoria','categoria_hierarquia','inadimplencia','orcado_realizado','dre'].includes(tipo);
+  const showAno=['balanco','investimentos','dre'].includes(tipo);
   const showBanco=tipo==='banco', showCartao=tipo==='cartao', showPer=tipo==='rxd';
   const g=(id,v)=>{const el=document.getElementById(id);if(el)el.style.display=v?'':'none';};
-  g('relFiltroMesWrap',showMes); g('relFiltroBancoWrap',showBanco); g('relFiltroCartaoWrap',showCartao);
+  g('relFiltroMesWrap',showMes); g('relFiltroAnoWrap',showAno);
+  g('relFiltroBancoWrap',showBanco); g('relFiltroCartaoWrap',showCartao);
   g('relFiltroPeriodoWrap',showPer); g('relFiltroPeriodoWrap2',showPer);
+  // Popular select de anos (sempre atualiza)
+  const selAno=document.getElementById('relAno');
+  if(selAno){
+    const anoAtual=new Date().getFullYear();
+    const anos=new Set([anoAtual]);
+    lancamentos.forEach(l=>{if(l.data)anos.add(parseInt(l.data.slice(0,4)));});
+    // Só reconstrói se necessário
+    const existentes=new Set([...selAno.options].slice(1).map(o=>parseInt(o.value)));
+    const novoSet=[...anos].sort();
+    if(JSON.stringify(novoSet)!==JSON.stringify([...existentes].sort())){
+      // Remove opções antigas (mantém "Todos os anos")
+      while(selAno.options.length>1) selAno.remove(1);
+      novoSet.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent='Ano '+a;selAno.appendChild(o);});
+    }
+    // Só seta valor padrão se estiver vazio
+    if(!selAno.value) selAno.value=String(anoAtual);
+  }
   renderRelatorio();
 }
 function renderRelatorio(){
-  const tipo=(document.getElementById('relTipo')||{}).value||'fluxo';
-  const ym=(document.getElementById('relMes')||{}).value||nowYM();
-  const banco=(document.getElementById('relBanco')||{}).value||'';
-  const cartao=(document.getElementById('relCartao')||{}).value||'';
-  const de=(document.getElementById('relDe')||{}).value||'';
-  const ate=(document.getElementById('relAte')||{}).value||'';
-  const out=document.getElementById('relatorioOutput'); if(!out) return;
-  switch(tipo){
-    case 'fluxo':               out.innerHTML=relFluxoCaixa(ym); break;
-    case 'banco':               out.innerHTML=relMovBanco(ym,banco); break;
-    case 'cartao':              out.innerHTML=relMovCartao(ym,cartao); break;
-    case 'categoria':           out.innerHTML=relCategoria(ym); break;
-    case 'categoria_hierarquia':out.innerHTML=relCategoriaHierarquia(ym); break;
-    case 'rxd':                 out.innerHTML=relRxD(de,ate); break;
-    case 'orcado_realizado':    out.innerHTML=relOrcadoRealizado(ym); break;
-    case 'inadimplencia':       out.innerHTML=relInadimplencia(ym); break;
-    case 'investimentos':       out.innerHTML=relInvestimentos(); break;
-    case 'recorrentes':         out.innerHTML=relRecorrentes(); break;
-    case 'recebimentos_forma':  out.innerHTML=relRecebimentosForma(); break;
-    default: out.innerHTML='<div class="rel-empty"><i class="fa fa-chart-bar"></i>Selecione um relatório.</div>';
+  const tipoEl = document.getElementById('relTipo');
+  const tipo = tipoEl ? tipoEl.value : 'fluxo';
+  const ymEl  = document.getElementById('relMes');
+  const ym    = ymEl  ? (ymEl.value  || nowYM()) : nowYM();
+  const banco = (document.getElementById('relBanco')  || {}).value || '';
+  const cartao= (document.getElementById('relCartao') || {}).value || '';
+  const de    = (document.getElementById('relDe')     || {}).value || '';
+  const ate   = (document.getElementById('relAte')    || {}).value || '';
+  const anoEl = document.getElementById('relAno');
+  const ano   = anoEl ? (anoEl.value || '') : '';
+  const out   = document.getElementById('relatorioOutput');
+  if (!out) return;
+  try {
+    var html = '';
+    switch(tipo){
+      case 'fluxo':               html = relFluxoCaixa(ym); break;
+      case 'banco':               html = relMovBanco(ym,banco); break;
+      case 'cartao':              html = relMovCartao(ym,cartao); break;
+      case 'categoria':           html = relCategoria(ym); break;
+      case 'categoria_hierarquia':html = relCategoriaHierarquia(ym); break;
+      case 'rxd':                 html = relRxD(de,ate); break;
+      case 'orcado_realizado':    html = relOrcadoRealizado(ym); break;
+      case 'inadimplencia':       html = relInadimplencia(ym); break;
+      case 'investimentos':       html = relInvestimentos(); break;
+      case 'recorrentes':         html = relRecorrentes(); break;
+      case 'recebimentos_forma':  html = relRecebimentosForma(); break;
+      case 'balanco':             html = relBalanco(ano); break;
+      case 'dre':                 html = relDRE(ym, ano); break;
+      default: html = '<div class="rel-empty"><i class="fa fa-chart-bar"></i>Selecione um relatório.</div>';
+    }
+    out.innerHTML = html;
+  } catch(e) {
+    console.error('renderRelatorio erro:', e);
+    out.innerHTML = '<div class="rel-empty" style="color:var(--red)"><i class="fa fa-exclamation-circle"></i> Erro ao gerar relatório: ' + e.message + '</div>';
   }
 }
 function relKpiHtml(label,val,cls){return`<div class="rel-kpi"><div class="rel-kpi-label">${label}</div><div class="rel-kpi-val ${cls}">${val}</div></div>`;}
 function relSecHd(icon,titulo,badge=''){return`<div class="rel-section-hd"><span><i class="fa fa-${icon}"></i>${titulo}</span>${badge?`<span class="badge badge-gold">${badge}</span>`:''}</div>`;}
 function relTblWrap(cols,rows,foot=''){return`<div class="tbl-wrap"><table class="rel-table"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows||'<tr><td colspan="'+cols.length+'"><div class="rel-empty"><i class="fa fa-inbox"></i>'+t('gen.sem_dados_txt')+'</div></td></tr>'}</tbody>${foot?`<tfoot>${foot}</tfoot>`:''}</table></div>`;}
+
+// ═══════════════════════════════════════════════════════════
+// BALANÇO PATRIMONIAL — versão para impressão em Relatórios
+// ═══════════════════════════════════════════════════════════
+function relBalanco(ano) {
+  const b   = gerarBalancoPatrimonial(ano||null);
+  const lab = ano ? 'Ano '+ano : 'Posição Atual';
+  const row = function(label, val, bold, cor) {
+    var ts  = bold ? ' style="font-weight:700;background:#f4f7fb"' : '';
+    var clr = cor || '#2d3f5e';
+    var fw  = bold ? 700 : 400;
+    return '<tr' + ts + '>'
+      + '<td style="padding:6px 12px;color:#2d3f5e">' + label + '</td>'
+      + '<td style="padding:6px 12px;font-family:monospace;text-align:right;font-weight:' + fw + ';color:' + clr + '">' + relFmt(val) + '</td>'
+      + '</tr>';
+  };
+  const sec = function(lbl) {
+    return '<tr><td colspan="2" style="padding:6px 12px;font-weight:600;font-size:11px;background:#f0f4fa;color:#1a2540;text-transform:uppercase;letter-spacing:.5px">' + lbl + '</td></tr>';
+  };
+
+  return `<div class="rel-header">
+    <div class="rel-title"><i class="fa fa-university" style="color:var(--gold);margin-right:8px"></i>Balanço Patrimonial Simplificado</div>
+    <div class="rel-subtitle">Posição patrimonial — ${lab}</div>
+    <div class="rel-kpis">
+      ${relKpiHtml('Ativo Total',relFmt(b.totalAtivo),'pos')}
+      ${relKpiHtml('Passivo Total',relFmt(b.totalPassivo),'neg')}
+      ${relKpiHtml('Patrimônio Líquido',relFmt(b.pl),b.pl>=0?'pos':'neg')}
+      ${b.liqCorrente!==null?relKpiHtml('Índice de Liquidez',b.liqCorrente.toFixed(2),b.liqCorrente>=1?'pos':'neg'):''}
+    </div>
+  </div>
+  <div class="rel-section">
+    ${relSecHd('arrow-up','ATIVO — '+relFmt(b.totalAtivo))}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+      <div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px;border-right:1px solid #dde4f0">
+          ${sec('Ativo Circulante')}
+          ${row('Saldo em Contas Bancárias',b.saldosBancos,false,'#3eb89a')}
+          ${row('Investimentos (liquidez imediata/curto prazo)',b.invCirculante,false,'#3eb89a')}
+          ${sec('Ativo Não Circulante')}
+          ${row('Investimentos (médio/longo prazo)',b.invNaoCirculante,false,'#2d3f5e')}
+          ${row('Imobilizado — Patrimônio',b.imobilizado,false,'#c9a84c')}
+          ${row('TOTAL ATIVO',b.totalAtivo,true,'#3eb89a')}
+        </table>
+      </div>
+      <div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px">
+          ${sec('Passivo Circulante (até 12 meses)')}
+          ${row('Financiamentos vencendo em 12m',b.passCirc,false,'#e05252')}
+          ${sec('Passivo Não Circulante')}
+          ${row('Financiamentos (acima de 12m)',b.passNaoCirc,false,'#e05252')}
+          ${row('TOTAL PASSIVO',b.totalPassivo,true,'#e05252')}
+          <tr><td colspan="2" style="padding:0;border-top:2px solid #c9a84c"></td></tr>
+          ${row('PATRIMÔNIO LÍQUIDO',b.pl,true,b.pl>=0?'#c9a84c':'#e05252')}
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRE — Demonstração do Resultado do Exercício
+// Aceita: ym (YYYY-MM) para um mês OU ano (YYYY) para o ano inteiro
+// ═══════════════════════════════════════════════════════════
+function relDRE(ym, ano) {
+  // Período
+  let dtI, dtF, periodo;
+  if (ano) {
+    dtI = ano+'-01-01'; dtF = ano+'-12-31';
+    periodo = 'Exercício '+ano;
+  } else {
+    const [y,m] = ym.split('-').map(Number);
+    dtI = ym+'-01'; dtF = ym+'-'+new Date(y,m,0).getDate();
+    periodo = relMesLabel(ym);
+  }
+
+  // Receita Bruta
+  const recBruta = lancamentos.filter(l=>
+    isReceitaReal(l) && l.pago && l.data>=dtI && l.data<=dtF
+  ).reduce((s,l)=>s+parseMoney(l.valor),0);
+
+  // Deduções da Receita (taxas administrativas)
+  const deducoes = lancamentos.filter(l=>
+    l.autoTaxa && l.pago && l.data>=dtI && l.data<=dtF
+  ).reduce((s,l)=>s+parseMoney(l.valor),0);
+
+  const recLiq = recBruta - deducoes;
+
+  // Custos e Despesas por CC
+  const despesas = lancamentos.filter(l=>
+    isDespesaReal(l) && l.pago && l.data>=dtI && l.data<=dtF
+  );
+
+  // Agrupamento por CC
+  const porCC = {};
+  despesas.forEach(l=>{
+    const cc = l.cc||'Sem Categoria';
+    if (!porCC[cc]) porCC[cc]=0;
+    porCC[cc]+=parseMoney(l.valor);
+  });
+
+  const totDesp = despesas.reduce((s,l)=>s+parseMoney(l.valor),0);
+
+  // Resultado antes de impostos
+  const lair = recLiq - totDesp;
+
+  // Resultado financeiro (juros pagos e descontos recebidos)
+  const jurosPagos = lancamentos.filter(l=>
+    l.pago && l.data>=dtI && l.data<=dtF &&
+    (l.cc||'').toLowerCase().includes('juro')
+  ).reduce((s,l)=>s+parseMoney(l.valor),0);
+
+  const descReceb = lancamentos.filter(l=>
+    l.pago && l.data>=dtI && l.data<=dtF &&
+    (l.cc||'').toLowerCase().includes('desconto') && l.tipo==='Receita'
+  ).reduce((s,l)=>s+parseMoney(l.valor),0);
+
+  const resultFin = descReceb - jurosPagos;
+  const resultLiq = lair + resultFin;
+
+  // Rows por CC
+  const rowsCC = Object.entries(porCC)
+    .sort(([,a],[,b])=>b-a)
+    .map(([cc,val])=>
+      `<tr><td style="padding:5px 12px;color:#2d3f5e;padding-left:24px">${cc}</td>
+       <td style="padding:5px 12px;text-align:right;font-family:var(--mono);color:#e05252">(${relFmt(val)})</td></tr>`
+    ).join('');
+
+  const row = (label, val, bold, cor, indent) =>
+    `<tr style="${bold?'font-weight:700;background:#f4f7fb':''}">
+      <td style="padding:6px 12px;color:#2d3f5e${indent?';padding-left:24px':''}">${label}</td>
+      <td style="padding:6px 12px;text-align:right;font-family:var(--mono);font-weight:${bold?700:400};color:${cor||'#2d3f5e'}">${val>=0?'':'('}${relFmt(Math.abs(val))}${val>=0?'':')'}</td>
+    </tr>`;
+
+  return `<div class="rel-header">
+    <div class="rel-title"><i class="fa fa-chart-bar" style="color:var(--gold);margin-right:8px"></i>DRE — Demonstração do Resultado</div>
+    <div class="rel-subtitle">${periodo}</div>
+    <div class="rel-kpis">
+      ${relKpiHtml('Receita Bruta',relFmt(recBruta),'pos')}
+      ${relKpiHtml('Deduções',deducoes>0?'('+relFmt(deducoes)+')':'—','neg')}
+      ${relKpiHtml('Receita Líquida',relFmt(recLiq),'pos')}
+      ${relKpiHtml('Total Despesas','('+relFmt(totDesp)+')','neg')}
+      ${relKpiHtml('Resultado',relFmt(resultLiq),resultLiq>=0?'pos':'neg')}
+    </div>
+  </div>
+  <div class="rel-section">
+    ${relSecHd('chart-bar','DRE — '+periodo)}
+    <table style="width:100%;border-collapse:collapse;font-size:11px" class="rel-table">
+      ${row('(+) Receita Bruta',recBruta,false,'#3eb89a')}
+      ${deducoes>0?row('(-) Deduções / Taxas Adm.',-deducoes,false,'#e05252',true):''}
+      ${row('(=) Receita Líquida',recLiq,true,'#3eb89a')}
+      <tr><td colspan="2" style="padding:4px 12px;font-weight:600;font-size:10px;background:#f0f4fa;text-transform:uppercase;letter-spacing:.5px">DESPESAS OPERACIONAIS</td></tr>
+      ${rowsCC}
+      ${row('(-) Total Despesas Operacionais',-totDesp,false,'#e05252')}
+      ${row('(=) Resultado Operacional (LAIR)',lair,true,lair>=0?'#c9a84c':'#e05252')}
+      ${resultFin!==0?`
+      <tr><td colspan="2" style="padding:4px 12px;font-weight:600;font-size:10px;background:#f0f4fa;text-transform:uppercase;letter-spacing:.5px">RESULTADO FINANCEIRO</td></tr>
+      ${jurosPagos>0?row('(-) Juros e Encargos Pagos',-jurosPagos,false,'#e05252',true):''}
+      ${descReceb>0?row('(+) Descontos Obtidos',descReceb,false,'#3eb89a',true):''}
+      `:''}
+      <tr><td colspan="2" style="padding:0;border-top:3px solid ${resultLiq>=0?'#3eb89a':'#e05252'}"></td></tr>
+      ${row('(=) RESULTADO LÍQUIDO DO PERÍODO',resultLiq,true,resultLiq>=0?'#3eb89a':'#e05252')}
+    </table>
+  </div>`;
+}
 
 function relFluxoCaixa(ym){
   const itens=lancamentos.filter(l=>l.data&&l.data.startsWith(ym));
@@ -13380,38 +14337,73 @@ function relInvestimentos(){
   const totPatrim = soPatrim.reduce((s,i)=>s+(i.atual||i.aportado||0),0);
   const total = totInvest + totPatrim;
 
-  const mkRows = (lista) => lista.map(inv=>{
-    const isP = inv.categoria === 'Patrimônio';
-    const aport = movsInvest.filter(m=>m.investId===inv.id&&m.tipo==='Aporte').reduce((s,m)=>s+m.valor,0);
-    const rend  = movsInvest.filter(m=>m.investId===inv.id&&m.tipo==='Rendimento').reduce((s,m)=>s+m.valor,0);
+  // Balanço para KPIs
+  const bal = gerarBalancoPatrimonial();
+
+  // Rows de Investimentos — com IR e TIR
+  const rowsInvest = soInvest.map(inv=>{
+    const aport    = movsInvest.filter(m=>m.investId===inv.id&&m.tipo==='Aporte').reduce((s,m)=>s+m.valor,0);
+    const rend     = movsInvest.filter(m=>m.investId===inv.id&&m.tipo==='Rendimento').reduce((s,m)=>s+m.valor,0);
     const valorAtual = inv.atual||inv.aportado||0;
-    const base   = inv.aportado||0;
-    const lucro  = valorAtual - base;
-    const pct    = base ? Math.round((lucro/base)*100) : 0;
-    const deprStr = isP && inv.depreciacao > 0 ? `${inv.depreciacao}% a.a.` : '—';
+    const base     = inv.aportado||0;
+    const lucro    = valorAtual - base;
+    const pct      = base ? (lucro/base*100).toFixed(1) : 0;
+    // IR estimado
+    const diasAte  = inv.data ? Math.max(0,Math.floor((new Date()-new Date(inv.data+'T12:00:00'))/86400000)) : 0;
+    const aliq     = diasAte<=180?22.5:diasAte<=360?20:diasAte<=720?17.5:15;
+    const irEst    = lucro>0 ? lucro*aliq/100 : 0;
+    const liqLucro = lucro - irEst;
+    // TIR
+    const tir      = calcularTIRInvestimento(inv);
+    const liqBadge = inv.liquidez ? ({Imediata:'Imediata',CurtoPrazo:'Curto Prazo',MedioPrazo:'Médio Prazo',LongoPrazo:'Longo Prazo',SemLiquidez:'Sem Liquidez'}[inv.liquidez]||inv.liquidez) : '—';
+    return`<tr>
+      <td style="font-weight:600">${inv.nome||'—'}</td>
+      <td>${inv.tipo||'—'}<br><span style="font-size:10px;color:var(--text3)">${inv.indexador||''}</span></td>
+      <td style="font-family:var(--mono)">${relFmt(base)}</td>
+      <td style="font-family:var(--mono);color:var(--teal)">${relFmt(rend)}</td>
+      <td style="font-family:var(--mono);font-weight:600;color:var(--gold)">${relFmt(valorAtual)}</td>
+      <td style="font-family:var(--mono);color:${lucro>=0?'var(--teal)':'var(--red)'}">${lucro>=0?'+':''}${relFmt(lucro)} (${pct}%)</td>
+      <td style="font-family:var(--mono);color:var(--red);font-size:11px">${irEst>0?'-'+relFmt(irEst)+' ('+aliq+'%)':'—'}</td>
+      <td style="font-family:var(--mono);color:${liqLucro>=0?'var(--teal)':'var(--red)'}">${irEst>0?relFmt(liqLucro):'—'}</td>
+      <td style="font-family:var(--mono);font-size:11px">${tir!==null?(tir>=0?'+':'')+tir.toFixed(1)+'% a.a.':'—'}</td>
+      <td style="font-size:11px;color:var(--text3)">${liqBadge}</td>
+    </tr>`;
+  }).join('');
+
+  // Rows de Patrimônio — com depreciação e benfeitorias
+  const rowsPatrim = soPatrim.map(inv=>{
+    const base     = inv.aportado||0;
+    const valorAtual = inv.atual||base;
+    const lucro    = valorAtual - base;
+    const pct      = base ? (lucro/base*100).toFixed(1) : 0;
+    const deprPct  = inv.depreciacao>0 ? `${inv.depreciacao}% (${inv.metodoDepr||'linear'})` : '—';
+    const residual = inv.valorResidual>0 ? relFmt(inv.valorResidual) : '—';
+    const benf     = (inv.benfeitorias||[]).reduce((s,b)=>s+b.valor,0);
+    const ultReav  = inv.reavaliacoes?.length ? fmtDate(inv.reavaliacoes[inv.reavaliacoes.length-1].data) : '—';
     return`<tr>
       <td style="font-weight:600">${inv.nome||'—'}</td>
       <td>${inv.tipo||'—'}</td>
       <td style="font-family:var(--mono)">${relFmt(base)}</td>
-      ${isP
-        ? `<td style="color:var(--red);font-family:var(--mono)">${deprStr}</td>`
-        : `<td style="color:var(--teal);font-family:var(--mono)">${relFmt(rend)}</td>`}
-      <td style="color:var(--gold);font-family:var(--mono);font-weight:600">${relFmt(valorAtual)}</td>
-      <td style="color:${lucro>=0?'var(--teal)':'var(--red)'};font-family:var(--mono)">${lucro>=0?'+':''}${relFmt(lucro)} (${pct}%)</td>
+      <td style="font-family:var(--mono);color:var(--teal)">${benf>0?relFmt(benf):'—'}</td>
+      <td style="font-family:var(--mono);font-weight:600;color:var(--gold)">${relFmt(valorAtual)}</td>
+      <td style="font-family:var(--mono);color:${lucro>=0?'var(--teal)':'var(--red)'}">${lucro>=0?'+':''}${relFmt(lucro)} (${pct}%)</td>
+      <td style="font-family:var(--mono);color:var(--red);font-size:11px">${deprPct}</td>
+      <td style="font-family:var(--mono);font-size:11px">${residual}</td>
+      <td style="font-size:11px;color:var(--text3)">${ultReav}</td>
     </tr>`;
   }).join('');
 
   const tblInvest = soInvest.length
     ? `${relSecHd('chart-line','Investimentos')}
-       ${relTblWrap(['Nome','Tipo','Aportado','Rendimentos','Valor Atual','Resultado'],
-         mkRows(soInvest),
-         `<tr><td colspan="4"><strong>TOTAL INVESTIMENTOS</strong></td><td style="color:var(--gold)">${relFmt(totInvest)}</td><td></td></tr>`)}` : '';
+       ${relTblWrap(['Nome','Tipo/Idx','Aportado','Rendimentos','Valor Atual','Result. Bruto','IR Est.','Result. Líquido','TIR a.a.','Liquidez'],
+         rowsInvest,
+         `<tr><td colspan="4"><strong>TOTAL INVESTIMENTOS</strong></td><td style="color:var(--gold);font-family:var(--mono)">${relFmt(totInvest)}</td><td colspan="5"></td></tr>`)}` : '';
 
   const tblPatrim = soPatrim.length
-    ? `${relSecHd('home','Patrimônio')}
-       ${relTblWrap(['Nome','Tipo','Valor Aquisição','Deprec. Anual','Valor Atual','Variação'],
-         mkRows(soPatrim),
-         `<tr><td colspan="4"><strong>TOTAL PATRIMÔNIO</strong></td><td style="color:var(--gold)">${relFmt(totPatrim)}</td><td></td></tr>`)}` : '';
+    ? `${relSecHd('home','Patrimônio (Imobilizado)')}
+       ${relTblWrap(['Nome','Tipo','Aquisição','Benfeitorias','Valor Atual','Variação','Deprec. Anual','V. Residual','Últ. Reavaliação'],
+         rowsPatrim,
+         `<tr><td colspan="4"><strong>TOTAL PATRIMÔNIO</strong></td><td style="color:var(--gold);font-family:var(--mono)">${relFmt(totPatrim)}</td><td colspan="4"></td></tr>`)}` : '';
 
   return `<div class="rel-header">
     <div class="rel-title"><i class="fa fa-chart-pie" style="color:var(--gold);margin-right:8px"></i>Posição de Patrimônio e Investimentos</div>
@@ -13419,6 +14411,8 @@ function relInvestimentos(){
       ${relKpiHtml('Total Investimentos',relFmt(totInvest),'pos')}
       ${relKpiHtml('Total Patrimônio',relFmt(totPatrim),'neu')}
       ${relKpiHtml('Total Geral',relFmt(total),'neu')}
+      ${relKpiHtml('Patrimônio Líquido',relFmt(bal.pl),bal.pl>=0?'pos':'neg')}
+      ${bal.liqCorrente!==null?relKpiHtml('Índice Liquidez',bal.liqCorrente.toFixed(2),bal.liqCorrente>=1?'pos':'neg'):''}
     </div>
   </div>
   <div class="rel-section">${tblInvest}${tblPatrim}</div>`;
@@ -13558,6 +14552,8 @@ function dashDrillDown(nivel, grupo, subgrupo) {
 }
 
 function exportarRelatorioPDF(){
+  // Garante que o relatório está gerado antes de imprimir
+  renderRelatorio();
   const out = document.getElementById('relatorioOutput');
   if (!out || !out.innerHTML.trim()) { toast(t('toast.relatorio_antes_exportar'),'err'); return; }
   const tipo = document.getElementById('relTipo');
@@ -13587,6 +14583,12 @@ function exportarRelatorioPDF(){
 .rel-badge{display:inline-block;padding:2px 7px;border-radius:99px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase}
 .badge-gold,.rel-badge{background:rgba(201,168,76,.15);color:#9a7d38}.rel-badge.ok{background:rgba(62,184,154,.15);color:#2d9176}.rel-badge.danger{background:rgba(224,82,82,.12);color:#b84040}.rel-badge.warn{background:rgba(245,158,11,.12);color:#b37b00}
 .pdf-footer{margin-top:30px;padding-top:12px;border-top:1px solid #dde4f0;display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:9px;color:#8a9bb8}
+
+/* Campos monetários — min-width para evitar corte em 99.999,99 */
+.val-brl { font-family: var(--mono); white-space: nowrap; min-width: 110px; display: inline-block; }
+.rel-table td[style*="font-family:var(--mono)"],
+.rel-table td[style*="font-family:monospace"] { white-space: nowrap; }
+.tbl-wrap { overflow-x: auto; }
 @media print{body{padding:20px 24px}.rel-section{page-break-inside:avoid}}
 `;
 
