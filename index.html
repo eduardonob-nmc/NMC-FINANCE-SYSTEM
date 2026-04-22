@@ -3352,6 +3352,32 @@ window._applySelectOptions = function() {
     <p style="text-align:center;margin-top:18px;font-size:11px;color:var(--text3);font-family:var(--mono)">
       padrão: admin / 1234
     </p>
+    <div style="text-align:center;margin-top:8px">
+      <button onclick="resetarSenhaAdmin()" style="background:none;border:none;color:var(--text3);font-size:11px;font-family:var(--mono);cursor:pointer;text-decoration:underline;padding:0;opacity:.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">
+        🔑 Resetar senha do admin para 1234
+      </button>
+    </div>
+    <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);text-align:center">
+      <details style="font-size:11px;color:var(--text3)">
+        <summary style="cursor:pointer;font-family:var(--mono);letter-spacing:.5px">⚠ Problemas para entrar?</summary>
+        <div style="margin-top:10px;line-height:1.7">
+          <p>Se os dados aparecem em branco após o login, o Service Worker pode estar com cache antigo.</p>
+          <button onclick="(function(){
+            if(confirm('Isso vai forçar o recarregamento do app. Seus dados no localStorage serão preservados. Continuar?')){
+              if(navigator.serviceWorker){
+                navigator.serviceWorker.getRegistrations().then(function(regs){
+                  regs.forEach(function(r){r.unregister();});
+                  setTimeout(function(){location.reload(true);},400);
+                });
+              } else { location.reload(true); }
+            }
+          })()"
+          style="margin-top:6px;padding:6px 14px;background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.3);border-radius:var(--r);color:var(--red);font-size:11px;cursor:pointer;font-family:var(--mono)">
+            🔄 Limpar cache e recarregar
+          </button>
+        </div>
+      </details>
+    </div>
   </div>
 </div>
 
@@ -3368,6 +3394,11 @@ window._applySelectOptions = function() {
     <div style="display:flex;align-items:center;gap:10px">
       <button id="btnInstalarPWA" onclick="instalarPWA()" style="display:none;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);color:var(--gold);border-radius:var(--r);padding:6px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;align-items:center;gap:6px;margin-right:6px">
       <i class="fa fa-download"></i> Instalar
+    </button>
+    <button id="btnAlterarSenhaTopbar" onclick="openAlterarSenhaPropria()" title="Alterar minha senha"
+      style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold);border-radius:var(--r);padding:6px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s"
+      onmouseover="this.style.background='rgba(201,168,76,.22)'" onmouseout="this.style.background='rgba(201,168,76,.1)'">
+      <i class="fa fa-key"></i> <span class="hide-mobile">Senha</span>
     </button>
     <button onclick="fazerLogout()" style="background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.35);color:#e05252;border-radius:var(--r);padding:6px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s" onmouseover="this.style.background='rgba(224,82,82,.25)'" onmouseout="this.style.background='rgba(224,82,82,.12)'">
         <i class="fa fa-sign-out-alt"></i> Sair
@@ -5428,16 +5459,33 @@ window._applySelectOptions = function() {
 
 <!-- Modal Alterar Senha -->
 <div class="modal-bg" id="modalAlterarSenha">
-  <div class="modal" style="width:420px">
+  <div class="modal" style="width:440px">
     <button class="modal-close" onclick="closeModal('modalAlterarSenha')"><i class="fa fa-times"></i></button>
     <div class="modal-title"><i class="fa fa-key" style="color:var(--gold)"></i> Alterar Senha</div>
-    <div style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:16px">Usuário: <span id="alteraSenhaUser" style="color:var(--gold)"></span></div>
+    <div style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:16px">
+      Usuário: <span id="alteraSenhaUser" style="color:var(--gold);font-weight:600"></span>
+    </div>
     <input type="hidden" id="alteraSenhaIdx">
-    <div class="field"><label>Nova Senha</label><input type="password" id="alteraSenhaNova" placeholder="Mínimo 4 caracteres"></div>
-    <div class="field"><label data-i18n="lbl.confirmar_senha">Confirmar Nova Senha</label><input type="password" id="alteraSenhaConf" placeholder="Repita a senha"></div>
+    <div class="field">
+      <label>Senha Atual</label>
+      <input type="password" id="alteraSenhaAtual" placeholder="Digite sua senha atual" autocomplete="current-password">
+    </div>
+    <div class="field">
+      <label>Nova Senha</label>
+      <input type="password" id="alteraSenhaNova" placeholder="Mínimo 4 caracteres" autocomplete="new-password">
+    </div>
+    <div class="field">
+      <label>Confirmar Nova Senha</label>
+      <input type="password" id="alteraSenhaConf" placeholder="Repita a nova senha" autocomplete="new-password">
+    </div>
+    <!-- Aviso de senha reservada (admin) -->
+    <div id="alteraSenhaAdminHint" style="display:none;margin-top:4px;padding:8px 12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:var(--r);font-size:11px;font-family:var(--mono);color:var(--gold)">
+      <i class="fa fa-info-circle"></i>
+      Dica: administradores podem usar a senha padrão do sistema como senha atual para redefinição de emergência.
+    </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modalAlterarSenha')">Cancelar</button>
-      <button class="btn btn-gold" onclick="salvarAlterarSenha()"><i class="fa fa-save"></i> Salvar</button>
+      <button class="btn btn-gold" onclick="salvarAlterarSenha()"><i class="fa fa-save"></i> Salvar Nova Senha</button>
     </div>
   </div>
 </div>
@@ -6097,64 +6145,66 @@ window._applySelectOptions = function() {
     <button class="modal-close" onclick="closeModal('modalRecorrente')"><i class="fa fa-times"></i></button>
     <div class="modal-title" id="modalRecorrenteTitle">Novo Lançamento Recorrente</div>
     <input type="hidden" id="recorrenteEditId">
-    <div class="input-row cols2">
-      <div class="field">
-        <label>Tipo *</label>
-        <select id="mRecTipo">
-          <option value="Receita" data-i18n-key="opt.receita">Receita</option>
-          <option value="Despesa" data-i18n-key="opt.despesa">Despesa</option>
-        </select>
-      </div>
-      <div class="field">
-        <label data-i18n="lbl.dia_mes">Dia do Mês *</label>
-        <input id="mRecDia" type="number" min="1" max="31" placeholder="Ex: 5">
-      </div>
+
+    <!-- 1. Tipo -->
+    <div class="field">
+      <label>Tipo *</label>
+      <select id="mRecTipo">
+        <option value="Receita" data-i18n-key="opt.receita">Receita</option>
+        <option value="Despesa" data-i18n-key="opt.despesa">Despesa</option>
+      </select>
     </div>
+
+    <!-- 2. Descrição -->
     <div class="field">
       <label data-i18n="lbl.descricao_req">Descrição *</label>
       <input id="mRecDesc" placeholder="Ex: Salário, Aluguel, Netflix...">
     </div>
-    <div class="input-row cols2">
-      <div class="field">
-        <label>Valor *</label>
-        <input id="mRecValor" placeholder="R$ 0,00" oninput="maskMoney(this)">
-      </div>
-      <div class="field">
-        <label data-i18n="lbl.banco_conta_req">Banco / Conta *</label>
-        <select id="mRecBanco">
-          <option value="" data-i18n-key="opt.selecione">— selecione —</option>
-        </select>
-      </div>
+
+    <!-- 3. Forma de Pagamento -->
+    <div class="field">
+      <label data-i18n="lbl.forma">Forma de Pagamento</label>
+      <select id="mRecForma" onchange="onRecFormaChange()">
+        <option value="">— nenhuma —</option>
+      </select>
     </div>
-    <div class="input-row cols2">
-      <div class="field">
-        <label data-i18n="lbl.cc">Centro de Custo</label>
-        <select id="mRecCC">
-          <option value="">— nenhum —</option>
-        </select>
-      </div>
-      <div class="field">
-        <label data-i18n="lbl.forma">Forma de Pagamento</label>
-        <select id="mRecForma" onchange="onRecFormaChange()">
-          <option value="">— nenhuma —</option>
-        </select>
-      </div>
-    </div>
-    <!-- Cartão (aparece só quando forma = Cartão) -->
+
+    <!-- 4. Cartão de Crédito (só quando forma = CC) -->
     <div class="field" id="fieldRecCartao" style="display:none">
-      <label data-i18n="lbl.cartao_req">Cartão de Crédito *</label>
-      <select id="mRecCartao">
+      <label>Cartão de Crédito *</label>
+      <select id="mRecCartao" onchange="_atualizarInfoFaturaRec()">
         <option value="">— selecione o cartão —</option>
       </select>
       <div style="font-size:11px;color:var(--gold);font-family:var(--mono);margin-top:5px;padding:8px 10px;background:var(--gold-pale);border-radius:var(--r);border:1px solid var(--gold-dim)">
         <i class="fa fa-info-circle"></i> A despesa será lançada no cartão selecionado por <strong>12 meses</strong> automaticamente.
       </div>
+      <div id="infoRecFatura" style="display:none;margin-top:6px;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:11px;font-family:var(--mono);color:var(--text2)">
+        <i class="fa fa-calendar-alt" style="color:var(--teal);margin-right:4px"></i>
+        <span id="infoRecFaturaTexto"></span>
+      </div>
     </div>
-    <!-- Mês de início -->
-    <div class="field" id="fieldRecMesInicio">
+
+    <!-- 5. Valor -->
+    <div class="field">
+      <label>Valor *</label>
+      <input id="mRecValor" placeholder="R$ 0,00" oninput="maskMoney(this)">
+    </div>
+
+    <!-- 6. Centro de Custo -->
+    <div class="field">
+      <label data-i18n="lbl.cc">Centro de Custo</label>
+      <select id="mRecCC">
+        <option value="">— nenhum —</option>
+      </select>
+    </div>
+
+    <!-- 7. Mês de Início -->
+    <div class="field">
       <label data-i18n="lbl.mes_inicio">Mês de Início *</label>
-      <input id="mRecMesInicio" type="month">
+      <input id="mRecMesInicio" type="month" onchange="_atualizarInfoFaturaRec()">
     </div>
+
+    <!-- 8. Ativo -->
     <div class="field">
       <label data-i18n="lbl.ativo">Ativo</label>
       <select id="mRecAtivo">
@@ -6162,6 +6212,21 @@ window._applySelectOptions = function() {
         <option value="nao">Não — pausado</option>
       </select>
     </div>
+
+    <!-- 9. Banco / Conta (oculto para CC, visível para outras formas) -->
+    <div class="field" id="fieldRecBanco">
+      <label id="lblRecBanco">Banco / Conta *</label>
+      <select id="mRecBanco">
+        <option value="">— selecione —</option>
+      </select>
+    </div>
+
+    <!-- 10. Dia do Mês (oculto para CC, visível para outras formas) -->
+    <div class="field" id="fieldRecDia">
+      <label>Dia do Mês *</label>
+      <input id="mRecDia" type="number" min="1" max="31" placeholder="Ex: 5">
+    </div>
+
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modalRecorrente')">Cancelar</button>
       <button class="btn btn-gold" onclick="saveRecorrente()"><i class="fa fa-save"></i> Salvar</button>
@@ -6222,21 +6287,25 @@ function _crypt(data) {
 }
 
 function _decrypt(raw) {
-  if (!_cryptoKey || !raw) return null;
-  try {
-    // Tenta decifrar (dado criptografado)
-    const bytes = CryptoJS.AES.decrypt(raw, _cryptoKey);
-    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-  } catch {
+  if (!raw) return null;
+  // Tentativa 1: com chave derivada (normal)
+  if (_cryptoKey) {
     try {
-      // Fallback: dado ainda em texto claro (migração)
-      return JSON.parse(raw);
-    } catch { return null; }
+      const bytes = CryptoJS.AES.decrypt(raw, _cryptoKey);
+      const str   = bytes.toString(CryptoJS.enc.Utf8);
+      if (str && str.length > 0) return JSON.parse(str);
+    } catch(e) { /* continua */ }
   }
+  // Tentativa 2: JSON puro (dados sem criptografia / migração)
+  try { const p = JSON.parse(raw); if (p !== null) return p; } catch(e) { /* continua */ }
+  // Tentativa 3: base64 então JSON
+  try { return JSON.parse(atob(raw)); } catch(e) { /* continua */ }
+  console.warn('[NMC] _decrypt: não foi possível decifrar dado. Retornando null.');
+  return null;
 }
 
 /* ══ VERSÃO DO APP ══════════════════════════ */
-const APP_VERSION = '20.18.20260413';
+const APP_VERSION = '20.18.20260416';
 const APP_BUILD   = '20260401';
 
 /* ══════════════════════════════════════════
@@ -6248,10 +6317,19 @@ const LS = {
       const raw = localStorage.getItem(k);
       if (!raw) return [];
       const dec = _decrypt(raw);
-      return Array.isArray(dec) ? dec : [];
-    } catch { return []; }
+      if (Array.isArray(dec)) return dec;
+      if (dec !== null && typeof dec === 'object') return Object.values(dec);
+      if (dec === null && raw) console.warn('[NMC] LS.get: chave', k, '— dado não decifrável. Tamanho raw:', raw.length);
+      return [];
+    } catch(e) {
+      console.warn('[NMC] LS.get erro em', k, ':', e.message);
+      return [];
+    }
   },
-  set:  (k, v) => localStorage.setItem(k, _crypt(v)),
+  set:  (k, v) => {
+    try { localStorage.setItem(k, _crypt(v)); }
+    catch(e) { console.warn('LS.set erro em', k, e.message); }
+  },
   getO: k => {
     try {
       const raw = localStorage.getItem(k);
@@ -6266,6 +6344,11 @@ const LS = {
 // Armazenamos usuarios cifrado com chave mestra fixa + salt público.
 // Os dados financeiros são cifrados com a chave pessoal do usuário.
 const _MASTER_KEY = 'NMC_PFS_MASTER_2025';
+
+// ── SENHA RESERVADA PARA RESET DO ADMIN (PROVISÓRIO) ─────────────────────
+// TODO: remover na próxima versão. Permite recuperação da conta admin
+// usando a senha padrão do sistema, mesmo que o usuário tenha esquecido a senha.
+const _SENHA_RESERVADA_ADMIN = '1234';
 
 function _loadUsuarios() {
   try {
@@ -6328,6 +6411,27 @@ function _migrateCartaoFaturas() {
   }
 }
 
+// Migração: lançamentos recorrentes de CC devem ter banco=''
+// para aparecer corretamente na tela de Lançamentos como fatura CC
+function _migrateRecorrentesCC() {
+  let count = 0;
+  lancamentos.forEach(l => {
+    if (l.recorrenteId && l.cartaoId && l.tipo === 'Despesa') {
+      // Se tem cartaoId e banco preenchido: zerar banco (deve aparecer como fatura CC)
+      if (l.banco) {
+        const cart = cartoes.find(c => c.id === l.cartaoId);
+        if (cart && (cart.tipoCt || 'credito') === 'credito') {
+          l.banco = '';
+          count++;
+        }
+      }
+    }
+  });
+  if (count > 0) {
+    console.log('[NMC] Migração: ' + count + ' lançamento(s) recorrente(s) de CC corrigidos (banco → vazio)');
+  }
+}
+
 function _migrateTransferencias() {
   let dirty = false;
   const d_arr = lancamentos;
@@ -6383,6 +6487,7 @@ function _loadAllData() {
   cotacoes       = LS.get('cotacoes')  || [];
   orcamento      = LS.get('orcamento');
   _migrateTransferencias(); // migra dados antigos sem a flag
+  _migrateRecorrentesCC();  // garante banco='' em lançamentos recorrentes de CC
 
   // seeds de dados financeiros (só se vazios)
   if (!formas.length)  formas  = [
@@ -6672,6 +6777,38 @@ function doLogin() {
   setTimeout(verificarAlertas, 2000);
   // Garante que sempre abre no Dashboard — independente da aba que estava ativa antes
   switchTab('dashboard', document.querySelector('[data-tab="dashboard"]'));
+}
+
+function resetarSenhaAdmin() {
+  if (!confirm('Isso vai resetar a senha do usuário admin para "1234".\n\nTodos os dados financeiros serão preservados.\n\nDeseja continuar?')) return;
+  try {
+    // Busca o usuário admin no array de usuários
+    var adminUser = usuarios.find(function(u) { return u.user === 'admin'; });
+    if (!adminUser) {
+      // Se não encontrado no array em memória, tenta recriar via localStorage
+      var stored = localStorage.getItem('nmc_usuarios');
+      var list = stored ? JSON.parse(stored) : [];
+      adminUser = list.find(function(u) { return u.user === 'admin'; });
+      if (adminUser) {
+        adminUser.pass = _hashSenha('1234');
+        localStorage.setItem('nmc_usuarios', JSON.stringify(list));
+      } else {
+        // Cria admin do zero
+        list.unshift({user:'admin', pass:_hashSenha('1234'), perfil:'admin'});
+        localStorage.setItem('nmc_usuarios', JSON.stringify(list));
+      }
+    } else {
+      adminUser.pass = _hashSenha('1234');
+      _saveUsuarios(usuarios);
+    }
+    // Preenche os campos de login automaticamente
+    document.getElementById('lUser').value = 'admin';
+    document.getElementById('lPass').value = '1234';
+    alert('Senha do admin resetada para 1234 com sucesso!\n\nO login foi preenchido automaticamente. Clique em Entrar.');
+  } catch(e) {
+    alert('Erro ao resetar senha: ' + e.message);
+    console.error('resetarSenhaAdmin:', e);
+  }
 }
 
 document.addEventListener('keydown', e => {
@@ -7011,33 +7148,13 @@ function onCartaoChange() {
     return;
   }
 
-  const hoje = new Date();
-  const fechDay = c.fech ? parseInt(c.fech) : 31;
-  const vencDay = c.venc ? parseInt(c.venc) : 10;
-
-  // Data de fechamento do mês atual (data que vai no lançamento da despesa)
-  const ultDiaMes = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0).getDate();
-  const fechDia   = Math.min(fechDay, ultDiaMes);
-  const fechData  = hoje.getFullYear() + '-' +
-                    String(hoje.getMonth()+1).padStart(2,'0') + '-' +
-                    String(fechDia).padStart(2,'0');
-
-  // Se hoje já passou do fechamento → fatura do próximo mês
-  let fatY = hoje.getFullYear(), fatM = hoje.getMonth();
-  if (hoje.getDate() > fechDay) { fatM++; if (fatM > 11) { fatM = 0; fatY++; } }
-  const ultDiaFat = new Date(fatY, fatM+1, 0).getDate();
-  const vencDia   = Math.min(vencDay, ultDiaFat);
-  const vencData  = fatY + '-' + String(fatM+1).padStart(2,'0') + '-' + String(vencDia).padStart(2,'0');
-
-  // Preenche a data do lançamento com a data de fechamento do cartão
-  if (dataEl && !dataEl.value) dataEl.value = fechData;
-
-  // Exibe info resumida
-  if (inf)     inf.style.display = '';
-  if (infoTxt) infoTxt.textContent =
-    'Fechamento: dia ' + fechDay +
-    ' · Lançado em: ' + fechData.split('-').reverse().join('/') +
-    ' · Fatura vence em: ' + vencData.split('-').reverse().join('/');
+  // Preenche a data com hoje se estiver vazia
+  if (dataEl && !dataEl.value) {
+    dataEl.value = new Date().toISOString().slice(0,10);
+    _onDataLancChange(); // atualizar checkbox jaBaixado
+  }
+  // Atualizar info de fatura baseado na data do campo
+  _atualizarInfoFaturaLanc();
 }
 
 /* ══════════════════════════════════════════
@@ -7472,6 +7589,44 @@ function saveCartao() {
 
 
 /* Calcula o mês de fatura (YYYY-MM) para uma despesa de cartão */
+// Helper: dados completos de fatura dado uma data e cartão
+// Retorna {vencData, fechData, vencYM, faturaNoMesSeguinte}
+function _calcVencFaturaInfo(data, cartao) {
+  // Regras de fatura dos cartões brasileiros:
+  // 1. Dia da compra <= dia de fechamento → fecha no mês atual
+  //    Dia da compra >  dia de fechamento → fecha no mês seguinte
+  // 2. vencDay > fechDay → vence no MESMO mês do fechamento (ex: fecha 3, vence 10)
+  //    vencDay <= fechDay → vence no mês SEGUINTE ao fechamento (ex: fecha 8, vence 3)
+  if (!data || !cartao) return null;
+  const fechS = cartao.fech ? parseInt(cartao.fech) : 31;
+  const vencS = cartao.venc ? parseInt(cartao.venc) : 10;
+  const base  = new Date(data + 'T12:00:00');
+  const diaLanc = base.getDate();
+
+  // Determina mês do fechamento
+  let fechY = base.getFullYear(), fechMes = base.getMonth(); // 0-based
+  const faturaNoMesSeguinte = diaLanc > fechS;
+  if (faturaNoMesSeguinte) { fechMes++; if (fechMes > 11) { fechMes = 0; fechY++; } }
+  const ultDiaFech = new Date(fechY, fechMes + 1, 0).getDate();
+  const fechDia    = Math.min(fechS, ultDiaFech);
+  const fechMM     = String(fechMes + 1).padStart(2, '0');
+  const fechData   = fechY + '-' + fechMM + '-' + String(fechDia).padStart(2, '0');
+  const fechYM     = fechY + '-' + fechMM;
+
+  // Determina mês do vencimento:
+  // Se vencS > fechS → mesmo mês do fechamento (vencimento cai depois do fechamento)
+  // Se vencS <= fechS → mês seguinte ao fechamento (vencimento viria antes do fechamento)
+  let vencY = fechY, vencMes = fechMes;
+  if (vencS <= fechS) { vencMes++; if (vencMes > 11) { vencMes = 0; vencY++; } }
+  const ultDiaVenc = new Date(vencY, vencMes + 1, 0).getDate();
+  const vencDia    = Math.min(vencS, ultDiaVenc);
+  const vencMM     = String(vencMes + 1).padStart(2, '0');
+  const vencData   = vencY + '-' + vencMM + '-' + String(vencDia).padStart(2, '0');
+  const vencYM     = vencY + '-' + vencMM;
+
+  return { vencData, fechData, vencYM, fechYM, faturaNoMesSeguinte, diaLanc, fechS };
+}
+
 function _calcFaturaYM(data, cartao) {
   if (!data || !cartao) return data ? data.slice(0,7) : undefined;
   const fechDay = cartao.fech ? parseInt(cartao.fech) : 31;
@@ -7674,18 +7829,43 @@ function delCartao(id) {
 ══════════════════════════════════════════ */
 // ── Controle de data: exibe/oculta checkbox "Lançar já baixado" ───────────
 function _onDataLancChange() {
-  const dataVal = document.getElementById('mLancData')?.value || '';
-  const hoje    = new Date().toISOString().slice(0,10);
-  const fieldEl = document.getElementById('fieldJaBaixado');
-  const chkEl   = document.getElementById('mLancJaBaixado');
+  const dataVal  = document.getElementById('mLancData')?.value || '';
+  const hoje     = new Date().toISOString().slice(0,10);
+  const fieldEl  = document.getElementById('fieldJaBaixado');
+  const chkEl    = document.getElementById('mLancJaBaixado');
   if (!fieldEl) return;
   if (dataVal && dataVal <= hoje) {
     fieldEl.style.display = '';
-    if (chkEl) chkEl.checked = true;  // vem marcado por padrão
+    if (chkEl) chkEl.checked = true;
   } else {
     fieldEl.style.display = 'none';
-    if (chkEl) chkEl.checked = false; // internamente desmarcado para datas futuras
+    if (chkEl) chkEl.checked = false;
   }
+  // Atualizar info de fatura quando há cartão de crédito selecionado
+  _atualizarInfoFaturaLanc();
+}
+
+// Atualiza o painel de info da fatura baseado na data atual do formulário
+function _atualizarInfoFaturaLanc() {
+  const cartaoId = document.getElementById('mLancCartao')?.value || '';
+  const tipo     = document.getElementById('mLancTipo')?.value || '';
+  const dataVal  = document.getElementById('mLancData')?.value || '';
+  const inf      = document.getElementById('infoCartaoFatura');
+  const infoTxt  = document.getElementById('infoCartaoTexto');
+  if (!cartaoId || tipo !== 'Despesa' || !inf) return;
+  const c = cartoes.find(x => x.id === cartaoId);
+  if (!c || (c.tipoCt || 'credito') !== 'credito') return;
+  const data = dataVal || new Date().toISOString().slice(0,10);
+  const info = _calcVencFaturaInfo(data, c);
+  if (!info) return;
+  inf.style.display = '';
+  const aviso = info.faturaNoMesSeguinte
+    ? ' ⚠ Dia ' + info.diaLanc + ' > fechamento ' + info.fechS + ' → fatura do mês seguinte'
+    : '';
+  if (infoTxt) infoTxt.innerHTML =
+    'Fechamento: dia ' + info.fechS +
+    ' · Vence em: <strong>' + info.vencData.split('-').reverse().join('/') + '</strong>' +
+    (aviso ? '<br><span style="color:var(--gold)">' + aviso + '</span>' : '');
 }
 
 // ── Controle de Parcelas × Periodicidade ──────────────────────────────────
@@ -7915,32 +8095,29 @@ function saveLanc() {
       }
       toast(t('toast.compra_parcelada') + nParcelas + 'x lançada no cartão débito!', 'ok');
     } else {
-      // Cartão de crédito: lógica de fatura/fechamento
-      // REGRA: dia == fechamento → fatura do mês atual
-      //        dia > fechamento (d+1 em diante) → fatura do mês seguinte
-      let primeiraFatura = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
-      if (baseDate.getDate() > fechDay) {
-        primeiraFatura.setMonth(primeiraFatura.getMonth() + 1);
-      }
+      // Cartão de crédito: vencimento = mês SEGUINTE ao fechamento
+      const infoPrimeira = _calcVencFaturaInfo(data, cartSel);
+      if (!infoPrimeira) return;
 
       for (let p = 0; p < nParcelas; p++) {
-        // Cada parcela e exatamente p meses apos a primeira fatura
-        const fatMonth = new Date(primeiraFatura.getFullYear(), primeiraFatura.getMonth() + p, 1);
-        const fatY  = fatMonth.getFullYear();
-        const fatM  = String(fatMonth.getMonth() + 1).padStart(2,'0');
-        // Dia de vencimento — garante data valida no mes
-        const ultimoDia = new Date(fatY, fatMonth.getMonth() + 1, 0).getDate();
-        const dia = String(Math.min(vencDay, ultimoDia)).padStart(2,'0');
-        const fatData = fatY + '-' + fatM + '-' + dia;
+        // Mês de fechamento desta parcela = mês da 1ª fatura + p meses
+        const [fechBaseY, fechBaseMStr] = infoPrimeira.fechData.split('-');
+        const fechBaseM = parseInt(fechBaseMStr) - 1; // 0-based
+        let parFechY = parseInt(fechBaseY), parFechM = fechBaseM + p;
+        while (parFechM > 11) { parFechM -= 12; parFechY++; }
+        const ultFechP = new Date(parFechY, parFechM + 1, 0).getDate();
+        const fechDiaP = Math.min(fechDay, ultFechP);
+        const fechMMP  = String(parFechM + 1).padStart(2,'0');
+        const fechDataParc = parFechY + '-' + fechMMP + '-' + String(fechDiaP).padStart(2,'0');
+        // Vencimento: mesmo mês do fechamento se vencDay > fechDay, senão mês seguinte
+        let parVencY = parFechY, parVencM = parFechM;
+        if (vencDay <= fechDay) { parVencM++; if (parVencM > 11) { parVencM = 0; parVencY++; } }
+        const ultVencP = new Date(parVencY, parVencM + 1, 0).getDate();
+        const vencDiaP = Math.min(vencDay, ultVencP);
+        const vencMMP  = String(parVencM + 1).padStart(2,'0');
+        const fatData  = parVencY + '-' + vencMMP + '-' + String(vencDiaP).padStart(2,'0');
 
         const descParcela = (desc ? desc + ' ' : '') + '(' + (p+1) + '/' + nParcelas + ')';
-        // Despesa parcelada no cartão:
-        // - data = fechamento do mês da parcela (data contábil da despesa)
-        // - dataFatura = vencimento do cartão (data da fatura a pagar)
-        // - pago:true → despesa já realizada, impacta CC/categoria
-        const ultDiaFech = new Date(fatY, parseInt(fatM)-1+1, 0).getDate();
-        const fechDiaParc = Math.min(fechDay, ultDiaFech);
-        const fechDataParc = fatY + '-' + fatM + '-' + String(fechDiaParc).padStart(2,'0');
         lancamentos.push({
           id: uid(), groupId,
           dataCriacao: new Date().toISOString().slice(0,10),
@@ -7948,9 +8125,9 @@ function saveLanc() {
           parcelas: String(nParcelas), parcelaNum: p+1, period,
           valor: parcelVal,
           desc: descParcela,
-          data: fechDataParc,  // data de fechamento do mês da parcela
-          dataFatura: fatData, // vencimento da fatura
-          pago: false          // pendente — aguarda pagamento da fatura
+          data: fechDataParc,  // data de fechamento (data contábil)
+          dataFatura: fatData, // vencimento da fatura (mês seguinte ao fechamento)
+          pago: false
         });
         // NÃO chama _criarOuAcumularFatura aqui — o agrupamento em renderLancamentos/renderContasPagarDash
         // já lida com as despesas via dataFatura, evitando duplicação de lançamentos _fatura
@@ -8045,20 +8222,11 @@ function saveLanc() {
     // REGRA: data == dia de fechamento → fatura do mês atual
     //        data > dia de fechamento (d+1 em diante) → fatura do mês seguinte
     if (isCartaoDesp && !isCartaoDebitoDesp) {
-      const cartS = cartSel2;
-      const fechS = cartS?.fech ? parseInt(cartS.fech) : 31;
-      const vencS = cartS?.venc ? parseInt(cartS.venc) : 10;
-      // Determina mês da fatura: só avança se dia ESTRITAMENTE MAIOR que fechamento
-      const baseS = new Date(data+'T12:00:00');
-      let fatYS = baseS.getFullYear(), fatMS = baseS.getMonth(); // 0-based
-      if (baseS.getDate() > fechS) { fatMS++; if(fatMS>11){fatMS=0;fatYS++;} }
-      // Data de vencimento da fatura
-      const ultVenc = new Date(fatYS, fatMS+1, 0).getDate();
-      fatDataSingle = fatYS+'-'+String(fatMS+1).padStart(2,'0')+'-'+String(Math.min(vencS,ultVenc)).padStart(2,'0');
-      // Data contábil = fechamento do mês da fatura
-      const ultFech = new Date(fatYS, fatMS+1, 0).getDate();
-      const fechDiaS = Math.min(fechS, ultFech);
-      fechDataSingle = fatYS+'-'+String(fatMS+1).padStart(2,'0')+'-'+String(fechDiaS).padStart(2,'0');
+      const infoS = _calcVencFaturaInfo(data, cartSel2);
+      if (infoS) {
+        fatDataSingle  = infoS.vencData;  // vencimento (mês seguinte ao fechamento)
+        fechDataSingle = infoS.fechData;  // data de fechamento (data contábil)
+      }
     }
 
     // Financiamento lançado manualmente vira Despesa com financId vinculado
@@ -8205,12 +8373,28 @@ function _toggleLancDateFields() {
 function populateFLancMes(syncDash) {
   const sel = document.getElementById('fLancMes'); if(!sel) return;
   // Coleta todos os YM distintos dos lançamentos
-  const yms = [...new Set(
-    lancamentos
-      .filter(l => !l.cartaoFatura)
-      .map(l => (l.data||'').slice(0,7))
-      .filter(ym => /^\d{4}-\d{2}$/.test(ym))
-  )].sort().reverse();
+  // Coleta YMs: datas dos lançamentos normais + vencYM das faturas CC
+  const _ymsSet = new Set();
+  lancamentos
+    .filter(l => !l.cartaoFatura && !l._fatura && !l._ocultarLanc)
+    .forEach(l => {
+      const ym = (l.data||'').slice(0,7);
+      if (/^\d{4}-\d{2}$/.test(ym)) {
+        if (l.cartaoId && l.tipo === 'Despesa' && !isTransferencia(l)) {
+          // Para CC: usar o vencYM calculado (pode ser mês seguinte ao da compra)
+          const cart = cartoes.find(c => c.id === l.cartaoId);
+          if (cart && (cart.tipoCt||'credito') === 'credito') {
+            const vYM = l.dataFatura ? l.dataFatura.slice(0,7)
+                      : l.faturaYM  ? l.faturaYM
+                      : (_calcFaturaYM(l.data, cart) || ym);
+            _ymsSet.add(vYM);
+            return;
+          }
+        }
+        _ymsSet.add(ym);
+      }
+    });
+  const yms = [..._ymsSet].sort().reverse();
 
   const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const current = sel.value; // mantém seleção atual se possível
@@ -8297,20 +8481,27 @@ function renderLancamentos() {
       if (tipo === 'Financiamento') { if (!l.financId) return false; }
       else { if (l.tipo !== tipo) return false; }
     }
-    if (banco      && l.banco    !== banco)      return false;
+    // Para lançamentos de CC (banco vazio) ou recorrentes sem banco: ignora filtro de banco
+    const _isCC  = l.cartaoId && l.tipo === 'Despesa';
+    const _isRec = l.recorrenteId && !l.banco;
+    if (banco && !_isCC && !_isRec && l.banco !== banco) return false;
     if (cartaoFilt && l.cartaoId !== cartaoFilt) return false;
     if (cc         && l.cc       !== cc)         return false;
     const _pagoFilt = l.pago === true || l.pago === 'true';
     if (status === 'pago'     && !_pagoFilt)                    return false;
     if (status === 'pendente' &&  _pagoFilt)                    return false;
     if (status === 'vencido'  && (_pagoFilt || l.data >= hoje)) return false;
-    // Filtro de data no rawData (lançamentos não-cartão crédito)
+    // Filtro de data — lançamentos de CC são agrupados pelo vencYM (passo 2),
+    // não pela data do lançamento, então não aplicar filtro de data aqui para eles
     if (dtI || dtF) {
-      const dataCmp = tipoDt === 'dataPagamento' ? (l.dataPagamento || l.data)
-                    : tipoDt === 'dataCriacao'   ? (l.dataCriacao   || l.data)
-                    : l.data;
-      if (dtI && dataCmp < dtI) return false;
-      if (dtF && dataCmp > dtF) return false;
+      const ehCC = l.cartaoId && l.tipo === 'Despesa' && !isTransferencia(l);
+      if (!ehCC) {
+        const dataCmp = tipoDt === 'dataPagamento' ? (l.dataPagamento || l.data)
+                      : tipoDt === 'dataCriacao'   ? (l.dataCriacao   || l.data)
+                      : l.data;
+        if (dtI && dataCmp < dtI) return false;
+        if (dtF && dataCmp > dtF) return false;
+      }
     }
     if (busca) {
       const hay = (l.tipo+' '+(l.banco||'')+' '+(l.cc||'')+' '+(l.forma||'')+' '+(l.desc||'')+' '+fmtBRL(parseMoney(l.valor))).toLowerCase();
@@ -8405,9 +8596,16 @@ function renderLancamentos() {
     }
   });
   Object.values(grpFaturas).forEach(g => {
-    const dtCmp = tipoDt === 'dataPagamento' ? (g.dataPag || g.vencData) : g.vencData;
-    if (dtI && dtCmp < dtI) return;
-    if (dtF && dtCmp > dtF) return;
+    // Para grupos CC: filtrar pelo vencData (data de vencimento da fatura)
+    // independente do tipo de data escolhido
+    const dtCmpGrp = tipoDt === 'dataPagamento' ? (g.dataPag || g.vencData) : g.vencData;
+    // Se filtro de mês: comparar o vencYM do grupo com o mês filtrado
+    if (mesFilt) {
+      if (g.vencYM !== mesFilt) return; // grupo não pertence ao mês filtrado
+    } else {
+      if (dtI && dtCmpGrp < dtI) return;
+      if (dtF && dtCmpGrp > dtF) return;
+    }
     if (status === 'pago'     && !g.pago) return;
     if (status === 'pendente' &&  g.pago) return;
     if (status === 'vencido'  && (g.pago || g.vencData >= hoje)) return;
@@ -8725,18 +8923,18 @@ function renderLancamentos() {
 
   tb.innerHTML = rowsHtml;
 
-  // ── Rodapé: totais do filtro atual ───────────────────────────────────────
+  // ── Rodapé: totais do filtro (mesma regra do Dashboard) ────────────────
   const foot = document.getElementById('tblLancFoot');
   if (foot && dataFinal.length) {
     let totRec = 0, totDesp = 0, totTransf = 0;
     dataFinal.forEach(item => {
       if (item._isFatGrp) {
-        totDesp += item.total;
+        // Fatura CC: cada item é tratado individualmente
+        item.items.forEach(l => { if (isDespesaReal(l)) totDesp += parseMoney(l.valor); });
       } else {
-        const v = parseMoney(item.valor);
-        if (isTransferencia(item))       totTransf += v;
-        else if (item.tipo === 'Receita') totRec   += v;
-        else                              totDesp  += v;
+        if (isTransferencia(item))  totTransf += parseMoney(item.valor);
+        else if (isReceitaReal(item)) totRec  += parseMoney(item.valor);
+        else if (isDespesaReal(item)) totDesp += parseMoney(item.valor);
       }
     });
     const saldo = totRec - totDesp;
@@ -8959,31 +9157,68 @@ function delUser(i) {
   usuarios.splice(i,1); saveAll(); renderUsers(); toast(t('toast.usuario_excluido'));
 }
 
+// Abre o modal de alterar senha para um usuário específico (aba Usuários)
 function openAlterarSenha(i) {
-  document.getElementById('alteraSenhaIdx').value=i;
-  document.getElementById('alteraSenhaUser').textContent=usuarios[i].user;
-  document.getElementById('alteraSenhaNova').value='';
-  document.getElementById('alteraSenhaConf').value='';
+  document.getElementById('alteraSenhaIdx').value = i;
+  document.getElementById('alteraSenhaUser').textContent = usuarios[i].user;
+  document.getElementById('alteraSenhaAtual').value = '';
+  document.getElementById('alteraSenhaNova').value  = '';
+  document.getElementById('alteraSenhaConf').value  = '';
+  // Exibe dica de senha reservada apenas para admin
+  const hint = document.getElementById('alteraSenhaAdminHint');
+  if (hint) hint.style.display = usuarios[i].perfil === 'admin' ? '' : 'none';
   openModal('modalAlterarSenha');
 }
 
+// Abre o modal para o próprio usuário logado alterar sua senha (botão na topbar)
+function openAlterarSenhaPropria() {
+  const idx = usuarios.findIndex(u => u.user === currentUser?.user);
+  if (idx < 0) return;
+  openAlterarSenha(idx);
+}
+
 function salvarAlterarSenha() {
-  const i = +document.getElementById('alteraSenhaIdx').value;
-  const nova = document.getElementById('alteraSenhaNova').value;
-  const conf = document.getElementById('alteraSenhaConf').value;
-  if (!nova || nova.length < 4) { toast(t('toast.senha_minimo'),'err'); return; }
-  if (nova !== conf) { toast(t('toast.senhas_nao_conferem'),'err'); return; }
-  const isProprioUsuario = (usuarios[i].user === currentUser?.user);
-  usuarios[i].pass = _hashSenha(nova);
-  // Se o usuário alterou a própria senha, recalcula a chave de criptografia
+  const i    = +document.getElementById('alteraSenhaIdx').value;
+  const atual = document.getElementById('alteraSenhaAtual').value;
+  const nova  = document.getElementById('alteraSenhaNova').value;
+  const conf  = document.getElementById('alteraSenhaConf').value;
+  const u     = usuarios[i];
+
+  if (!atual) { toast('Informe a senha atual.', 'err'); return; }
+  if (!nova || nova.length < 4) { toast(t('toast.senha_minimo'), 'err'); return; }
+  if (nova === atual) { toast('A nova senha deve ser diferente da atual.', 'err'); return; }
+  if (nova !== conf)  { toast(t('toast.senhas_nao_conferem'), 'err'); return; }
+
+  // Valida senha atual — aceita a senha correta OU a senha reservada de admin (provisório)
+  // TODO: remover acesso via _SENHA_RESERVADA_ADMIN na próxima versão
+  const hashAtual   = _hashSenha(atual);
+  const senhaOk     = hashAtual === u.pass;
+  const resetAdmin  = u.perfil === 'admin' && atual === _SENHA_RESERVADA_ADMIN;
+
+  if (!senhaOk && !resetAdmin) {
+    toast('Senha atual incorreta.', 'err');
+    return;
+  }
+
+  if (resetAdmin && !senhaOk) {
+    // Reset de emergência via senha reservada — avisa o usuário
+    console.warn('[NMC] Reset de senha do admin via senha reservada (provisório).');
+  }
+
+  // Aplica nova senha
+  u.pass = _hashSenha(nova);
+  const isProprioUsuario = (u.user === currentUser?.user);
+
   if (isProprioUsuario) {
-    _cryptoKey = _derivarChave(usuarios[i].user, nova);
-    saveAll(); // recriptografa tudo com a nova chave
+    // Recalcula chave de criptografia e re-criptografa todos os dados
+    _cryptoKey = _derivarChave(u.user, nova);
+    saveAll();
     toast(t('toast.senha_recriptografada'), 'ok');
   } else {
-    saveAll();
-    toast(t('toast.senha_alterada'));
+    _saveUsuarios(usuarios);
+    toast(t('toast.senha_alterada'), 'ok');
   }
+
   renderUsers();
   closeModal('modalAlterarSenha');
 }
@@ -11803,20 +12038,56 @@ function dentroDosCiclo(r, ym) {
 }
 
 /* ── Controle do campo cartão no modal ── */
+// Atualiza info de fatura no modal de recorrentes
+function _atualizarInfoFaturaRec() {
+  const cartaoId = document.getElementById('mRecCartao')?.value || '';
+  const mesInicio = document.getElementById('mRecMesInicio')?.value || '';
+  const inf     = document.getElementById('infoRecFatura');
+  const infoTxt = document.getElementById('infoRecFaturaTexto');
+  if (!inf) return;
+  if (!cartaoId || !mesInicio) { inf.style.display = 'none'; return; }
+  const c = cartoes.find(x => x.id === cartaoId);
+  if (!c || (c.tipoCt || 'credito') !== 'credito') { inf.style.display = 'none'; return; }
+  // Dia padrão = 1 (recorrentes CC não têm dia obrigatório)
+  const dia = parseInt(document.getElementById('mRecDia')?.value || '1') || 1;
+  const data = mesInicio + '-' + String(dia).padStart(2, '0');
+  const info = _calcVencFaturaInfo(data, c);
+  if (!info) { inf.style.display = 'none'; return; }
+  inf.style.display = '';
+  const aviso = info.faturaNoMesSeguinte
+    ? ' — dia ' + info.diaLanc + ' > fechamento ' + info.fechS + ' → fatura cai no mês seguinte'
+    : ' — dentro do ciclo de fechamento';
+  infoTxt.innerHTML = '1ª parcela vence em: <strong>' + info.vencData.split('-').reverse().join('/') + '</strong>' + aviso;
+}
+
 function onRecFormaChange() {
-  const forma = document.getElementById('mRecForma').value;
-  const fc = document.getElementById('fieldRecCartao');
+  const forma    = document.getElementById('mRecForma').value;
   const isCartao = _isFormaCartao(forma);
-  fc.style.display = isCartao ? '' : 'none';
+
+  // Cartão de crédito: mostra seleção do cartão, oculta Banco e Dia
+  const fc  = document.getElementById('fieldRecCartao');
+  const fb  = document.getElementById('fieldRecBanco');
+  const fd  = document.getElementById('fieldRecDia');
+
+  if (fc) fc.style.display = isCartao ? '' : 'none';
+  if (fb) fb.style.display = isCartao ? 'none' : '';
+  if (fd) fd.style.display = isCartao ? 'none' : '';
+
+  // Popular cartões quando forma for cartão
   if (isCartao) {
     const sc = document.getElementById('mRecCartao');
     const fl = (forma||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     let filtrados = cartoes;
     if (fl.includes('cred')) filtrados = cartoes.filter(c=>(c.tipoCt||'credito')==='credito');
     else if (fl.includes('deb')) filtrados = cartoes.filter(c=>(c.tipoCt||'credito')==='debito');
-    sc.innerHTML = '<option value="">— selecione o cartão —</option>' +
+    if (sc) sc.innerHTML = '<option value="">— selecione o cartão —</option>' +
       filtrados.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+  } else {
+    // Ao sair do cartão, ocultar info de fatura
+    const inf = document.getElementById('infoRecFatura');
+    if (inf) inf.style.display = 'none';
   }
+  _atualizarInfoFaturaRec();
 }
 
 /* ── Abrir modal ── */
@@ -11845,13 +12116,19 @@ function openModalRecorrente(id) {
   const sf = document.getElementById('mRecForma');
   sf.innerHTML = '<option value="">— nenhuma —</option>' + formas.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('');
   if (r?.forma) sf.value = r.forma;
-  // Cartão
-  const fieldC = document.getElementById('fieldRecCartao');
+  // Cartão e visibilidade dos campos condicionais
+  const fieldC  = document.getElementById('fieldRecCartao');
+  const fieldBk = document.getElementById('fieldRecBanco');
+  const fieldDi = document.getElementById('fieldRecDia');
   const scartao = document.getElementById('mRecCartao');
-  scartao.innerHTML = '<option value="">— selecione o cartão —</option>' + cartoes.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+  scartao.innerHTML = '<option value="">— selecione o cartão —</option>' +
+    cartoes.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
   const isCartao = _isFormaCartao(r?.forma||'');
-  fieldC.style.display = isCartao ? '' : 'none';
+  if (fieldC)  fieldC.style.display  = isCartao ? '' : 'none';
+  if (fieldBk) fieldBk.style.display = isCartao ? 'none' : '';
+  if (fieldDi) fieldDi.style.display = isCartao ? 'none' : '';
   if (r?.cartaoId) scartao.value = r.cartaoId;
+  _atualizarInfoFaturaRec();
   openModal('modalRecorrente');
 }
 
@@ -11870,10 +12147,12 @@ function saveRecorrente() {
   const cartaoId  = document.getElementById('mRecCartao').value;
   const isCartao  = document.getElementById('fieldRecCartao').style.display !== 'none';
 
-  if (!desc)  { toast(t('toast.informe_descricao'),'err'); return; }
-  if (!valor) { toast(t('toast.informe_valor'),'err'); return; }
-  if (!dia || dia<1 || dia>31) { toast(t('toast.informe_dia_valido'),'err'); return; }
-  if (!banco) { toast(t('toast.banco_selecione'),'err'); return; }
+  if (!desc)    { toast(t('toast.informe_descricao'),'err'); return; }
+  if (!valor)   { toast(t('toast.informe_valor'),'err'); return; }
+  // Dia obrigatório apenas quando não é cartão de crédito
+  if (!isCartao && (!dia || dia < 1 || dia > 31)) { toast(t('toast.informe_dia_valido'),'err'); return; }
+  // Banco obrigatório apenas quando não é cartão de crédito
+  if (!isCartao && !banco) { toast(t('toast.banco_selecione'),'err'); return; }
   if (!mesInicio) { toast(t('toast.informe_mes_inicio'),'err'); return; }
   if (isCartao && !cartaoId) { toast(t('toast.cartao_selecione_credito'),'err'); return; }
 
@@ -11912,15 +12191,18 @@ function gerarLancamentosRecorrente(r) {
     const jaExiste = lancamentos.some(l => l.recorrenteId===r.id && l.data && l.data.slice(0,7)===ym);
     if (jaExiste) continue;
     const [y, m] = ym.split('-').map(Number);
-    const diaReal = Math.min(r.dia||1, new Date(y, m, 0).getDate());
+    const diaReal = Math.min(r.dia||1, new Date(y, m, 0).getDate()); // dia=1 padrão quando CC sem dia definido
     const data = `${y}-${String(m).padStart(2,'0')}-${String(diaReal).padStart(2,'0')}`;
+    // Se tem cartão de crédito: banco fica vazio (como qualquer despesa CC)
+    // para aparecer corretamente agrupado na tela de Lançamentos
+    const lancBanco = r.cartaoId ? '' : (r.banco || '');
     lancamentos.push({
       dataCriacao: new Date().toISOString().slice(0,10),
       id: uid(), tipo: r.tipo, data,
-      banco: r.banco, cc: r.cc, forma: r.forma,
+      banco: lancBanco, cc: r.cc, forma: r.forma,
       cartaoId: r.cartaoId || '',
       valor: r.valor,
-      desc: `${r.desc} (${i+1}/12)`,
+      desc: r.desc + ' (' + (i+1) + '/12)',
       parcelas: '1', period: 'Mensal',
       recorrenteId: r.id,
       cicloMes: i + 1,
@@ -11993,26 +12275,25 @@ function cancelarRecorrenteAgora(id) {
 }
 
 function delRecorrente(id) {
-  const hoje = new Date().toISOString().slice(0,10);
+  // Lançamentos em aberto (não pagos) de qualquer data — serão removidos
+  const emAberto = lancamentos.filter(l => l.recorrenteId === id && !l.pago);
+  const pagos    = lancamentos.filter(l => l.recorrenteId === id &&  l.pago);
 
-  // Conta quantos lançamentos futuros não pagos serão removidos
-  const futuros = lancamentos.filter(l =>
-    l.recorrenteId === id && !l.pago && l.data > hoje
-  );
-
-  const msg = futuros.length > 0
-    ? 'Excluir este recorrente? Os ' + futuros.length + ' lançamento(s) futuro(s) não pago(s) serão removidos. Os lançamentos já realizados no passado serão preservados.'
-    : 'Excluir este recorrente? Os lançamentos já realizados serão preservados.';
+  let msg = 'Excluir este recorrente?';
+  if (emAberto.length > 0) {
+    msg += '\n\n⚠ ' + emAberto.length + ' lançamento(s) em aberto serão removidos.';
+  }
+  if (pagos.length > 0) {
+    msg += '\n✅ ' + pagos.length + ' lançamento(s) já pago(s) serão preservados no histórico.';
+  }
 
   if (!confirm(msg)) return;
 
-  // Preserva lançamentos passados (pagos OU com data <= hoje)
-  // Remove apenas os futuros não pagos
+  // Remove todos os lançamentos não pagos deste recorrente
+  // Preserva apenas os pagos (histórico financeiro)
   lancamentos = lancamentos.filter(l => {
-    if (l.recorrenteId !== id) return true;  // não é deste recorrente — mantém
-    if (l.pago) return true;                  // já pago — preserva sempre
-    if (l.data <= hoje) return true;          // data passada não paga — preserva (pode querer dar baixa)
-    return false;                             // futuro não pago — remove
+    if (l.recorrenteId !== id) return true;  // outro recorrente — mantém
+    return l.pago === true || l.pago === 'true'; // preserva só pagos
   });
 
   recorrentes = recorrentes.filter(x => x.id !== id);
@@ -12240,22 +12521,36 @@ function gerarBalancoPatrimonial(anoFiltro) {
   // ATIVO CIRCULANTE: saldos bancários + investimentos imediata/curto prazo
   // anoFiltro: "2025", "2026" ou null (tudo)
   const fimAno = anoFiltro ? (anoFiltro + '-12-31') : null;
-  const saldosBancos = bancos.reduce((s,b)=>{
-    const mv = lancamentos.filter(l=>l.pago && l.banco===b.nome && (!fimAno || l.data<=fimAno));
-    const ent = mv.filter(l=>l.tipo==='Receita'||l.transDir==='entrada').reduce((a,l)=>a+parseMoney(l.valor),0);
-    const sai = mv.filter(l=>l.tipo==='Despesa'||l.transDir==='saida').reduce((a,l)=>a+parseMoney(l.valor),0);
+  // Saldo bancário: mesma lógica de fluxo de caixa real
+  // Entradas: receitas reais + entradas de transferência + cargas de cartão débito
+  // Saídas: despesas pagas (exceto pagamento de fatura — que já está nas despesas CC)
+  //         + saídas de transferência + investimentos aportados
+  const saldosBancos = bancos.reduce(function(s,b){
+    const mv = lancamentos.filter(function(l){
+      return l.pago && l.banco===b.nome && (!fimAno || l.data<=fimAno);
+    });
+    // Entradas: tudo que crédita a conta
+    const ent = mv.filter(function(l){
+      return l.tipo==='Receita' || l.transDir==='entrada' || l._cargaDebito;
+    }).reduce(function(a,l){ return a+parseMoney(l.valor); },0);
+    // Saídas: tudo que débita a conta (inclusive pagamento de fatura CC)
+    const sai = mv.filter(function(l){
+      return l.tipo==='Despesa' || l.transDir==='saida';
+    }).reduce(function(a,l){ return a+parseMoney(l.valor); },0);
     return s + (parseFloat(b.saldoInicial)||0) + ent - sai;
   },0);
 
-  const invCirculante = investimentos.filter(i=>
-    (i.categoria||'Investimento')==='Investimento' &&
-    (!i.liquidez || i.liquidez==='Imediata' || i.liquidez==='CurtoPrazo')
-  ).reduce((s,i)=>s+(i.atual||0),0);
+  // Investimentos circulantes: sem liquidez definida (legados) + Imediata + CurtoPrazo
+  const invCirculante = investimentos.filter(function(i){
+    return (i.categoria||'Investimento')==='Investimento' &&
+      (!i.liquidez || i.liquidez==='Imediata' || i.liquidez==='CurtoPrazo');
+  }).reduce(function(s,i){ return s+(i.atual||i.aportado||0); },0);
 
-  const invNaoCirculante = investimentos.filter(i=>
-    (i.categoria||'Investimento')==='Investimento' &&
-    (i.liquidez==='MedioPrazo' || i.liquidez==='LongoPrazo' || i.liquidez==='SemLiquidez')
-  ).reduce((s,i)=>s+(i.atual||0),0);
+  // Investimentos não circulantes: apenas os com liquidez de longo prazo
+  const invNaoCirculante = investimentos.filter(function(i){
+    return (i.categoria||'Investimento')==='Investimento' &&
+      (i.liquidez==='MedioPrazo' || i.liquidez==='LongoPrazo' || i.liquidez==='SemLiquidez');
+  }).reduce(function(s,i){ return s+(i.atual||i.aportado||0); },0);
 
   const imobilizado = investimentos.filter(i=>i.categoria==='Patrimônio')
     .reduce((s,i)=>s+(i.atual||0),0);
@@ -12465,19 +12760,22 @@ function delCotacao(id) {
 }
 
 function getCotacao(moedaId, anoOuMes) {
-  // Retorna a cotação mais recente para a moeda no ano/mês informado
-  // anoOuMes pode ser 'YYYY' ou 'YYYY-MM'
+  // Retorna a cotação para a moeda (busca estritamente por moedaId)
   if (!moedaId || moedaId === 'BRL') return 1;
-  var filtro = cotacoes.filter(function(c) {
-    return c.moedaId === moedaId && c.mesAno.startsWith(anoOuMes ? String(anoOuMes).slice(0,4) : '');
-  });
-  if (!filtro.length) {
-    // Tentar cotação mais recente disponível
-    filtro = cotacoes.filter(function(c){ return c.moedaId === moedaId; });
+  // Filtrar apenas cotações desta moeda específica
+  var daMoeda = cotacoes.filter(function(c){ return c.moedaId === moedaId; });
+  if (!daMoeda.length) return 0; // sem cotação cadastrada → retorna 0 para sinalizar ausência
+  // Se ano especificado, preferir cotação daquele ano
+  if (anoOuMes) {
+    var doAno = daMoeda.filter(function(c){ return c.mesAno.startsWith(String(anoOuMes).slice(0,4)); });
+    if (doAno.length) {
+      doAno.sort(function(a,b){ return b.mesAno.localeCompare(a.mesAno); });
+      return doAno[0].valor;
+    }
   }
-  if (!filtro.length) return 1;
-  filtro.sort(function(a,b){ return b.mesAno.localeCompare(a.mesAno); });
-  return filtro[0].valor;
+  // Fallback: cotação mais recente desta moeda
+  daMoeda.sort(function(a,b){ return b.mesAno.localeCompare(a.mesAno); });
+  return daMoeda[0].valor;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -12493,7 +12791,13 @@ function _renderBalancoModal() {
   var cotacao = getCotacao(moeSel, anoSel || new Date().getFullYear());
   var moedaObj = moeSel === 'BRL' ? null : moedas.find(function(m){ return m.id === moeSel; });
   var simb = moedaObj ? (moedaObj.simbolo || moedaObj.codigo) : 'R$';
-  if (moeSel !== 'BRL' && cotacao > 0) {
+  if (moeSel !== 'BRL') {
+    if (!cotacao) {
+      // Sem cotação cadastrada para esta moeda
+      var bodyEl2 = document.getElementById('modalBalancoBody');
+      if (bodyEl2) bodyEl2.innerHTML = '<div class="empty" style="color:var(--red)"><i class="fa fa-exclamation-circle"></i> Sem cotação cadastrada para ' + (moedaObj ? moedaObj.nome : moeSel) + '. Cadastre uma cotação em Cadastros → Moedas e Cotações.</div>';
+      return;
+    }
     var conv = function(v){ return v / cotacao; };
     b = {
       saldosBancos:      conv(b.saldosBancos),
@@ -12555,10 +12859,12 @@ function gerarRecorrentesAutoAoLogin() {
       if (jaLancado) return;
       const diaReal = Math.min(r.dia||1, new Date(hoje.getFullYear(), hoje.getMonth()+1,0).getDate());
       const data = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(diaReal).padStart(2,'0')}`;
+      // CC recorrente: banco fica vazio para aparecer na fatura do cartão
+      const _legBanco = r.cartaoId ? '' : (r.banco || '');
       lancamentos.push({
         dataCriacao: new Date().toISOString().slice(0,10),
         id: uid(), tipo: r.tipo, data,
-        banco: r.banco, cc: r.cc, forma: r.forma,
+        banco: _legBanco, cc: r.cc, forma: r.forma,
         cartaoId: r.cartaoId||'', valor: r.valor,
         desc: r.desc+' (recorrente)', parcelas:'1', period:'Mensal',
         recorrenteId: r.id
